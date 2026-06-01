@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scope Progress Dashboard</title>
+</head>
+<body>
+
+<h1>Scope Progress Dashboard</h1>
+
+<table border="1" cellpadding="6">
+    <tr>
+        <th>Node ID</th>
+        <th>Circle</th>
+        <th>Priority</th>
+        <th>Completed Tasks</th>
+        <th>Total Tasks</th>
+        <th>% Complete</th>
+        <th>Status</th>
+    </tr>
+
+    {% for row in progress_data %}
+    <tr>
+        <td>
+            <a href="/scope/{{ row.scope.id }}/tasks">
+                {{ row.scope.node_id }}
+            </a>
+        </td>
+        <td>{{ row.scope.circle }}</td>
+        <td>{{ row.scope.priority }}</td>
+        <td>{{ row.completed }}</td>
+        <td>{{ row.total }}</td>
+        <td>{{ row.percent }}%</td>
+        <td>
+            {% if row.status == "Completed" %}
+                ✅ Completed
+            {% elif row.status == "In Progress" %}
+                🟡 In Progress
+            {% else %}
+                🔴 Not Started
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<a href="/projects/{{ project_id }}">⬅ Back to Projects</a>
+
+</body>
+</html>

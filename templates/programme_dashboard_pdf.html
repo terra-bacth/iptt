@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <style>
+
+        body{
+            font-family: Arial;
+            font-size: 12px;
+            color:#222;
+            margin:30px;
+        }
+
+        h1{
+            font-size:28px;
+            margin-bottom:5px;
+        }
+
+        h2{
+            font-size:20px;
+            margin-top:35px;
+            margin-bottom:15px;
+            border-bottom:2px solid #2563eb;
+            padding-bottom:6px;
+        }
+
+        .sub-title{
+            color:gray;
+            margin-bottom:30px;
+        }
+
+        .summary-box{
+            background:#f5f7fb;
+            padding:18px;
+            border-left:5px solid #2563eb;
+            line-height:1.8;
+            margin-bottom:30px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            margin-top:10px;
+            margin-bottom:30px;
+        }
+
+        th{
+            background:#2563eb;
+            color:white;
+            padding:10px;
+            border:1px solid #dcdcdc;
+            text-align:left;
+        }
+
+        td{
+            padding:9px;
+            border:1px solid #dcdcdc;
+        }
+
+        .kpi-table td{
+            font-weight:bold;
+            text-align:center;
+            font-size:14px;
+        }
+
+        .critical{
+            color:red;
+            font-weight:bold;
+        }
+
+        .warning{
+            color:#ff9800;
+            font-weight:bold;
+        }
+
+        .healthy{
+            color:green;
+            font-weight:bold;
+        }
+
+        .footer{
+            margin-top:40px;
+            text-align:center;
+            color:gray;
+            font-size:11px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h1>
+    Programme Executive Dashboard
+</h1>
+
+<div class="sub-title">
+
+    {{ report.programme_name }}
+
+</div>
+
+<!-- EXECUTIVE SUMMARY -->
+
+<div class="summary-box">
+
+    {{ report.executive_summary }}
+
+</div>
+
+<!-- KPI TABLE -->
+
+<h2>
+    Programme KPI Summary
+</h2>
+
+<table class="kpi-table">
+
+    <tr>
+
+        <th>Programme Health</th>
+
+        <th>Overall Progress</th>
+
+        <th>Total Projects</th>
+
+        <th>Delayed Items</th>
+
+        <th>Status</th>
+
+    </tr>
+
+    <tr>
+
+        <td>{{ report.avg_health }}%</td>
+
+        <td>{{ report.avg_progress }}%</td>
+
+        <td>{{ report.total_projects }}</td>
+
+        <td>{{ report.total_delays }}</td>
+
+        <td>{{ report.status }}</td>
+
+    </tr>
+
+</table>
+
+<!-- PROJECT DASHBOARD -->
+
+<h2>
+    Project Deployment Dashboard
+</h2>
+
+<table>
+
+    <tr>
+
+        <th>Project</th>
+
+        <th>Health</th>
+
+        <th>Progress</th>
+
+        <th>Delayed Items</th>
+
+        <th>Status</th>
+
+    </tr>
+
+    {% for p in report.projects %}
+
+    <tr>
+
+        <td>{{ p.project_name }}</td>
+
+        <td>{{ p.health }}%</td>
+
+        <td>{{ p.progress }}%</td>
+
+        <td>{{ p.delayed_items }}</td>
+
+        <td>{{ p.status }}</td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+<!-- TOP RISK PROJECTS -->
+
+<h2>
+    Top Risk Projects
+</h2>
+
+<table>
+
+    <tr>
+
+        <th>Project</th>
+
+        <th>Health</th>
+
+        <th>Status</th>
+
+        <th>Delayed Items</th>
+
+    </tr>
+
+    {% for p in report.worst_projects %}
+
+    <tr>
+
+        <td>{{ p.project_name }}</td>
+
+        <td>{{ p.health }}%</td>
+
+        <td>{{ p.status }}</td>
+
+        <td>{{ p.delayed_items }}</td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+<!-- CIRCLE SUMMARY -->
+
+<h2>
+    Circle Performance Summary
+</h2>
+
+<table>
+
+    <tr>
+
+        <th>Circle</th>
+
+        <th>Nodes</th>
+
+        <th>Health</th>
+
+        <th>Status</th>
+
+    </tr>
+
+    {% for c in report.circle_summary %}
+
+    <tr>
+
+        <td>{{ c.circle }}</td>
+
+        <td>{{ c.nodes }}</td>
+
+        <td>{{ c.health }}%</td>
+
+        <td>{{ c.status }}</td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+<div class="footer">
+
+    Integrated Project Tracking Tool (IPTT)
+
+</div>
+
+</body>
+
+</html>

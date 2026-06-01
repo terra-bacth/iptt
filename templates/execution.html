@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Node Execution</title>
+  <link rel="stylesheet" href="/static/execution.css">
+
+  <style>
+    /* ✅ TOP NAV */
+    .top-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #1f2933;
+        color: #ffffff;
+        padding: 12px 20px;
+        margin-bottom: 15px;
+        border-radius: 6px;
+    }
+
+    .top-nav a {
+        color: #ffffff;
+        margin-left: 20px;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .top-nav a:hover {
+        text-decoration: underline;
+    }
+
+    /* ✅ BACK LINK */
+    .back-link {
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .back-link a {
+        text-decoration: none;
+        color: #0078d4;
+    }
+
+    .page-header {
+        margin-bottom: 10px;
+    }
+
+    /* ✅ BUTTONS */
+    .save-container {
+        text-align: right;
+        margin-bottom: 10px;
+    }
+
+    .save-btn {
+        padding: 8px 14px;
+        border-radius: 4px;
+        background: #28a745;
+        color: white;
+        border: none;
+    }
+
+    .download-btn {
+        padding: 8px 14px;
+        border-radius: 4px;
+        background: #0078d4;
+        color: white;
+        border: none;
+    }
+
+    .upload-btn {
+        padding: 8px 14px;
+        border-radius: 4px;
+        background: #ff9800;
+        color: white;
+        border: none;
+    }
+
+    /* ✅ KPI */
+    .kpi-panel {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        background: #f5f7fa;
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+    }
+
+    /* ✅ ALERT */
+    .alert-banner {
+        padding: 8px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+    }
+
+    .alert-danger {
+        background: #fdecea;
+        color: #d93025;
+    }
+
+    .alert-success {
+        background: #e6f4ea;
+        color: #1e7e34;
+    }
+
+    /* ✅ FILTER + OVERRIDE BAR */
+    #filterBar {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    #filterBar button {
+        padding: 6px 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 4px;
+        background: #e0e0e0;
+    }
+
+    #filterBar button.active {
+        background-color: #0078d4;
+        color: white;
+    }
+
+    /* ✅ OVERRIDE BUTTON */
+    #overrideBtn {
+        margin-left: auto;
+        background-color: #6c757d;
+        color: white;
+    }
+
+    /* ✅ QUICK BUTTON */
+    .quick-btn {
+        margin-top: 4px;
+        padding: 4px 8px;
+        font-size: 11px;
+        border-radius: 4px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+    }
+
+    .quick-btn:disabled {
+        opacity: 0.7;
+    }
+    
+        .task-group {
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+    
+    .group-header {
+      background: #eef3f8;
+      padding: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .group-content {
+      padding: 5px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<!-- ✅ NAV -->
+<div class="top-nav">
+    <div><strong>IPTT</strong></div>
+    <div>
+        <a href="/home">🏠 Home</a>
+        <a href="/programmes">📦 Programmes</a>
+        <a href="/projects/{{ project_id }}">📂 Projects</a>
+        <a href="/logout">🚪 Logout</a>
+        
+        {% if role == "admin" %}
+        <a href="/audit-logs">📜 Audit Logs</a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- ✅ BACK -->
+<div class="back-link">
+    <a href="/project/{{ project_id }}/execution">⬅ Back</a>
+</div>
+
+<!-- ✅ HEADER -->
+<div class="page-header">
+    <h2>⚙ Node Execution</h2>
+</div>
+
+<!-- ✅ ACTION BUTTONS -->
+<div class="save-container">
+
+    <button class="download-btn" onclick="downloadExecution()">📥 Download</button>
+
+    <span style="margin-left:20px;">
+        <input type="file" id="excelFile">
+        <button class="upload-btn" onclick="uploadExcel()">📤 Upload</button>
+    </span>
+
+</div>
+
+<hr>
+
+<!-- ✅ FILTER + OVERRIDE -->
+<div id="filterBar">
+ 
+    <!-- ✅ NEW OVERRIDE BUTTON -->
+    <button id="overrideBtn" onclick="toggleOverride()">
+      🔒 Override OFF
+    </button>
+</div>
+
+<!-- ✅ GRID -->
+<div id="executionContainer"></div>
+
+<script>
+  const USER_ROLE = "{{ role | default('user') }}";  // backend will populate later
+</script>
+
+<script>
+  const PROJECT_ID = {{ project_id | default(0) }};
+  const SCOPE_ID = {{ scope_id | default(0) }};
+</script>
+
+<script src="/static/execution.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    loadExecution();
+  });
+</script>
+
+</body>
+</html>

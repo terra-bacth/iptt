@@ -1,0 +1,664 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+header,
+nav,
+h1,
+body > div:first-child {
+    display:none;
+}
+
+body{
+    background:#f5f7fa;
+}
+
+.top-nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#1f2933;
+    color:white;
+    padding:12px 20px;
+    border-radius:8px;
+    margin-bottom:20px;
+}
+
+.top-nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:18px;
+}
+
+.breadcrumb{
+    margin-bottom:15px;
+    font-size:14px;
+}
+
+.breadcrumb a{
+    color:#0078d4;
+    text-decoration:none;
+}
+
+.page-title{
+    margin-bottom:20px;
+}
+
+.kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+    margin-bottom:20px;
+}
+
+.kpi-card{
+    background:white;
+    padding:18px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.kpi-title{
+    font-size:13px;
+    color:#666;
+}
+
+.kpi-value{
+    font-size:28px;
+    font-weight:bold;
+    margin-top:6px;
+}
+
+.green{
+    border-left:5px solid #107c41;
+}
+
+.orange{
+    border-left:5px solid #ff8c00;
+}
+
+.red{
+    border-left:5px solid #d13438;
+}
+
+.blue{
+    border-left:5px solid #0078d4;
+}
+
+.section{
+    background:white;
+    border-radius:10px;
+    padding:18px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.section h3{
+    margin-top:0;
+}
+
+.risk-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.risk-box{
+    text-align:center;
+    padding:18px;
+    border-radius:8px;
+    color:white;
+}
+
+.risk-high{
+    background:#d13438;
+}
+
+.risk-medium{
+    background:#ff8c00;
+}
+
+.risk-low{
+    background:#107c41;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#f0f2f5;
+    text-align:left;
+    padding:10px;
+    border-bottom:1px solid #ddd;
+}
+
+td{
+    padding:10px;
+    border-bottom:1px solid #eee;
+}
+
+details{
+    margin-top:10px;
+}
+
+summary{
+    cursor:pointer;
+    font-weight:bold;
+    padding:10px;
+    background:#f7f7f7;
+    border-radius:6px;
+}
+
+.badge-high{
+    background:#fde7e9;
+    color:#d13438;
+    padding:4px 8px;
+    border-radius:4px;
+}
+
+.badge-medium{
+    background:#fff4ce;
+    color:#8a5d00;
+    padding:4px 8px;
+    border-radius:4px;
+}
+
+.badge-low{
+    background:#e6f4ea;
+    color:#107c41;
+    padding:4px 8px;
+    border-radius:4px;
+}
+
+.search-box{
+    margin-bottom:15px;
+}
+
+.search-box input{
+    width:300px;
+    padding:8px;
+}
+
+ul.insights{
+    line-height:2;
+}
+
+</style>
+
+<div class="top-nav">
+
+<div>
+    <strong>IPTT</strong>
+</div>
+
+<div>
+
+    <a href="/home">🏠 Home</a>
+
+    <a href="/programmes">📦 Programmes</a>
+
+    <a href="/projects/{{ programme_id }}"> 📂 Projects</a>
+
+    <a href="/project/{{ project_id }}/executive-dashboard">
+        📊 Executive Dashboard
+    </a>
+
+    <a href="/logout">🚪 Logout</a>
+
+</div>
+
+</div>
+
+<div class="breadcrumb">
+
+<a href="/home">Home</a> >
+
+<a href="/programmes">Programmes</a> >
+
+<span>Forecast Dashboard</span>
+
+</div>
+
+<div class="page-title">
+
+<h2>🔮 Forecast Dashboard</h2>
+
+<div>
+    Project:
+    <strong>{{ project_name }}</strong>
+</div>
+
+</div>
+
+<div class="kpi-grid">
+
+<div class="kpi-card blue">
+    <div class="kpi-title">Forecast Project Go-Live</div>
+    <div class="kpi-value">
+        {{ project_forecast_date }}
+    </div>
+</div>
+
+<div class="kpi-card green">
+    <div class="kpi-title">Total Nodes</div>
+    <div class="kpi-value">
+        {{ total_nodes }}
+    </div>
+</div>
+
+<div class="kpi-card red">
+    <div class="kpi-title">Critical Nodes</div>
+    <div class="kpi-value">
+        {{ critical_nodes }}
+    </div>
+</div>
+
+<div class="kpi-card orange">
+    <div class="kpi-title">Average Delay</div>
+    <div class="kpi-value">
+        {{ average_delay }} Days
+    </div>
+</div>
+
+<div class="kpi-card red">
+    <div class="kpi-title">Worst Delay</div>
+    <div class="kpi-value">
+        {{ worst_delay }} Days
+    </div>
+</div>
+
+<div class="kpi-card blue">
+    <div class="kpi-title">Overall Progress</div>
+    <div class="kpi-value">
+        {{ overall_progress }}%
+    </div>
+</div>
+
+<div class="kpi-card blue">
+    <div class="kpi-title">
+        Forecast Confidence
+    </div>
+
+    <div class="kpi-value">
+        {{ avg_confidence }}%
+    </div>
+</div>
+</div>
+
+<div class="section">
+
+<h3>🚦 Risk Distribution</h3>
+
+<div class="risk-grid">
+
+    <div class="risk-box risk-high">
+        <h2>{{ high_risk }}</h2>
+        High Risk
+    </div>
+
+    <div class="risk-box risk-medium">
+        <h2>{{ medium_risk }}</h2>
+        Medium Risk
+    </div>
+
+    <div class="risk-box risk-low">
+        <h2>{{ low_risk }}</h2>
+        Low Risk
+    </div>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<h3>📌 Executive Insights</h3>
+
+<ul class="insights">
+
+    <li>
+        Forecast Project Go-Live:
+        <strong>{{ project_forecast_date }}</strong>
+    </li>
+
+    <li>
+        Critical Nodes:
+        <strong>{{ critical_nodes }}</strong>
+    </li>
+
+    <li>
+        Average Delay:
+        <strong>{{ average_delay }} Days</strong>
+    </li>
+
+    <li>
+        Worst Delay:
+        <strong>{{ worst_delay }} Days</strong>
+    </li>
+
+    <li>
+        Overall Progress:
+        <strong>{{ overall_progress }}%</strong>
+    </li>
+
+</ul>
+
+</div>
+
+<div class="section">
+
+<h3>🚨 Top 10 Delayed Nodes</h3>
+
+<table>
+
+    <tr>
+        <th>Node</th>
+        <th>Facility</th>
+        <th>Circle</th>
+        <th>Progress</th>
+        <th>Delay</th>
+        <th>Delay Drivers</th>
+        <th>Forecast Go-Live</th>
+        <th>Confidence</th>  
+        
+    </tr>
+
+    {% for row in top_delayed_nodes %}
+
+    <tr>
+
+        <td>{{ row.node_id }}</td>
+
+        <td>{{ row.facility_name }}</td>
+
+        <td>{{ row.circle }}</td>
+
+        <td>{{ row.progress }}%</td>
+
+               
+        <td>{{ row.forecast_delay }}</td>
+
+        <td>
+        
+        {% if row.delay_drivers %}
+        
+            {% for d in row.delay_drivers[:3] %}
+                <div>
+                    {{ d.task_name }}
+                    ({{ d.remaining_days }}d)
+                </div>
+            {% endfor %}
+        
+            {% if row.delay_drivers|length > 3 %}
+        
+            <details>
+                <summary style="cursor:pointer;color:#0078d4;">
+                    View All
+                </summary>
+        
+                {% for d in row.delay_drivers %}
+                    <div>
+                        {{ d.task_name }}
+                        ({{ d.remaining_days }}d)
+                    </div>
+                {% endfor %}
+
+            </details>
+
+            {% endif %}
+
+        {% endif %}
+
+        </td>
+        
+        <td>{{ row.predicted_go_live }}</td>
+        
+        <td>
+        
+        {% if row.confidence_band == "High" %}
+            <span class="badge-low">
+                {{ row.confidence }}%
+            </span>
+        
+        {% elif row.confidence_band == "Medium" %}
+            <span class="badge-medium">
+                {{ row.confidence }}%
+            </span>
+        
+        {% else %}
+            <span class="badge-high">
+                {{ row.confidence }}%
+            </span>
+        
+        {% endif %}
+        
+        </td> 
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+</div>
+
+<div class="section">
+
+<details>
+
+<summary>
+🌍 Circle Forecast Summary
+</summary>
+
+<br>
+
+<table>
+
+<tr>
+<th>Circle</th>
+<th>Nodes</th>
+<th>Average Delay</th>
+<th>Average Progress</th>
+<th>Forecast Go-Live</th>
+</tr>
+
+{% for circle,data in circle_summary.items() %}
+
+<tr>
+
+<td>{{ circle }}</td>
+
+<td>{{ data.nodes }}</td>
+
+<td>{{ data.avg_delay }}</td>
+
+<td>{{ data.avg_progress }}%</td>
+
+<td>{{ data.forecast_go_live }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</details>
+
+</div>
+
+<div class="section">
+
+<details>
+
+<summary>
+📋 Complete Forecast Matrix
+({{ total_nodes }} Nodes)
+</summary>
+
+<br>
+
+<div class="search-box">
+
+<input
+type="text"
+id="nodeSearch"
+placeholder="Search Node / Facility / Circle"
+onkeyup="filterTable()">
+
+</div>
+
+<table id="forecastTable">
+
+<tr>
+
+<th>Node</th>
+
+<th>Facility</th>
+
+<th>Circle</th>
+
+<th>Progress</th>
+
+<th>Delay</th>
+
+<th>Delay Drivers</th>
+
+<th>Forecast Go-Live</th>
+
+<th>Confidence</th>
+
+<th>Risk</th>
+
+</tr>
+
+{% for row in forecast_data %}
+
+<tr>
+
+<td>{{ row.node_id }}</td>
+
+<td>{{ row.facility_name }}</td>
+
+<td>{{ row.circle }}</td>
+
+<td>{{ row.progress }}%</td>
+
+<td>{{ row.forecast_delay }}</td>
+
+<td>
+
+{% if row.delay_drivers %}
+
+    {% for d in row.delay_drivers[:3] %}
+        <div>
+            {{ d.task_name }}
+            ({{ d.remaining_days }}d)
+        </div>
+    {% endfor %}
+
+    {% if row.delay_drivers|length > 3 %}
+
+    <details>
+        <summary style="cursor:pointer;color:#0078d4;">
+            View All
+        </summary>
+
+        {% for d in row.delay_drivers %}
+            <div>
+                {{ d.task_name }}
+                ({{ d.remaining_days }}d)
+            </div>
+        {% endfor %}
+
+    </details>
+
+    {% endif %}
+
+{% endif %}
+
+</td>
+
+<td>{{ row.predicted_go_live }}</td>
+
+<td>
+
+{% if row.confidence_band == "High" %}
+    <span class="badge-low">
+        {{ row.confidence }}%
+    </span>
+
+{% elif row.confidence_band == "Medium" %}
+    <span class="badge-medium">
+        {{ row.confidence }}%
+    </span>
+
+{% else %}
+    <span class="badge-high">
+        {{ row.confidence }}%
+    </span>
+
+{% endif %}
+
+</td>
+<td>
+
+{% if row.risk == "High" %} <span class="badge-high">High</span>
+{% elif row.risk == "Medium" %} <span class="badge-medium">Medium</span>
+{% else %} <span class="badge-low">Low</span>
+{% endif %}
+
+</td>
+
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</details>
+
+</div>
+
+<script>
+
+function filterTable(){
+
+let input =
+document.getElementById("nodeSearch");
+
+let filter =
+input.value.toUpperCase();
+
+let table =
+document.getElementById("forecastTable");
+
+let tr =
+table.getElementsByTagName("tr");
+
+for(let i=1;i<tr.length;i++){
+
+let txt =
+tr[i].textContent || tr[i].innerText;
+
+if(txt.toUpperCase().indexOf(filter) > -1){
+
+tr[i].style.display = "";
+
+}else{
+
+tr[i].style.display = "none";
+
+}
+
+}
+
+}
+
+</script>
+
+{% endblock %}

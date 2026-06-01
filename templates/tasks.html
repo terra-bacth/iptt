@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Workflow Task Configuration</title>
+
+<style>
+
+/* =========================================
+PAGE
+========================================= */
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f6f8;
+    margin:0;
+    padding:20px;
+    color:#1f2937;
+}
+
+/* =========================================
+TOP NAV
+========================================= */
+
+.top-nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#1f2933;
+    color:white;
+    padding:14px 22px;
+    border-radius:10px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.15);
+}
+
+.top-nav a{
+    color:white;
+    margin-left:18px;
+    text-decoration:none;
+    font-size:14px;
+}
+
+.top-nav a:hover{
+    text-decoration:underline;
+}
+
+/* =========================================
+HEADER
+========================================= */
+
+.page-header{
+    background:white;
+    margin-top:20px;
+    padding:24px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+.page-title{
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+.page-subtitle{
+    color:#6b7280;
+    font-size:15px;
+}
+
+/* =========================================
+CARDS
+========================================= */
+
+.section-card{
+    background:white;
+    border-radius:12px;
+    padding:22px;
+    margin-top:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* =========================================
+SECTION TITLE
+========================================= */
+
+.section-title{
+    font-size:20px;
+    font-weight:700;
+    margin-bottom:18px;
+}
+
+/* =========================================
+FORM GRID
+========================================= */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.form-group label{
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:6px;
+    color:#374151;
+}
+
+.form-group input{
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid #d1d5db;
+    font-size:14px;
+}
+
+/* =========================================
+BUTTONS
+========================================= */
+
+.btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+
+    padding:10px 16px;
+
+    border:none;
+    border-radius:8px;
+
+    text-decoration:none;
+
+    font-size:14px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:0.2s;
+}
+
+.btn:hover{
+    transform:translateY(-1px);
+}
+
+.btn-primary{
+    background:#2563eb;
+    color:white;
+}
+
+.btn-primary:hover{
+    background:#1d4ed8;
+}
+
+.btn-green{
+    background:#16a34a;
+    color:white;
+}
+
+.btn-green:hover{
+    background:#15803d;
+}
+
+.btn-dark{
+    background:#374151;
+    color:white;
+}
+
+.btn-dark:hover{
+    background:#1f2937;
+}
+
+/* =========================================
+TABLE
+========================================= */
+
+.task-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+.task-table th{
+    background:#4b5563;
+    color:white;
+    text-align:left;
+    padding:12px;
+    font-size:14px;
+}
+
+.task-table td{
+    padding:12px;
+    border-bottom:1px solid #e5e7eb;
+    font-size:14px;
+}
+
+.task-table tr:hover{
+    background:#f9fafb;
+}
+
+/* =========================================
+BADGES
+========================================= */
+
+.badge{
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.badge-critical{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.badge-standard{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.badge-prereq{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+/* =========================================
+BOTTOM ACTION
+========================================= */
+
+.bottom-actions{
+    margin-top:24px;
+    display:flex;
+    justify-content:flex-start;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =========================================
+TOP NAV
+========================================= -->
+
+<div class="top-nav">
+
+<div>
+    <b>IPTT</b>
+</div>
+
+<div>
+
+<a href="/home">🏠 Home</a>
+
+<a href="/programmes">📦 Programmes</a>
+
+<a href="/projects/{{ programme_id }}">📂 Project</a>
+
+{% if user.role == "admin" %}
+    <a href="/users">👥 Users</a>
+{% endif %}
+
+<a href="/logout">🚪 Logout</a>
+
+</div>
+
+</div>
+
+<!-- =========================================
+HEADER
+========================================= -->
+
+<div class="page-header">
+
+<div class="page-title">
+    🧩 Workflow Task Configuration
+</div>
+
+<div class="page-subtitle">
+    Define workflow sequence, dependencies and project execution logic
+</div>
+
+</div>
+
+<!-- =========================================
+MANUAL TASK CREATION
+========================================= -->
+
+<div class="section-card">
+
+<div class="section-title">
+    ➕ Create Workflow Task
+</div>
+
+<form method="post">
+
+<div class="form-grid">
+
+    <div class="form-group">
+        <label>Task Name</label>
+        <input type="text" name="name" required>
+    </div>
+
+    <div class="form-group">
+        <label>Duration (Days)</label>
+        <input type="number" name="duration_days" min="1" required>
+    </div>
+
+    <div class="form-group">
+        <label>Predecessor Task No</label>
+        <input type="number" name="predecessor_task_no">
+    </div>
+
+</div>
+
+<br>
+
+<label>
+    <input type="checkbox" name="is_prerequisite">
+    Pre-Requisite Task
+</label>
+
+<br><br>
+
+<button class="btn btn-primary">
+    ➕ Create Task
+</button>
+
+</form>
+
+</div>
+
+<!-- =========================================
+BULK UPLOAD
+========================================= -->
+
+<div class="section-card">
+
+<div class="section-title">
+    📥 Upload Workflow Tasks
+</div>
+
+<form
+    method="post"
+    action="/api/tasks/{{ project_id }}/upload"
+    enctype="multipart/form-data"
+>
+
+<input type="file" name="file" accept=".xlsx" required>
+
+<button class="btn btn-green">
+    📥 Upload Excel
+</button>
+
+<a
+    class="btn btn-dark"
+    href="/static/task_template.xlsx"
+>
+    📄 Download Excel Template
+</a>
+
+</form>
+
+<br>
+
+<small>
+Required Columns:
+<b>
+Task_Number,
+Task_Name,
+Duration_Days,
+Predecessor_Task_Number
+</b>
+</small>
+
+</div>
+
+<!-- =========================================
+TASK TABLE
+========================================= -->
+
+<div class="section-card">
+
+<div class="section-title">
+    📋 Workflow Definition Matrix
+</div>
+
+<table class="task-table">
+
+    <tr>
+        <th>#</th>
+        <th>Task Name</th>
+        <th>Duration</th>
+        <th>Dependency</th>
+        <th>Execution Flow</th>
+    </tr>
+
+{% for t in tasks %}
+
+<tr>
+
+    <!-- Sequence -->
+    <td>
+        <b>{{ t.seq }}</b>
+    </td>
+
+    <!-- Task Name -->
+    <td>
+
+        {% if t.is_critical %}
+
+            <span style="color:#dc2626;font-weight:700;">
+                🔴 {{ t.name }}
+            </span>
+
+        {% else %}
+
+            {{ t.name }}
+
+        {% endif %}
+
+    </td>
+
+    <!-- Duration -->
+    <td>
+        {{ t.duration_days }} Days
+    </td>
+
+    <!-- Dependency -->
+    <td>
+        {{ t.dependency }}
+    </td>
+
+    <!-- Workflow Flow -->
+    <td>
+        {{ t.flow }}
+    </td>
+
+</tr>
+
+{% else %}
+
+<tr>
+
+    <td colspan="5" style="text-align:center;padding:30px;">
+        No tasks defined yet.
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+<!-- =========================================
+BOTTOM ACTIONS
+========================================= -->
+
+<div class="bottom-actions">
+
+<a
+class="btn btn-dark"
+href="/projects/{{ programme_id }}"
+
+>
+
+⬅ Back to Projects
+
+</a>
+
+</div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+
+const error = params.get("error");
+
+if (error === "admin_required") {
+    alert("⚠️ Only Admin can perform this action");
+}
+
+if (error === "pm_only") {
+    alert("⚠️ Only PM or Admin can perform this action");
+}
+
+if (error) {
+    window.history.replaceState(
+        {},
+        document.title,
+        window.location.pathname
+    );
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,367 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+header,
+nav,
+h1,
+body > div:first-child{
+    display:none;
+}
+
+body{
+    background:#f5f7fa;
+}
+
+.top-nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#1f2933;
+    color:white;
+    padding:12px 20px;
+    border-radius:8px;
+    margin-bottom:20px;
+}
+
+.top-nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:18px;
+}
+
+.breadcrumb{
+    margin-bottom:15px;
+    font-size:14px;
+}
+
+.breadcrumb a{
+    color:#0078d4;
+    text-decoration:none;
+}
+
+.page-title{
+    margin-bottom:20px;
+}
+
+.kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+    margin-bottom:20px;
+}
+
+.kpi-card{
+    background:white;
+    padding:18px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.kpi-title{
+    font-size:13px;
+    color:#666;
+}
+
+.kpi-value{
+    font-size:28px;
+    font-weight:bold;
+    margin-top:6px;
+}
+
+.blue{
+    border-left:5px solid #0078d4;
+}
+
+.green{
+    border-left:5px solid #107c41;
+}
+
+.orange{
+    border-left:5px solid #ff8c00;
+}
+
+.red{
+    border-left:5px solid #d13438;
+}
+
+.section{
+    background:white;
+    border-radius:10px;
+    padding:18px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#f0f2f5;
+    text-align:left;
+    padding:10px;
+    border-bottom:1px solid #ddd;
+}
+
+td{
+    padding:10px;
+    border-bottom:1px solid #eee;
+}
+
+.search-box{
+    margin-bottom:15px;
+}
+
+.search-box input{
+    width:350px;
+    padding:8px;
+}
+
+.facility-link{
+    text-decoration:none;
+    color:#0078d4;
+    font-weight:600;
+}
+
+.facility-link:hover{
+    text-decoration:underline;
+}
+
+.summary-box{
+    color:#666;
+    margin-top:6px;
+}
+
+</style>
+
+<!-- ===================================== -->
+<!-- TOP NAVIGATION -->
+<!-- ===================================== -->
+
+<div class="top-nav">
+
+    <div>
+        <strong>IPTT</strong>
+    </div>
+
+    <div>
+
+        <a href="/home">🏠 Home</a>
+
+        <a href="/dashboard">
+            📊 Governance Dashboard
+        </a>
+
+        <a href="/programmes">
+            📦 Programmes
+        </a>
+
+        <a href="/circle-dashboard">
+            🌍 Circle Dashboard
+        </a>
+
+        <a href="/logout">
+            🚪 Logout
+        </a>
+
+    </div>
+
+</div>
+
+<!-- ===================================== -->
+<!-- BREADCRUMB -->
+<!-- ===================================== -->
+
+<div class="breadcrumb">
+
+    <a href="/home">Home</a>
+
+    >
+
+    <a href="/circle-dashboard">
+        Circle Dashboard
+    </a>
+
+    >
+
+    <span>{{ circle_name }}</span>
+
+</div>
+
+<!-- ===================================== -->
+<!-- PAGE HEADER -->
+<!-- ===================================== -->
+
+<div class="page-title">
+
+    <h2>
+        🌍 Circle Detail - {{ circle_name }}
+    </h2>
+
+    <div class="summary-box">
+
+        Facility-wise operational visibility for
+        Circle {{ circle_name }}
+
+    </div>
+
+</div>
+
+<!-- ===================================== -->
+<!-- KPI SUMMARY -->
+<!-- ===================================== -->
+
+<div class="kpi-grid">
+
+    <div class="kpi-card blue">
+        <div class="kpi-title">Facilities</div>
+        <div class="kpi-value">
+            {{ facility_data|length }}
+        </div>
+    </div>
+
+    <div class="kpi-card green">
+        <div class="kpi-title">Total Nodes</div>
+        <div class="kpi-value">
+            {{ facility_data | sum(attribute='nodes') }}
+        </div>
+    </div>
+
+    <div class="kpi-card orange">
+        <div class="kpi-title">Completed Nodes</div>
+        <div class="kpi-value">
+            {{ facility_data | sum(attribute='completed_nodes') }}
+        </div>
+    </div>
+
+    <div class="kpi-card red">
+        <div class="kpi-title">WIP Nodes</div>
+        <div class="kpi-value">
+            {{ facility_data | sum(attribute='wip_nodes') }}
+        </div>
+    </div>
+
+</div>
+
+<!-- ===================================== -->
+<!-- FACILITY TABLE -->
+<!-- ===================================== -->
+
+<div class="section">
+
+    <h3>
+        🏢 Facilities in {{ circle_name }}
+    </h3>
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="facilitySearch"
+            placeholder="Search Facility"
+            onkeyup="filterFacilityTable()">
+
+    </div>
+
+    <table id="facilityTable">
+
+        <tr>
+
+            <th>Facility</th>
+
+            <th>Projects</th>
+
+            <th>Total Nodes</th>
+
+            <th>Completed</th>
+
+            <th>WIP</th>
+
+            <th>Progress</th>
+
+        </tr>
+
+        {% for row in facility_data %}
+
+        <tr>
+
+            <td>
+
+                <a
+                    class="facility-link"
+                    href="/facility/{{ row.facility }}">
+
+                    {{ row.facility }}
+
+                </a>
+
+            </td>
+
+            <td>{{ row.projects }}</td>
+
+            <td>{{ row.nodes }}</td>
+
+            <td>{{ row.completed_nodes }}</td>
+
+            <td>{{ row.wip_nodes }}</td>
+
+            <td>{{ row.progress }}%</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+<script>
+
+function filterFacilityTable(){
+
+    let input =
+        document.getElementById(
+            "facilitySearch"
+        );
+
+    let filter =
+        input.value.toUpperCase();
+
+    let table =
+        document.getElementById(
+            "facilityTable"
+        );
+
+    let tr =
+        table.getElementsByTagName(
+            "tr"
+        );
+
+    for(let i=1;i<tr.length;i++){
+
+        let txt =
+            tr[i].textContent ||
+            tr[i].innerText;
+
+        if(
+            txt.toUpperCase()
+            .indexOf(filter) > -1
+        ){
+
+            tr[i].style.display = "";
+
+        }else{
+
+            tr[i].style.display = "none";
+
+        }
+    }
+}
+
+</script>
+
+{% endblock %}

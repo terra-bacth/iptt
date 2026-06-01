@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Spyder
+.spyproject/
+
+# Virtual Environments
+venv/
+env/
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+
+# Generated Excel Files
+static/*.xlsx
+
+# IDE
+.vscode/
+.idea/
+
+# Environment Variables
+.env
+
+# OS
+Thumbs.db
+.DS_Store

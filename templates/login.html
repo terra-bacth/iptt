@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IPTT Login</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            background-color: #0f172a;
+        }
+
+        /* ================= LEFT PANEL (FULL LOGO) ================= */
+        .left-panel {
+            flex: 1.5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: linear-gradient(
+                135deg,
+                rgba(10, 18, 34, 0.95),
+                rgba(30, 58, 138, 0.88),
+                rgba(10, 18, 34, 0.95)
+            );
+            background-size: 300% 300%;
+            animation: gradientFlow 14s ease infinite;
+
+            overflow: hidden;
+            padding: 0;
+        }
+
+        @keyframes gradientFlow {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .branding {
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .branding img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 1;
+            filter: brightness(0) invert(1); /* makes logo white */
+        }
+
+        /* ================= RIGHT PANEL ================= */
+        .right-panel {
+            flex: 1;
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* ================= GLASSMORPHISM LOGIN CARD ================= */
+        .login-box {
+            width: 100%;
+            max-width: 380px;
+
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(18px) saturate(160%);
+            -webkit-backdrop-filter: blur(18px) saturate(160%);
+            border-radius: 16px;
+
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.4);
+
+            padding: 40px;
+            animation: floatUp 0.8s ease;
+        }
+
+        @keyframes floatUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-title {
+            text-align: center;
+            font-size: 26px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            font-size: 14px;
+            color: #d1d5db;
+            margin-bottom: 24px;
+        }
+
+        /* ---------------- INPUTS ---------------- */
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 14px;
+
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.4);
+
+            background: rgba(255,255,255,0.15);
+            color: white;
+            font-size: 14px;
+
+            backdrop-filter: blur(4px);
+        }
+
+        .login-box input::placeholder {
+            color: #dbeafe;
+        }
+
+        .login-box input:focus {
+            border-color: #93c5fd;
+            outline: none;
+        }
+
+        /* ---------------- BUTTON ---------------- */
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+
+            background: rgba(59, 130, 246, 0.85);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+
+            backdrop-filter: blur(3px);
+            transition: background 0.2s;
+        }
+
+        .login-box button:hover {
+            background: rgba(59, 130, 246, 1);
+        }
+
+        .error-message {
+            margin-top: 14px;
+            text-align: center;
+            color: #fecaca;
+            font-size: 13px;
+        }
+
+        .footer-text {
+            margin-top: 22px;
+            text-align: center;
+            font-size: 12px;
+            color: #e2e8f0;
+        }
+
+        @media (max-width: 900px) {
+            body { flex-direction: column; }
+            .left-panel { height: 40vh; }
+            .right-panel { height: 60vh; }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- LEFT PANEL (Full Logo) -->
+<div class="left-panel">
+    <div class="branding">
+     <img src="/static/iptt_logo.png" alt="IPTT Logo">
+    </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel">
+    <div class="login-box">
+        <div class="login-title">IPTT Login</div>
+        <div class="login-subtitle">Secure Access</div>
+
+        <form method="post">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        ✅ REGISTER LINK HERE
+        <p style="text-align:center; margin-top: 14px; font-size: 13px; color: #e2e8f0;">
+            Don't have an account?
+            <a href="/register" style="color:#93c5fd; text-decoration:none;">
+                Register here
+            </a>
+        </p>
+
+        {% if error %}
+            <div class="error-message">{{ error }}</div>
+        {% endif %}
+
+        <div class="footer-text">
+            © 2026 Integrated Project Tracking Tool
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

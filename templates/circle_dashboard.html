@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+header,
+nav,
+h1,
+body > div:first-child{
+    display:none;
+}
+
+body{
+    background:#f5f7fa;
+}
+
+.top-nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#1f2933;
+    color:white;
+    padding:12px 20px;
+    border-radius:8px;
+    margin-bottom:20px;
+}
+
+.top-nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:18px;
+}
+
+.breadcrumb{
+    margin-bottom:15px;
+    font-size:14px;
+}
+
+.breadcrumb a{
+    color:#0078d4;
+    text-decoration:none;
+}
+
+.section{
+    background:white;
+    border-radius:10px;
+    padding:18px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+    margin-bottom:20px;
+}
+
+.kpi-card{
+    background:white;
+    padding:18px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.kpi-title{
+    font-size:13px;
+    color:#666;
+}
+
+.kpi-value{
+    font-size:28px;
+    font-weight:bold;
+    margin-top:6px;
+}
+
+.blue{
+    border-left:5px solid #0078d4;
+}
+
+.green{
+    border-left:5px solid #16a34a;
+}
+
+.orange{
+    border-left:5px solid #f59e0b;
+}
+
+.red{
+    border-left:5px solid #dc2626;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#f3f4f6;
+    padding:10px;
+    text-align:left;
+}
+
+td{
+    padding:10px;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.circle-link{
+    font-weight:600;
+    text-decoration:none;
+    color:#2563eb;
+}
+
+.circle-link:hover{
+    text-decoration:underline;
+}
+
+</style>
+
+<!-- TOP NAV -->
+
+<div class="top-nav">
+
+    <div>
+        <strong>IPTT</strong>
+    </div>
+
+    <div>
+
+        <a href="/home">🏠 Home</a>
+
+        <a href="/dashboard">
+            📊 Governance Dashboard
+        </a>
+
+        <a href="/programmes">
+            📦 Programmes
+        </a>
+
+        <a href="/circle-dashboard">
+            🌍 Circle Dashboard
+        </a>
+
+        <a href="/logout">
+            🚪 Logout
+        </a>
+
+    </div>
+
+</div>
+
+<!-- BREADCRUMB -->
+
+<div class="breadcrumb">
+
+    <a href="/home">Home</a>
+
+    >
+
+    <span>Circle Intelligence Dashboard</span>
+
+</div>
+
+<!-- PAGE HEADER -->
+
+<div class="section">
+
+    <h2>🌍 Circle Intelligence Dashboard</h2>
+
+    <div style="color:#666;">
+
+        Portfolio-wide visibility across circles,
+        facilities, programmes, projects and nodes.
+
+    </div>
+
+</div>
+
+<!-- KPI SECTION -->
+
+<div class="kpi-grid">
+
+    <div class="kpi-card blue">
+        <div class="kpi-title">Total Circles</div>
+        <div class="kpi-value">{{ total_circles }}</div>
+    </div>
+
+    <div class="kpi-card green">
+        <div class="kpi-title">Total Facilities</div>
+        <div class="kpi-value">{{ total_facilities }}</div>
+    </div>
+
+    <div class="kpi-card orange">
+        <div class="kpi-title">Active Programmes</div>
+        <div class="kpi-value">{{ total_programmes }}</div>
+    </div>
+
+    <div class="kpi-card blue">
+        <div class="kpi-title">Active Projects</div>
+        <div class="kpi-value">{{ total_projects }}</div>
+    </div>
+
+    <div class="kpi-card green">
+        <div class="kpi-title">Total Nodes</div>
+        <div class="kpi-value">{{ total_nodes }}</div>
+    </div>
+
+    <div class="kpi-card red">
+        <div class="kpi-title">Completed Nodes</div>
+        <div class="kpi-value">{{ completed_nodes }}</div>
+    </div>
+
+</div>
+
+<!-- CIRCLE TABLE -->
+
+<div class="section">
+
+    <h3>🌍 Circle Summary</h3>
+
+    <table>
+
+        <tr>
+            <th>Circle</th>
+            <th>Facilities</th>
+            <th>Programmes</th>
+            <th>Projects</th>
+            <th>Total Nodes</th>
+            <th>Completed</th>
+            <th>WIP</th>
+            <th>Progress</th>
+        </tr>
+
+        {% for row in circle_data %}
+
+        <tr>
+
+            <td>
+                <a class="circle-link"
+                   href="/circle/{{ row.circle }}">
+                    {{ row.circle }}
+                </a>
+            </td>
+
+            <td>{{ row.facilities }}</td>
+
+            <td>{{ row.programmes }}</td>
+
+            <td>{{ row.projects }}</td>
+
+            <td>{{ row.total_nodes }}</td>
+
+            <td>{{ row.completed_nodes }}</td>
+
+            <td>{{ row.wip_nodes }}</td>
+
+            <td>{{ row.progress }}%</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+{% endblock %}

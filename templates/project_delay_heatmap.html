@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project Delay Heatmap</title>
+</head>
+<body>
+
+<h1>Project Delay Heatmap</h1>
+
+<p>
+🟩 On Track 🟨 Minor Risk 🔴 High Risk
+</p>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>Circle \ Priority</th>
+        <th>P1</th>
+        <th>P2</th>
+        <th>P3</th>
+    </tr>
+
+    {% for circle, priorities in heatmap.items() %}
+    <tr>
+        <td><strong>{{ circle }}</strong></td>
+
+        {% for p in [1,2,3] %}
+            {% set cell = priorities.get(p) %}
+            <td
+                {% if cell %}
+                    {% if cell.risk == "GREEN" %}
+                        style="background-color:#9be79b"
+                    {% elif cell.risk == "AMBER" %}
+                        style="background-color:#ffe58f"
+                    {% else %}
+                        style="background-color:#ff7a7a"
+                    {% endif %}
+                {% endif %}
+            >
+                {% if cell %}
+                    {{ cell.avg_delay }} days
+                {% else %}
+                    –
+                {% endif %}
+            </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<a href="/projects/{{ project_id }}">⬅ Back to Projects</a>
+</body>
+</html>
