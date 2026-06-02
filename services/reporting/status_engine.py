@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Author: Manoj Mishra
+"""
+
 def get_health_status(score):
 
     """

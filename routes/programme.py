@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Apr 14 18:52:30 2026
-
-@author: Manoj5.Mishra
+Author: Manoj Mishra
 """
+
 from fastapi import Request
 from auth.dependencies import require_admin
 from fastapi import APIRouter, Depends

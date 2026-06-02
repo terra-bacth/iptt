@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Author: Manoj Mishra
+"""
+
 from collections import defaultdict
 
 from models import Scope

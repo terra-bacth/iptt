@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Author: Manoj Mishra
+"""
+
 # constants/reporting_weights.py
 
 STAGE_WEIGHTS = {

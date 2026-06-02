@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Author: Manoj Mishra
+"""
+
 from io import BytesIO
 
 from reportlab.platypus import (

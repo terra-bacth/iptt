@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+"""
+Author: Manoj Mishra
+"""
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from fastapi.responses import RedirectResponse

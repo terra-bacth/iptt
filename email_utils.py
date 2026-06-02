@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Apr 16 11:54:02 2026
-
-@author: Manoj5.Mishra
+Author: Manoj Mishra
 """
 
 import smtplib

@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Author: Manoj Mishra
+"""
+
 from constants.reporting_stage_map import (REPORTING_STAGE_MAP)
 
 from constants.reporting_weights import (STAGE_WEIGHTS)

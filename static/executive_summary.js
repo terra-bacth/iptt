@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Author: Manoj Mishra
+"""
+
 async function loadSummary() {
   console.log("✅ loadSummary() called");
 

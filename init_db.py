@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Apr 14 18:37:28 2026
-
-@author: Manoj5.Mishra
+Author: Manoj Mishra
 """
 
 from database import engine

@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Author: Manoj Mishra
+"""
+
 from fastapi import Request, HTTPException
 
 # ✅ Basic login check

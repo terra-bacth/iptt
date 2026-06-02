@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Apr 17 15:30:29 2026
-
-@author: Manoj5.Mishra
+Author: Manoj Mishra
 """
 
 # -*- coding: utf-8 -*-

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Apr 14 18:28:22 2026
-@author: Manoj5.Mishra
+Author: Manoj Mishra
 """
+
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi import FastAPI, Request, Form, Depends, HTTPException
 from fastapi.responses import RedirectResponse, HTMLResponse, FileResponse, StreamingResponse
@@ -2629,5 +2629,4 @@ def facility_detail(
 @app.get("/profile", response_class=HTMLResponse)
 def profile_ui(request: Request):
     user = require_login(request)
-    return jinja_env.get_template("profile.html").render(user=user)            
-                
+    return jinja_env.get_template("profile.html").render(user=user)

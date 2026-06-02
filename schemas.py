@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Apr 14 18:43:18 2026
-
-@author: Manoj5.Mishra
+Author: Manoj Mishra
 """
 
 from pydantic import BaseModel
@@ -63,4 +61,3 @@ class TaskResponse(BaseModel):
 
     class Config:
         orm_mode = True
-        

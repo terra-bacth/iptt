@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Apr 17 13:09:04 2026
-
-@author: Manoj5.Mishra
+Author: Manoj Mishra
 """
 
 from datetime import date, timedelta

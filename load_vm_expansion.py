@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Apr 17 11:13:38 2026
-
-@author: Manoj5.Mishra
+Author: Manoj Mishra
 """
 
 from database import SessionLocal

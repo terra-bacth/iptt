@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Author: Manoj Mishra
+"""
+
 // ✅ RESET SAFE HEADER
 let executionData = [];
 let currentFilter = "all";

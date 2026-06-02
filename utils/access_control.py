@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed May 13 15:35:54 2026
-
-@author: Manoj5.Mishra
+Author: Manoj Mishra
 """
 
 from models import ProjectAssignment
