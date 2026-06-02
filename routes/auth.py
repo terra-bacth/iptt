@@ -118,3 +118,46 @@ def update_user_role(
         db.commit()
 
     return RedirectResponse("/users", status_code=303)
+
+@router.post("/users/change-password")
+def change_password(
+    request: Request,
+    current_password: str = Form(...),
+    new_password: str = Form(...),
+    confirm_password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    # 1. Enforce active user validation check
+    user_session = request.session.get("user")
+    if not user_session:
+        return RedirectResponse("/login", status_code=302)
+
+    # 2. Extract database record context
+    user = db.query(User).filter(User.id == user_session["id"]).first()
+    if not user:
+        return RedirectResponse("/login", status_code=302)
+
+    # 3. Cryptographic Assertion: Validate existing hash integrity
+    if not pwd_context.verify(current_password, user.password_hash):
+        return jinja.get_template("profile.html").render(
+            user=user_session,
+            error="❌ Validation Failed: The current password you entered is incorrect."
+        )
+
+    # 4. Input Integrity Assertion: Validate string matching
+    if new_password != confirm_password:
+        return jinja.get_template("profile.html").render(
+            user=user_session,
+            error="❌ Operational Conflict: New password and confirmation entries do not match."
+        )
+
+    # 5. Cryptography Transformation: Compute new safe bcrypt hash
+    user.password_hash = pwd_context.hash(new_password)
+    
+    # 6. Database Commit Execution
+    db.commit()
+
+    return jinja.get_template("profile.html").render(
+        user=user_session,
+        success="✅ Security credentials updated successfully inside the system."
+    )

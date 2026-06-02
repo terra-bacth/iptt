@@ -1,7 +1,11 @@
+# ==========================================
+# IPTT - Git Ignore
+# ==========================================
+
 # Python
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
 
 # Spyder
 .spyproject/
@@ -9,25 +13,73 @@ __pycache__/
 # Virtual Environments
 venv/
 env/
+.venv/
 
-# Databases
+# ==========================================
+# Database
+# ==========================================
+iptt.db
 *.db
 *.sqlite
 *.sqlite3
 
+# ==========================================
+# Environment Variables
+# ==========================================
+.env
+.env.*
+
+# ==========================================
 # Logs
+# ==========================================
 *.log
+logs/
 
-# Generated Excel Files
-static/*.xlsx
+# ==========================================
+# Runtime Generated Files
+# ==========================================
+downloads/
+exports/
+backups/
+temp/
+tmp/
 
+# Generated Excel files (if created outside templates)
+*_plan.xlsx
+*_report.xlsx
+*_export.xlsx
+
+# ==========================================
 # IDE
+# ==========================================
 .vscode/
 .idea/
 
-# Environment Variables
-.env
-
-# OS
+# ==========================================
+# Operating System
+# ==========================================
 Thumbs.db
+Desktop.ini
 .DS_Store
+
+# ==========================================
+# Python Testing / Build
+# ==========================================
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# ==========================================
+# Jupyter
+# ==========================================
+.ipynb_checkpoints/
+
+# ==========================================
+# Deployment Backups
+# ==========================================
+*.bak
+*.old
+*.tmp

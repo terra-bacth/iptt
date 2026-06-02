@@ -2626,5 +2626,8 @@ def facility_detail(
             )
         )               
                 
-                
+@app.get("/profile", response_class=HTMLResponse)
+def profile_ui(request: Request):
+    user = require_login(request)
+    return jinja_env.get_template("profile.html").render(user=user)            
                 
