@@ -1,0 +1,96 @@
+/* Shared presentation only. Keep status colours and existing JS hooks intact.
+   The body prefix outranks page-local class selectors, including child templates. */
+:root {
+  --iptt-ink: #172b43;
+  --iptt-muted: #52657c;
+  --iptt-line: #dce4ed;
+  --iptt-blue: #235bc0;
+  --iptt-shadow: 0 5px 22px rgba(24, 47, 79, .06);
+}
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: var(--iptt-ink);
+  background: #f3f6fa;
+  line-height: 1.5;
+  margin: 0;
+  padding: clamp(16px, 2.4vw, 36px);
+}
+body .top-nav {
+  background: #12283f;
+  border: 1px solid #233e59;
+  border-radius: 14px;
+  padding: 17px 24px;
+  box-shadow: var(--iptt-shadow);
+  gap: 16px;
+  flex-wrap: wrap;
+}
+body .top-nav .app-title { font-size: 20px; letter-spacing: .04em; }
+body .top-nav a { color: #f3f7ff; font-weight: 500; }
+body .top-nav .nav-links { display: flex; flex-wrap: wrap; gap: 10px 20px; }
+body .top-nav .nav-links a { margin-left: 0; }
+body .welcome-banner {
+  border: 1px solid var(--iptt-line);
+  border-left: 5px solid var(--iptt-blue);
+  padding: clamp(20px, 3vw, 36px);
+  background: linear-gradient(110deg, #fff 65%, #edf3ff);
+}
+body .welcome-title { font-size: clamp(24px, 2.4vw, 34px); letter-spacing: -.035em; }
+body .welcome-subtitle, body .programme-meta, body .project-meta { color: var(--iptt-muted); }
+body .section-card, body .project-card, body .programme-card,
+body .user-table-container, body .welcome-banner {
+  border-radius: 14px;
+  box-shadow: var(--iptt-shadow);
+}
+body .section-card, body .project-card, body .programme-card,
+body .user-table-container { border: 1px solid var(--iptt-line); }
+body .section-title h3 { font-size: 19px; letter-spacing: -.02em; }
+body .programme-name, body .programme-title, body .project-title { color: var(--iptt-ink); }
+body .breadcrumb { padding: 10px 0; color: var(--iptt-muted); }
+body .btn, body .login-btn, body .update-btn, body .show-more-btn {
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 10px 16px;
+  line-height: 1.35;
+  transition: box-shadow .15s ease, filter .15s ease;
+}
+body .btn:hover, body .login-btn:hover, body .update-btn:hover {
+  filter: brightness(.94);
+  box-shadow: 0 3px 8px rgba(24, 47, 79, .15);
+}
+body input, body select, body textarea, body button { font: inherit; }
+body input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+body select, body textarea {
+  border: 1px solid #bdcad9;
+  border-radius: 8px;
+  padding: 9px 11px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+body :focus-visible { outline: 3px solid #377bdf; outline-offset: 3px; }
+body button:disabled, body input:disabled, body select:disabled { cursor: not-allowed; }
+body table { border-spacing: 0; font-size: 14px; }
+body th { font-size: 12px; letter-spacing: .025em; }
+body td, body th { padding: 12px 14px; }
+body .proj-table th, body .user-table th { background: #edf2f8; color: #334963; }
+body .proj-table td, body .user-table td { border-bottom: 1px solid #e7edf4; }
+body .status-badge, body .role-badge { border-radius: 6px; padding: 4px 9px; font-weight: 600; }
+body .empty-state { border: 1px dashed #c5d1df; border-radius: 10px; padding: 28px; color: var(--iptt-muted); }
+body .project-grid, body .programme-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+/* Login uses a full-height split layout; other pages retain their own structure. */
+body:has(> .left-panel):has(> .right-panel) { padding: 0; min-height: 100vh; height: auto; width: auto; overflow: auto; }
+body .left-panel { background: linear-gradient(145deg, #10273e, #214b72); min-height: 100vh; box-sizing: border-box; }
+body .right-panel { min-height: 100vh; height: auto; box-sizing: border-box; }
+body .login-box { max-width: 420px; }
+body .login-title { letter-spacing: -.03em; }
+body .login-btn { background: var(--iptt-blue); }
+@media (max-width: 760px) {
+  body .top-nav { padding: 16px; align-items: flex-start; }
+  body .programme-header, body .section-title { gap: 12px; flex-wrap: wrap; }
+  body .section-card, body .user-table-container { padding: 16px; overflow-x: auto; }
+  body:has(> .left-panel):has(> .right-panel) { flex-direction: column; }
+  body .left-panel { min-height: auto; padding: 32px 24px; }
+  body .right-panel { min-height: auto; padding: 36px 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body *, body *::before, body *::after { animation: none !important; transition: none !important; }
+}
