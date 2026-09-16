@@ -1,0 +1,1885 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+/* ===== HIDE BASE ===== */
+
+
+/* ===== PRINT MODE ===== */
+
+@media print {
+
+    body {
+
+        background:white;
+        padding:0;
+    }
+
+    .top-nav,
+    .no-print,
+    button,
+    .collapsible-icon {
+
+        display:none !important;
+    }
+
+    .collapsible-content {
+
+        display:block !important;
+    }
+
+    .report-card {
+
+        box-shadow:none;
+        border:none;
+    }
+
+    .kpi-card {
+
+        break-inside: avoid;
+    }
+
+    table {
+
+        page-break-inside:auto;
+    }
+
+    tr {
+
+        page-break-inside:avoid;
+    }
+
+    h2, h3 {
+
+        page-break-after:avoid;
+    }
+}
+
+/* ===== PAGE ===== */
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    margin: 0;
+    padding: 20px;
+}
+
+/* ===== NAV ===== */
+
+
+
+
+/* ===== REPORT CARD ===== */
+
+.report-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* ===== KPI GRID ===== */
+
+.kpi-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+
+    gap: 16px;
+
+    margin-top: 20px;
+    margin-bottom: 25px;
+}
+
+.kpi-card {
+
+    background: #ffffff;
+
+    border-radius: 10px;
+
+    padding: 18px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.08);
+
+    border-left: 5px solid #0078d4;
+
+    transition: 0.2s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+}
+
+.kpi-title {
+
+    font-size: 12px;
+
+    color: #4b5b70;
+
+    margin-bottom: 10px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+}
+
+.kpi-value {
+
+    font-size: 32px;
+
+    font-weight: bold;
+
+    color: #1f2933;
+}
+
+/* ===== PROGRESS BAR ===== */
+
+.progress-wrapper {
+
+    margin-top: 10px;
+
+    background: #e5e7eb;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    height: 20px;
+}
+
+.progress-bar {
+
+    height: 100%;
+
+    text-align: center;
+
+    color: white;
+
+    font-size: 12px;
+
+    line-height: 20px;
+
+    font-weight: bold;
+}
+
+/* ===== TABLE ===== */
+
+.report-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    margin-top: 15px;
+    
+    margin-bottom: 30px;
+}
+
+.report-table th {
+
+    background: #1f2933;
+
+    color: white;
+
+    padding: 10px;
+
+    text-align: left;
+
+    font-size: 14px;
+}
+
+.report-table td {
+
+    padding: 10px;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    font-size: 14px;
+}
+
+.report-table tr:hover {
+
+    background: #f9fafb;
+}
+
+/* ===== STICKY FIRST COLUMN ===== */
+
+.report-table th:first-child,
+.report-table td:first-child {
+
+    position: sticky;
+
+    left: 0;
+
+    z-index: 2;
+
+    background: white;
+}
+
+/* HEADER FIX */
+
+.report-table th:first-child {
+
+    background: #1f2933;
+
+    color: white;
+
+    z-index: 3;
+}
+
+/* KEEP ROW COLORS VISIBLE */
+
+.report-table tr[style] td:first-child {
+
+    background: inherit;
+}
+
+/* ===== SECTION ===== */
+
+.section-title {
+    margin-top: 35px;
+    margin-bottom: 10px;
+}
+
+/* ===== EXECUTIVE SUMMARY ===== */
+
+.executive-summary {
+
+    background: linear-gradient(
+        135deg,
+        #eef6ff,
+        #ffffff
+    );
+
+    border-left: 6px solid #0078d4;
+
+    padding: 18px;
+
+    border-radius: 8px;
+
+    margin-bottom: 25px;
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,0.06);
+}
+
+.executive-summary h3 {
+
+    margin-top: 0;
+
+    margin-bottom: 12px;
+
+    color: #1f2933;
+}
+
+.executive-summary p {
+
+    line-height: 1.8;
+
+    font-size: 16px;
+
+    color: #4b5563;
+
+    margin: 0;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+
+.collapsible-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    background: #f3f4f6;
+
+    padding: 14px 18px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    margin-top: 25px;
+
+    border: 1px solid #d1d5db;
+
+    transition: 0.2s ease;
+}
+
+.collapsible-header:hover {
+
+    background: #e5e7eb;
+}
+
+.collapsible-title {
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    color: #1f2933;
+}
+
+.collapsible-icon {
+
+    font-size: 18px;
+
+    font-weight: bold;
+}
+
+.collapsible-content {
+
+    display: none;
+
+    margin-top: 10px;
+}
+
+.collapsible-content.active {
+
+    display: block;
+}
+
+.section-title {
+
+    margin-top: 35px;
+    margin-bottom: 10px;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    color: #1f2933;
+}
+</style>
+
+<!-- ===== NAV ===== -->
+
+{% include "partials/nav.html" %}
+
+<div class="report-card">
+
+<div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
+">
+
+    <h2 style="margin:0;">
+
+        Executive Dashboard:
+        {{ project.name }}
+
+    </h2>
+
+    <div class="no-print"
+         style="
+            display:flex;
+            gap:10px;
+         ">
+
+        <!-- PRINT -->
+
+        <a href="/project/{{ project.id }}/executive-dashboard/pdf"
+           target="_blank"
+           style="
+                background:#2563eb;
+                color:white;
+                border:none;
+                padding:10px 16px;
+                border-radius:6px;
+                cursor:pointer;
+                font-weight:bold;
+                text-decoration:none;
+           ">
+        
+            🖨 Download PDF
+        
+        </a>
+
+        <!-- REFRESH -->
+
+        <button onclick="location.reload()"
+                style="
+                    background: #146c43;
+                    color:white;
+                    border:none;
+                    padding:10px 16px;
+                    border-radius:6px;
+                    cursor:pointer;
+                    font-weight:bold;
+                ">
+
+            🔄 Refresh
+
+        </button>
+
+    </div>
+
+</div>
+
+<hr>
+
+<!-- ===== EXECUTIVE SUMMARY ===== -->
+
+<div class="executive-summary">
+
+    <h3>
+        📌 Executive Brief
+    </h3>
+
+    <p class="iptt-summary-text">{{ report.executive_summary | trim }}</p>
+
+</div>
+
+<!-- ===== KPI SUMMARY ===== -->
+
+<div class="kpi-grid">
+
+<!-- TOTAL NODES -->
+    
+    <div class="kpi-card">
+    
+        <div class="kpi-title">
+            Total Nodes
+        </div>
+    
+        <div class="kpi-value">
+            {{ report.total_nodes }}
+        </div>
+    
+    </div>
+
+    <!-- PROGRESS -->
+
+    <div class="kpi-card">
+
+        <div class="kpi-title">
+            Progress
+        </div>
+        <div class="kpi-value">
+            {{ report.kpis.progress }}%
+        </div>
+        
+        <div class="progress-wrapper" aria-hidden="true">
+        
+            <div class="progress-bar"
+        
+                style="
+                    width: {{ report.kpis.progress }}%;
+                    background:#2563eb;
+                "
+            >
+        
+            </div>
+        
+        </div>
+
+    </div>
+
+    <!-- HEALTH -->
+
+    <div class="kpi-card">
+
+        <div class="kpi-title">
+            Health
+        </div>
+
+        <div class="kpi-value">
+
+            {{ report.kpis.health }}%
+
+        </div>
+
+        <div class="progress-wrapper" aria-hidden="true">
+
+            <div class="progress-bar"
+
+                style="
+                    width: {{ report.kpis.health }}%;
+
+                    {% if report.kpis.health >= 80 %}
+                        background: #146c43;
+
+                    {% elif report.kpis.health >= 50 %}
+                        background: #f59e0b;
+
+                    {% else %}
+                        background: #dc2626;
+
+                    {% endif %}
+                "
+            >
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- STATUS -->
+
+    <div class="kpi-card">
+
+        <div class="kpi-title">
+            Status
+        </div>
+
+        <div class="kpi-value" style="font-size:24px;">
+            {{ report.kpis.status }}
+        </div>
+
+    </div>
+
+    <!-- DELAYS -->
+
+    <div class="kpi-card">
+
+        <div class="kpi-title">
+            Delayed Items
+        </div>
+
+        <div class="kpi-value" style="color: #a4262c;">
+            {{ report.delayed_count }}
+        </div>
+
+    </div>
+
+    <!-- BOTTLENECK -->
+
+    <div class="kpi-card">
+
+        <div class="kpi-title">
+            Most Delayed Stage
+        </div>
+
+        <div class="kpi-value" style="font-size:20px;">
+            {{ report.bottleneck }}
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================== -->
+<!-- GOVERNANCE MATRIX -->
+<!-- ===================================== -->
+
+<div class="dashboard-card">
+
+    <div class="section-title">
+
+        📊 Overall Deployment Dashboard
+
+    </div>
+
+    <div style="
+        overflow-x:auto;
+        margin-top:15px;
+    ">
+
+        <table class="report-table">
+
+            <!-- HEADER -->
+
+            <tr>
+
+                <th>
+                    Deployment Stage
+                </th>
+
+                {% for circle in matrix.circles %}
+                
+                <th>
+                
+                    <a href="/project/{{ project.id }}/circle/{{ circle }}"
+                       style="
+                            color:white;
+                            text-decoration:none;
+                            font-weight:bold;
+                       ">
+                
+                        {{ circle }}
+                
+                    </a>
+                
+                </th>
+                
+                {% endfor %}
+
+                <th>
+                    Total
+                </th>
+                
+                <th>% Under Stage</th>
+
+            </tr>
+
+            <!-- ROWS -->
+
+            {% for row in matrix.rows %}
+
+            <tr
+
+                {% if row.stage == "Total" %}
+                    style="
+                        background:#dbeafe;
+                        font-weight:bold;
+                    "
+                {% endif %}
+            >
+
+                <!-- STAGE -->
+
+                <td>
+
+                    <b>{{ row.stage }}</b>
+
+                </td>
+
+                <!-- CIRCLE COUNTS -->
+
+                {% for circle in matrix.circles %}
+
+                <td style="text-align:center;">
+
+                    {% if row[circle] > 0 %}
+
+                        {{ row[circle] }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </td>
+
+                {% endfor %}
+
+                <!-- TOTAL -->
+
+                <td style="
+                    text-align:center;
+                    font-weight:bold;
+                ">
+
+                    {{ row.Total }}
+
+                </td>
+                
+                <td>
+
+                    {{ report.stage_completion_percent.get(row.stage, 0) }}%
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+            
+            <!-- COMPLETION ROW -->
+            
+            <tr style="
+                background:#ecfdf5;
+                font-weight:bold;
+            ">
+            
+                <td>
+            
+                    Completion %
+            
+                </td>
+            
+                {% for circle in matrix.circles %}
+            
+                <td style="text-align:center;">
+            
+                    {{ report.circle_completion.get(circle, 0) }}%
+            
+                </td>
+            
+                {% endfor %}
+            
+                <!-- OVERALL -->
+            
+                <td style="text-align:center;">
+            
+                    {{ report.overall_completion }}%
+            
+                </td>
+            
+                <!-- EMPTY CELL FOR % UNDER STAGE -->
+            
+                <td>
+            
+                    -
+            
+                </td>
+            
+            </tr>
+
+        </table>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <div style="
+        margin-top:10px;
+        color: #4b5b70;
+        font-size:13px;
+    ">
+
+        Total Nodes:
+        <b>{{ matrix.grand_total }}</b>
+
+    </div>
+
+</div>
+
+<!-- ===== TOP RISK NODES ===== -->
+
+<div class="collapsible-header"
+     onclick="toggleSection('topRiskNodes')">
+
+    <div class="collapsible-title">
+        🚨 Top Risk Nodes
+    </div>
+
+    <div class="collapsible-icon"
+         id="icon-topRiskNodes">
+        +
+    </div>
+
+</div>
+
+<div class="collapsible-content"
+     id="topRiskNodes">
+
+<table class="report-table">
+
+<tr>
+
+    <th>Circle</th>
+
+    <th>Node</th>
+
+    <th>Facility</th>
+
+    <th>Critical Task</th>
+
+    <th>Max Delay</th>
+
+    <th>Status</th>
+
+</tr>
+
+{% if report.top_risk_nodes|length == 0 %}
+
+<tr>
+
+    <td colspan="6"
+        style="
+            text-align:center;
+            padding:20px;
+            color: #4b5b70;
+        ">
+
+        ✅ No critical risk nodes found
+
+    </td>
+
+</tr>
+
+{% endif %}
+
+{% for item in report.top_risk_nodes %}
+
+<tr
+
+    {% if item.max_delay > 15 %}
+        style="background:#fff1f0;"
+
+    {% elif item.max_delay > 7 %}
+        style="background:#fff7e6;"
+    {% endif %}
+>
+
+    <td>{{ item.circle }}</td>
+
+    <td><b>{{ item.node }}</b></td>
+
+    <td>{{ item.facility }}</td>
+
+    <td>{{ item.task }}</td>
+
+    <td>
+
+        {% if item.max_delay > 15 %}
+
+            <span style="color: #a4262c; font-weight:bold;">
+                🔴 {{ item.max_delay }} days
+            </span>
+
+        {% elif item.max_delay > 7 %}
+
+            <span style="color: #8a4b08; font-weight:bold;">
+                🟠 {{ item.max_delay }} days
+            </span>
+
+        {% else %}
+
+            <span style="color: #0f6b45; font-weight:bold;">
+                🟢 {{ item.max_delay }} days
+            </span>
+
+        {% endif %}
+
+    </td>
+
+    <td>{{ item.status }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+
+<!-- ===== LEADERSHIP KPI SUMMARY ===== -->
+
+<h3 class="section-title">
+    Leadership Action Summary
+</h3>
+
+<div class="kpi-grid">
+
+    <!-- TOTAL -->
+
+    <div class="kpi-card"
+         style="border-left:5px solid #2563eb;">
+
+        <div class="kpi-title">
+            Total Actions
+        </div>
+
+        <div class="kpi-value">
+
+            {{ report.leadership_summary.total }}
+
+        </div>
+
+    </div>
+
+    <!-- OPEN -->
+
+    <div class="kpi-card"
+         style="border-left:5px solid #dc2626;">
+
+        <div class="kpi-title">
+            Open
+        </div>
+
+        <div class="kpi-value"
+             style="color: #a4262c;">
+
+            {{ report.leadership_summary.open }}
+
+        </div>
+
+    </div>
+
+    <!-- IN PROGRESS -->
+
+    <div class="kpi-card"
+         style="border-left:5px solid #f59e0b;">
+
+        <div class="kpi-title">
+            In Progress
+        </div>
+
+        <div class="kpi-value"
+             style="color: #8a4b08;">
+
+            {{ report.leadership_summary.in_progress }}
+
+        </div>
+
+    </div>
+
+    <!-- CLOSED -->
+
+    <div class="kpi-card"
+         style="border-left:5px solid #16a34a;">
+
+        <div class="kpi-title">
+            Closed
+        </div>
+
+        <div class="kpi-value"
+             style="color: #0f6b45;">
+
+            {{ report.leadership_summary.closed }}
+
+        </div>
+
+    </div>
+
+    <!-- OVERDUE -->
+
+    <div class="kpi-card"
+         style="border-left:5px solid #7c3aed;">
+
+        <div class="kpi-title">
+            Overdue
+        </div>
+
+        <div class="kpi-value"
+             style="color:#7c3aed;">
+
+            {{ report.leadership_summary.overdue }}
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===== LEADERSHIP ANALYTICS ===== -->
+
+<h3 class="section-title">
+    Leadership Analytics
+</h3>
+
+<div style="
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-bottom:30px;
+">
+
+    <div class="report-card">
+
+        <h4 style="margin-top:0;">
+            Priority Mix
+        </h4>
+
+        <canvas id="leadershipPriorityChart"></canvas>
+
+    </div>
+
+    <div class="report-card">
+
+        <h4 style="margin-top:0;">
+            Status Mix
+        </h4>
+
+        <canvas id="leadershipStatusChart"></canvas>
+
+    </div>
+
+</div>
+
+
+
+<!-- ===== LEADERSHIP ACTION TRACKER ===== -->
+
+<div class="collapsible-header"
+     onclick="toggleSection('leadershipActions')">
+
+    <div class="collapsible-title">
+        🎯 Leadership Action Tracker
+    </div>
+
+    <div class="collapsible-icon"
+         id="icon-leadershipActions">
+        +
+    </div>
+
+</div>
+
+<div class="collapsible-content"
+     id="leadershipActions">
+
+<!-- ===== ADD NEW ACTION ===== -->
+
+<div style="
+    margin-bottom:20px;
+    padding:15px;
+    background:#f9fafb;
+    border-radius:8px;
+    border:1px solid #e5e7eb;
+">
+
+<form method="POST"
+      action="/leadership-actions/create">
+
+    <input type="hidden"
+           name="project_id"
+           value="{{ project.id }}">
+
+    <div style="
+        display:grid;
+        grid-template-columns:
+            repeat(auto-fit, minmax(180px,1fr));
+        gap:10px;
+        margin-bottom:10px;
+    ">
+
+        <input type="text"
+               name="action"
+               placeholder="Leadership Action"
+               required>
+
+        <input type="text"
+               name="owner"
+               placeholder="Owner"
+               required>
+
+        <select name="priority">
+
+            <option value="High">
+                High
+            </option>
+
+            <option value="Medium">
+                Medium
+            </option>
+
+            <option value="Low">
+                Low
+            </option>
+
+        </select>
+
+        <select name="status">
+
+            <option value="Open">
+                Open
+            </option>
+
+            <option value="In Progress">
+                In Progress
+            </option>
+
+            <option value="Closed">
+                Closed
+            </option>
+
+        </select>
+
+        <input type="date"
+               name="target_date">
+
+    </div>
+
+    <button type="submit"
+            style="
+                background:#2563eb;
+                color:white;
+                border:none;
+                padding:10px 16px;
+                border-radius:6px;
+                cursor:pointer;
+                font-weight:bold;
+            ">
+
+        ➕ Add Leadership Action
+
+    </button>
+
+</form>
+
+</div>
+
+<table class="report-table">
+
+<tr>
+
+    <th>Priority</th>
+
+    <th>Action</th>
+
+    <th>Owner</th>
+
+    <th>Status</th>
+
+    <th>Target Date</th>
+    
+    <th>Overdue</th>
+    
+    <th>Actions</th>
+
+</tr>
+
+{% if report.leadership_actions|length == 0 %}
+
+<tr>
+
+    <td colspan="5"
+        style="
+            text-align:center;
+            padding:20px;
+            color: #4b5b70;
+        ">
+
+        ✅ No leadership actions pending
+
+    </td>
+
+</tr>
+
+{% endif %}
+
+{% for item in report.leadership_actions %}
+
+<tr
+
+    {% if item.status == "Closed" %}
+        style="background:#f0fdf4;"
+
+    {% elif item.overdue_days >= 15 %}
+        style="
+            background:#fff1f0;
+            border-left:6px solid #dc2626;
+        "
+
+    {% elif item.overdue_days >= 7 %}
+        style="
+            background:#fff7e6;
+            border-left:6px solid #f59e0b;
+        "
+
+    {% elif item.priority == "High" %}
+        style="background:#fef2f2;"
+
+    {% elif item.priority == "Medium" %}
+        style="background:#fff7ed;"
+    {% endif %}
+>
+
+    <td>
+
+        {% if item.priority == "High" %}
+
+            <span style="
+                color: #a4262c;
+                font-weight:bold;
+            ">
+                🔴 High
+            </span>
+
+        {% elif item.priority == "Medium" %}
+
+            <span style="
+                color: #8a4b08;
+                font-weight:bold;
+            ">
+                🟠 Medium
+            </span>
+
+        {% else %}
+
+            <span style="
+                color: #0f6b45;
+                font-weight:bold;
+            ">
+                🟢 Low
+            </span>
+
+        {% endif %}
+
+    </td>
+
+    <td>
+
+        <b>{{ item.action }}</b>
+
+    </td>
+
+    <td>
+
+        {{ item.owner }}
+
+    </td>
+
+    <td>
+    
+    <form method="POST"
+          action="/leadership-actions/update/{{ item.id }}">
+    
+        <input type="hidden"
+               name="project_id"
+               value="{{ project.id }}">
+    
+        <div style="
+            display:flex;
+            flex-direction:column;
+            gap:6px;
+        ">
+    
+            <!-- STATUS -->
+    
+            <select name="status"
+                    style="
+                        padding:4px;
+                        border-radius:4px;
+                    ">
+    
+                <option value="Open"
+                    {% if item.status == "Open" %}
+                        selected
+                    {% endif %}
+                >
+                    Open
+                </option>
+    
+                <option value="In Progress"
+                    {% if item.status == "In Progress" %}
+                        selected
+                    {% endif %}
+                >
+                    In Progress
+                </option>
+    
+                <option value="Closed"
+                    {% if item.status == "Closed" %}
+                        selected
+                    {% endif %}
+                >
+                    Closed
+                </option>
+    
+            </select>
+            <select name="priority"
+                    style="
+                        padding:4px;
+                        border-radius:4px;
+                    ">
+            
+                <option value="High"
+                    {% if item.priority == "High" %}
+                        selected
+                    {% endif %}
+                >
+                    High
+                </option>
+            
+                <option value="Medium"
+                    {% if item.priority == "Medium" %}
+                        selected
+                    {% endif %}
+                >
+                    Medium
+                </option>
+            
+                <option value="Low"
+                    {% if item.priority == "Low" %}
+                        selected
+                    {% endif %}
+                >
+                    Low
+                </option>
+            
+            </select>
+            <input type="date"
+                   name="target_date"
+                   value="{{ item.target_date_raw }}"
+                   style="
+                        padding:4px;
+                        border:1px solid #ccc;
+                        border-radius:4px;
+                   ">
+            <!-- REMARKS -->
+    
+            <input type="text"
+                   name="remarks"
+                   value="{{ item.remarks }}"
+                   placeholder="Remarks"
+                   style="
+                        padding:4px;
+                        border:1px solid #ccc;
+                        border-radius:4px;
+                   ">
+    
+            <!-- SAVE BUTTON -->
+    
+            <button type="submit"
+                    style="
+                        background: #146c43;
+                        color:white;
+                        border:none;
+                        padding:5px;
+                        border-radius:5px;
+                        cursor:pointer;
+                        font-size:12px;
+                    ">
+    
+                💾 Save
+    
+            </button>
+    
+        </div>
+    
+    </form>
+    
+    </td>
+
+    <td>
+
+        {{ item.target_date }}
+
+    </td>
+    <td>
+    
+        {% if item.overdue_days >= 15 %}
+    
+            <span style="
+                color:white;
+                background:#dc2626;
+                padding:4px 8px;
+                border-radius:12px;
+                font-weight:bold;
+            ">
+    
+                🔴 {{ item.overdue_days }} days
+    
+            </span>
+    
+        {% elif item.overdue_days >= 7 %}
+    
+            <span style="
+                color:#92400e;
+                background:#fef3c7;
+                padding:4px 8px;
+                border-radius:12px;
+                font-weight:bold;
+            ">
+    
+                🟠 {{ item.overdue_days }} days
+    
+            </span>
+    
+        {% elif item.overdue_days > 0 %}
+    
+            <span style="
+                color:#2563eb;
+                background:#dbeafe;
+                padding:4px 8px;
+                border-radius:12px;
+                font-weight:bold;
+            ">
+    
+                🔵 {{ item.overdue_days }} days
+    
+            </span>
+    
+        {% else %}
+    
+            <span style="
+                color: #0f6b45;
+                font-weight:bold;
+            ">
+    
+                ✅ On Track
+    
+            </span>
+    
+        {% endif %}
+    
+    </td>
+
+
+    <td>
+    
+        <form method="POST"
+              action="/leadership-actions/delete/{{ item.id }}"
+              onsubmit="return confirm('Delete this action?')">
+            
+            <input type="hidden"
+               name="project_id"
+               value="{{ project.id }}">
+    
+            <button type="submit"
+                    style="
+                        background:#dc2626;
+                        color:white;
+                        border:none;
+                        padding:6px 10px;
+                        border-radius:5px;
+                        cursor:pointer;
+                    ">
+    
+                🗑 Delete
+    
+            </button>
+    
+        </form>
+    
+    </td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+<!-- ===== CIRCLE HEATMAP ===== -->
+
+<div class="collapsible-header"
+     onclick="toggleSection('circleHeatmap')">
+
+    <div class="collapsible-title">
+        🌍 Circle Maturity Heatmap
+    </div>
+
+    <div class="collapsible-icon"
+         id="icon-circleHeatmap">
+        +
+    </div>
+
+</div>
+
+<div class="collapsible-content"
+     id="circleHeatmap">
+
+<table class="report-table">
+
+<tr>
+
+    <th>Circle</th>
+
+    <th>Nodes</th>
+
+    <th>Progress</th>
+    
+    <th>Health</th>
+
+    <th>Status</th>
+
+</tr>
+
+{% for item in report.circle_report %}
+
+<tr
+
+    {% if item.health < 50 %}
+        style="background:#fff1f0;"
+
+    {% elif item.health < 80 %}
+        style="background:#fff7e6;"
+    {% endif %}
+>
+
+    <td>
+        <b>{{ item.circle }}</b>
+    </td>
+
+    <td>{{ item.nodes }}</td>
+
+    <td>{{ item.progress }}%</td>
+
+    <td>{{ item.health }}%</td>
+
+    <td>
+
+        {% if item.status == "Healthy" %}
+
+            <span style="color: #0f6b45; font-weight:bold;">
+                🟢 Healthy
+            </span>
+
+        {% elif item.status == "Attention" %}
+
+            <span style="color: #8a4b08; font-weight:bold;">
+                🟠 Attention
+            </span>
+
+        {% else %}
+
+            <span style="color: #a4262c; font-weight:bold;">
+                🔴 Critical
+            </span>
+
+        {% endif %}
+
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+
+
+</div>
+<!-- ===== DELAY TABLE ===== -->
+<!-- ===== DELAY TABLE ===== -->
+
+<div class="collapsible-header"
+     onclick="toggleSection('delayedItems')">
+
+    <div class="collapsible-title">
+        📋 Delayed Execution Items
+    </div>
+
+    <div class="collapsible-icon"
+         id="icon-delayedItems">
+        +
+    </div>
+
+</div>
+
+<div class="collapsible-content"
+     id="delayedItems">
+
+<table class="report-table">
+
+<tr>
+
+    <th>Circle</th>
+
+    <th>Node</th>
+
+    <th>Facility</th>
+
+    <th>Task</th>
+
+    <th>Delay</th>
+
+    <th>Status</th>
+
+</tr>
+
+{% if report.delayed_items|length == 0 %}
+
+<tr>
+
+    <td colspan="6"
+        style="
+            text-align:center;
+            padding:20px;
+            color: #4b5b70;
+        ">
+
+        ✅ No delayed execution items
+
+    </td>
+
+</tr>
+
+{% endif %}
+
+{% for item in report.delayed_items %}
+
+<tr>
+
+    <td>{{ item.circle }}</td>
+
+    <td>{{ item.node }}</td>
+
+    <td>{{ item.scope }}</td>
+
+    <td>{{ item.task }}</td>
+
+    <td>
+
+        {% if item.delay > 15 %}
+
+            <span style="
+                color: #a4262c;
+                font-weight:bold;
+            ">
+                🔴 {{ item.delay }} days
+            </span>
+
+        {% elif item.delay > 5 %}
+
+            <span style="
+                color: #8a4b08;
+                font-weight:bold;
+            ">
+                🟠 {{ item.delay }} days
+            </span>
+
+        {% else %}
+
+            <span style="
+                color: #0f6b45;
+                font-weight:bold;
+            ">
+                🟢 {{ item.delay }} days
+            </span>
+
+        {% endif %}
+
+    </td>
+
+    <td>{{ item.status }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+<!-- ===== STAGE AGING ===== -->
+
+{% if report.stage_aging %}
+<div class="collapsible-header"
+     onclick="toggleSection('stageAging')">
+
+    <div class="collapsible-title">
+        ⏳ Stage Aging Analysis
+    </div>
+
+    <div class="collapsible-icon"
+         id="icon-stageAging">
+        -
+    </div>
+
+</div>
+
+<div class="collapsible-content active"
+     id="stageAging">
+
+<table class="report-table">
+
+<tr>
+
+    <th>Stage</th>
+
+    <th>Nodes</th>
+
+    <th>Average Delay</th>
+
+    <th>Maximum Delay</th>
+
+    <th>Risk</th>
+
+</tr>
+
+{% if report.stage_aging|length == 0 %}
+
+<tr>
+
+    <td colspan="5"
+        style="
+            text-align:center;
+            padding:20px;
+            color: #4b5b70;
+        ">
+
+        ✅ No stage aging issues found
+
+    </td>
+
+</tr>
+
+{% endif %}
+
+{% for item in report.stage_aging %}
+
+<tr
+
+    {% if item.risk == "Critical" %}
+        style="background:#fff1f0;"
+
+    {% elif item.risk == "Attention" %}
+        style="background:#fff7e6;"
+    {% endif %}
+>
+
+    <td><b>{{ item.stage }}</b></td>
+
+    <td>{{ item.nodes }}</td>
+
+    <td>{{ item.avg_delay }} days</td>
+
+    <td>{{ item.max_delay }} days</td>
+
+    <td>
+
+        {% if item.risk == "Healthy" %}
+
+            <span style="color: #0f6b45; font-weight:bold;">
+                🟢 Healthy
+            </span>
+
+        {% elif item.risk == "Attention" %}
+
+            <span style="color: #8a4b08; font-weight:bold;">
+                🟠 Attention
+            </span>
+
+        {% else %}
+
+            <span style="color: #a4262c; font-weight:bold;">
+                🔴 Critical
+            </span>
+
+        {% endif %}
+
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+{% endif %}
+</div>
+
+
+<!-- ===== CHART ===== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+
+// =====================================
+// LEADERSHIP PRIORITY CHART
+// =====================================
+
+new Chart(
+
+    document.getElementById(
+        "leadershipPriorityChart"
+    ),
+
+    {
+
+        type: "doughnut",
+
+        data: {
+
+            labels: [
+
+                "High",
+                "Medium",
+                "Low"
+            ],
+
+            datasets: [{
+
+                data: [
+
+                    {{ report.leadership_priority.High }},
+                    {{ report.leadership_priority.Medium }},
+                    {{ report.leadership_priority.Low }}
+
+                ],
+
+                backgroundColor: [
+
+                    "#dc2626",
+                    "#f59e0b",
+                    "#16a34a"
+                ]
+            }]
+        }
+    }
+);
+
+// =====================================
+// LEADERSHIP STATUS CHART
+// =====================================
+
+new Chart(
+
+    document.getElementById(
+        "leadershipStatusChart"
+    ),
+
+    {
+
+        type: "bar",
+
+        data: {
+
+            labels: [
+
+                "Open",
+                "In Progress",
+                "Closed"
+            ],
+
+            datasets: [{
+
+                data: [
+
+                    {{ report.leadership_status.Open }},
+                    {{ report.leadership_status["In Progress"] }},
+                    {{ report.leadership_status.Closed }}
+
+                ],
+
+                backgroundColor: [
+
+                    "#dc2626",
+                    "#f59e0b",
+                    "#16a34a"
+                ]
+            }]
+        },
+
+        options: {
+
+            plugins: {
+
+                legend: {
+
+                    display: false
+                }
+            }
+        }
+    }
+);
+
+function toggleSection(sectionId) {
+
+    const section =
+        document.getElementById(sectionId);
+
+    const icon =
+        document.getElementById(
+            "icon-" + sectionId
+        );
+
+    section.classList.toggle("active");
+
+    if (section.classList.contains("active")) {
+
+        icon.innerText = "−";
+
+    } else {
+
+        icon.innerText = "+";
+    }
+}
+
+</script>
+
+<script src="/static/execution.js"></script>
+
+{% endblock %}

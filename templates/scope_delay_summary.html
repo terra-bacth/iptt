@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Scope Delay Summary</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/theme.css?v=9">
+<script src="/static/ui.js?v=8" defer></script>
+</head>
+<body class="iptt-ui">
+<a class="iptt-skip" href="#iptt-main">Skip to main content</a>
+<main id="iptt-main" tabindex="-1">
+
+{% include "partials/nav.html" %}
+
+
+<h1>Scope Delay Summary</h1>
+
+<table border="1" cellpadding="6">
+    <tr>
+        <th>Node ID</th>
+        <th>Circle</th>
+        <th>Priority</th>
+        <th>Delayed Tasks</th>
+        <th>Critical Delays</th>
+        <th>Total Delay (Days)</th>
+        <th>Status</th>
+    </tr>
+
+    {% for row in delay_data %}
+    <tr>
+        <td>
+            <a href="/scope/{{ row.scope.id }}/tasks">
+                {{ row.scope.node_id }}
+            </a>
+        </td>
+        <td>{{ row.scope.circle }}</td>
+        <td>{{ row.scope.priority }}</td>
+        <td>{{ row.delayed_tasks }}</td>
+        <td>
+            {% if row.critical_delays > 0 %}
+                🔴 {{ row.critical_delays }}
+            {% else %}
+                0
+            {% endif %}
+        </td>
+        <td>
+            {% if row.total_delay_days > 0 %}
+                🔴 {{ row.total_delay_days }}
+            {% else %}
+                0
+            {% endif %}
+        </td>
+        <td>
+            {% if row.status == "Delayed" %}
+                🔴 Delayed
+            {% else %}
+                ✅ On Track
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<a href="/projects/{{ project_id }}">⬅ Back to Projects</a>
+
+</main>
+{% include "partials/footer.html" %}
+</body>
+</html>

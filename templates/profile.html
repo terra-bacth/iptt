@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Settings | IPTT</title>
+    <link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="/static/theme.css?v=9">
+<script src="/static/ui.js?v=8" defer></script>
+</head>
+<body class="iptt-ui">
+<a class="iptt-skip" href="#iptt-main">Skip to main content</a>
+<main id="iptt-main" tabindex="-1">
+
+{% include "partials/nav.html" %}
+
+<div style="max-width: 1200px; margin: 30px auto; padding: 0 20px; box-sizing: border-box;">
+
+    <div class="welcome-banner" style="background: linear-gradient(135deg, #1f4e78, #1a4f8a); color: white; padding: 25px 30px; border-radius: 6px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <div class="welcome-title" style="font-size: 1.6rem; font-weight: bold; margin-bottom: 5px;">
+            ⚙️ Security Credentials Management
+        </div>
+        <div class="welcome-subtitle" style="font-size: 0.95rem; opacity: 0.9;">
+            User: <strong>{{ user.username }}</strong> &bull; Access Role Profile: <span style="text-transform: uppercase; font-weight: bold; color: #ffeb9c;">{{ user.role }}</span>
+        </div>
+    </div>
+
+    <div class="main-content-wrapper" style="max-width: 600px; margin: 0 auto;">
+        <div class="section-card" style="background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); border-top: 4px solid #1f4e78; box-sizing: border-box;">
+            
+            <div class="section-title" style="margin-bottom: 25px; border-bottom: 2px solid #f2f2f2; padding-bottom: 10px;">
+                <h3 style="margin: 0; color: #1f2933; font-size: 1.3rem; display: flex; align-items: center; gap: 10px;">
+                    🔒 Update Authentication Secret
+                </h3>
+            </div>
+
+            {% if error %}
+                <div class="alert-banner alert-danger" style="background-color: #ffc7ce; color: #9c0006; padding: 12px 15px; border-radius: 4px; margin-bottom: 20px; font-weight: 500; border-left: 5px solid #dc2626;">
+                    {{ error }}
+                </div>
+            {% endif %}
+            
+            {% if success %}
+                <div class="alert-banner alert-success" style="background-color: #c6efce; color: #006100; padding: 12px 15px; border-radius: 4px; margin-bottom: 20px; font-weight: 500; border-left: 5px solid #146c43;">
+                    {{ success }}
+                </div>
+            {% endif %}
+
+            <form action="/users/change-password" method="post" style="display: flex; flex-direction: column; gap: 20px;">
+                
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a5568;">Current System Password</label>
+                    <input type="password" name="current_password" required placeholder="••••••••" 
+                           style="width: 100%; padding: 10px 12px; border-radius: 4px; border: 1px solid #cbd5e0; box-sizing: border-box; font-size: 1rem;">
+                </div>
+
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 4px; font-weight: 600; color: #4a5568;">New Target Password</label>
+                    <small style="display: block; color: #4b5b70; margin-bottom: 8px; font-size: 0.85rem;">
+                        Must be min 6 chars, include 1 uppercase letter, 1 lowercase letter, and 1 digit.
+                    </small>
+                    <input type="password" name="new_password" minlength="6" required placeholder="••••••••" 
+                           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$"
+                           title="Password requirement validation: Minimum 6 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number."
+                           style="width: 100%; padding: 10px 12px; border-radius: 4px; border: 1px solid #cbd5e0; box-sizing: border-box; font-size: 1rem;">
+                </div>
+
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 4px; font-weight: 600; color: #4a5568;">Confirm New Target Password</label>
+                    <input type="password" name="confirm_password" minlength="6" required placeholder="Re-type new password" 
+                           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$"
+                           title="Password requirement validation: Must exactly match the password patterns criteria defined above."
+                           style="width: 100%; padding: 10px 12px; border-radius: 4px; border: 1px solid #cbd5e0; box-sizing: border-box; font-size: 1rem;">
+                </div>
+
+                <div style="margin-top: 10px;">
+                    <button class="btn btn-green" type="submit" 
+                            style="background-color: #146c43; color: white; border: none; padding: 12px 20px; font-size: 1rem; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background 0.2s; box-sizing: border-box;">
+                        💾 Commit Security Revision
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+if (params.get("error") === "auth_fault") {
+    alert("⚠️ Credential verification mismatch.");
+}
+</script>
+</main>
+{% include "partials/footer.html" %}
+</body>
+</html>

@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Project Delay Heatmap</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/theme.css?v=9">
+<script src="/static/ui.js?v=8" defer></script>
+</head>
+<body class="iptt-ui">
+<a class="iptt-skip" href="#iptt-main">Skip to main content</a>
+<main id="iptt-main" tabindex="-1">
+
+{% include "partials/nav.html" %}
+
+
+<h1>Project Delay Heatmap</h1>
+
+<p>
+🟩 On Track 🟨 Minor Risk 🔴 High Risk
+</p>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>Circle \ Priority</th>
+        <th>P1</th>
+        <th>P2</th>
+        <th>P3</th>
+    </tr>
+
+    {% for circle, priorities in heatmap.items() %}
+    <tr>
+        <td><strong>{{ circle }}</strong></td>
+
+        {% for p in [1,2,3] %}
+            {% set cell = priorities.get(p) %}
+            <td
+                {% if cell %}
+                    {% if cell.risk == "GREEN" %}
+                        style="background-color:#9be79b"
+                    {% elif cell.risk == "AMBER" %}
+                        style="background-color:#ffe58f"
+                    {% else %}
+                        style="background-color:#ff7a7a"
+                    {% endif %}
+                {% endif %}
+            >
+                {% if cell %}
+                    {{ cell.avg_delay }} days
+                {% else %}
+                    –
+                {% endif %}
+            </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<a href="/projects/{{ project_id }}">⬅ Back to Projects</a>
+</main>
+{% include "partials/footer.html" %}
+</body>
+</html>

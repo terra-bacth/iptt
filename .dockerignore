@@ -1,0 +1,17 @@
+.git
+.gitignore
+__pycache__/
+*.pyc
+*.pyo
+*.db
+*.sqlite
+*.sqlite3
+venv/
+.venv/
+env/
+.spyproject/
+.dockerignore
+Dockerfile
+openshift/
+*.md
+check_*.py

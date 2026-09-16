@@ -1,0 +1,198 @@
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #f4f6f8;
+  padding: 20px;
+}
+
+h2 {
+  color: #2c3e50;
+}
+
+/* ===== Top Toolbar ===== */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.controls-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+.quick-btn {
+    margin-top: 4px;
+    padding: 4px 8px;
+    font-size: 11px;
+    border: none;
+    border-radius: 3px;
+    background-color: #146c43;
+    color: white;
+    cursor: pointer;
+}
+
+.quick-btn:hover {
+    background-color: #218838;
+}
+
+.controls-left button {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: #f8f9fa;
+  cursor: pointer;
+}
+
+.controls-left button:hover {
+  background: #e9ecef;
+}
+
+.controls-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.controls-right {
+  display: flex;
+  align-items: center;
+}
+
+/* ===== Search ===== */
+.search-box {
+  padding: 6px 10px;
+  width: 260px;
+  font-size: 14px;
+}
+
+/* ===== Save Button ===== */
+.save-btn {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.save-btn:hover {
+  background: #229954;
+}
+
+/* ===== Scope Card ===== */
+.scope-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.scope-header {
+  font-weight: bold;
+  color: #34495e;
+  margin-bottom: 8px;
+}
+
+/* ===== Table ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th {
+  background: #2c3e50;
+  color: white;
+  padding: 6px;
+}
+
+td {
+  padding: 6px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* ===== Status Coloring ===== */
+.status-completed {
+  background-color: #e8f8f5;   /* Green */
+}
+
+.status-progress {
+  background-color: #fff9e6;   /* Amber */
+}
+
+.status-delayed {
+  background-color: #fdecea;   /* Red */
+}
+/* ===== Progress Bar ===== */
+.progress-container {
+  margin: 6px 0 12px 0;
+}
+
+.progress-bar-bg {
+  background: #e4ebf3;
+  border-radius: 6px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: #27ae60;
+  transition: width 0.4s ease;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #555;
+  margin-top: 4px;
+}
+/* ===== Node RAG Badge ===== */
+.rag-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  margin-left: 12px;
+}
+
+.rag-green {
+  background-color: #27ae60;
+}
+
+.rag-amber {
+  background-color: #f39c12;
+}
+
+.rag-red {
+  background-color: #e74c3c;
+}
+
+.rag-grey {
+  background-color: #7f8c8d;
+}
+
+/* Align badge to the right of header */
+.scope-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.next-task {
+    border-left: 5px solid #0078d4;
+    background-color: #e6f2ff;
+}

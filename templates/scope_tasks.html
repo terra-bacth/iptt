@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Task Execution – {{ scope.node_id }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/theme.css?v=9">
+<script src="/static/ui.js?v=8" defer></script>
+</head>
+<body class="iptt-ui">
+<a class="iptt-skip" href="#iptt-main">Skip to main content</a>
+<main id="iptt-main" tabindex="-1">
+
+{% include "partials/nav.html" %}
+
+
+<h2>Node Task Execution</h2>
+
+<p>
+    <strong>Node ID:</strong> {{ scope.node_id }} <br>
+    <strong>Circle:</strong> {{ scope.circle }} <br>
+    <strong>Facility:</strong> {{ scope.facility_name }} <br>
+    <strong>Priority:</strong> {{ scope.priority }} <br>
+    <strong>No. of Servers:</strong> {{ scope.num_servers }}
+</p>
+
+<hr>
+
+<h3>Task Execution Plan</h3>
+
+<table border="1" cellpadding="6">
+    <tr>
+
+        <th>Task</th>
+        <th>Status</th>
+        <th>Planned Finish</th>
+        <th>Actual Finish</th>
+        <th>Delay (Days)</th>
+        <th>Critical</th>
+        <th>Action</th>
+
+    </tr>
+
+    {% for row in task_exec_rows %}
+<tr>
+    <td>{{ row.task.name }}</td>
+    <td>{{ row.execution.status }}</td>
+    <td>{{ row.task.planned_finish }}</td>
+    <td>{{ row.execution.actual_finish or "-" }}</td>
+    <td>
+        {% if row.delay_status == "Delayed" %}
+            🔴 {{ row.delay_days }}
+        {% else %}
+            0
+        {% endif %}
+    </td>
+    <td>
+        {% if row.task.is_critical %}
+            🔴 Yes
+        {% else %}
+            No
+        {% endif %}
+    </td>
+    <td>
+        {% if row.execution.status != "Completed" %}
+            <a href="/scope/{{ scope.id }}/task-execution/complete/{{ row.execution.id }}">
+                ✔ Complete
+            </a>
+        {% else %}
+            ✅ Done
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+<br>
+<a href="/project/{{ scope.project_id }}/scopes">⬅ Back to Scope List</a>
+
+</main>
+{% include "partials/footer.html" %}
+</body>
+</html>

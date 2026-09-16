@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Node Execution</title>
+  <link rel="stylesheet" href="/static/execution.css">
+
+  <style>
+    /* ✅ TOP NAV */
+
+
+
+    /* ✅ BACK LINK */
+    .back-link {
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .back-link a {
+        text-decoration: none;
+        color: #16509f;
+    }
+
+    .page-header {
+        margin-bottom: 10px;
+    }
+
+    /* ✅ BUTTONS */
+    .save-container {
+        text-align: right;
+        margin-bottom: 10px;
+    }
+
+    .save-btn {
+        padding: 8px 14px;
+        border-radius: 4px;
+        background: #146c43;
+        color: white;
+        border: none;
+    }
+
+    .download-btn {
+        padding: 8px 14px;
+        border-radius: 4px;
+        background: #0078d4;
+        color: white;
+        border: none;
+    }
+
+    .upload-btn {
+        padding: 8px 14px;
+        border-radius: 4px;
+        background: #b45309;
+        color: white;
+        border: none;
+    }
+
+    /* ✅ KPI */
+    .kpi-panel {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        background: #f5f7fa;
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+    }
+
+    /* ✅ ALERT */
+    .alert-banner {
+        padding: 8px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+    }
+
+    .alert-danger {
+        background: #fdecea;
+        color: #d93025;
+    }
+
+    .alert-success {
+        background: #e6f4ea;
+        color: #1e7e34;
+    }
+
+    /* ✅ FILTER + OVERRIDE BAR */
+    #filterBar {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    #filterBar button {
+        padding: 6px 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 4px;
+        background: #5b6a7a;
+        color: white;
+        font-weight: 600;
+    }
+
+    #filterBar button.active {
+        background-color: #16509f;
+        color: white;
+    }
+
+    /* ✅ OVERRIDE BUTTON */
+    #overrideBtn {
+        margin-left: auto;
+        background-color: #6c757d;
+        color: white;
+    }
+
+    /* ✅ QUICK BUTTON */
+    .quick-btn {
+        margin-top: 4px;
+        padding: 4px 8px;
+        font-size: 11px;
+        border-radius: 4px;
+        background-color: #146c43;
+        color: white;
+        border: none;
+    }
+
+    .quick-btn:disabled {
+        opacity: 0.7;
+    }
+    
+        .task-group {
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+    
+    .group-header {
+      background: #eef3f8;
+      padding: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .group-content {
+      padding: 5px;
+    }
+
+  </style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/theme.css?v=9">
+<script src="/static/ui.js?v=8" defer></script>
+</head>
+
+<body class="iptt-ui">
+<a class="iptt-skip" href="#iptt-main">Skip to main content</a>
+<main id="iptt-main" tabindex="-1">
+
+<!-- ✅ NAV -->
+{% include "partials/nav.html" %}
+
+<!-- ✅ BACK -->
+<div class="back-link">
+    <a href="/project/{{ project_id }}/execution">⬅ Back</a>
+</div>
+
+<!-- ✅ HEADER -->
+<div class="page-header">
+    <h2>⚙ Node Execution</h2>
+</div>
+
+<!-- ✅ ACTION BUTTONS -->
+<div class="save-container">
+
+    <button class="download-btn" onclick="downloadExecution()">📥 Download</button>
+
+    <span class="upload-group">
+        <input type="file" id="excelFile">
+        <button class="upload-btn" onclick="uploadExcel()">📤 Upload</button>
+    </span>
+
+</div>
+
+<hr>
+
+<!-- ✅ FILTER + OVERRIDE -->
+<div id="filterBar">
+ 
+    <!-- ✅ NEW OVERRIDE BUTTON -->
+    <button id="overrideBtn" onclick="toggleOverride()">
+      🔒 Override OFF
+    </button>
+</div>
+
+<!-- ✅ GRID -->
+<div id="executionContainer"></div>
+
+<script>
+  const USER_ROLE = "{{ role | default('viewer') }}";
+  const PROJECT_ID = {{ project_id | default(0) }};
+  const SCOPE_ID = {{ scope_id | default(0) }};
+</script>
+
+<script src="/static/execution.js?v=1.0.2"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    loadExecution();
+  });
+</script>
+
+</main>
+{% include "partials/footer.html" %}
+</body>
+</html>

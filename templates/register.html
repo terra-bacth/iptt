@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | IPTT</title>
+    <link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="/static/theme.css?v=9">
+<script src="/static/ui.js?v=8" defer></script>
+</head>
+<body class="iptt-ui">
+<a class="iptt-skip" href="#iptt-main">Skip to main content</a>
+<main id="iptt-main" tabindex="-1">
+
+{% include "partials/nav.html" %}
+
+<div style="max-width: 1200px; margin: 30px auto; padding: 0 20px; box-sizing: border-box;">
+
+    <div class="welcome-banner" style="background: linear-gradient(135deg, #234e52, #125c66); color: white; padding: 25px 30px; border-radius: 6px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <div class="welcome-title" style="font-size: 1.6rem; font-weight: bold; margin-bottom: 5px;">
+            👥 User Onboarding Interface
+        </div>
+        <div class="welcome-subtitle" style="font-size: 0.95rem; opacity: 0.9;">
+            Provision a new user account profile within the Integrated Project Tracking Tool framework.
+        </div>
+    </div>
+
+    <div class="main-content-wrapper" style="max-width: 600px; margin: 0 auto;">
+        <div class="section-card" style="background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); border-top: 4px solid #234e52; box-sizing: border-box;">
+            
+            <div class="section-title" style="margin-bottom: 25px; border-bottom: 2px solid #f2f2f2; padding-bottom: 10px;">
+                <h3 style="margin: 0; color: #1f2933; font-size: 1.3rem; display: flex; align-items: center; gap: 10px;">
+                    📝 Account Creation Form
+                </h3>
+            </div>
+
+            <form method="post" style="display: flex; flex-direction: column; gap: 20px;">
+                
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a5568;">Corporate Username</label>
+                    <input type="text" name="username" required placeholder="Enter unique username" 
+                           style="width: 100%; padding: 10px 12px; border-radius: 4px; border: 1px solid #cbd5e0; box-sizing: border-box; font-size: 1rem;">
+                </div>
+
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 4px; font-weight: 600; color: #4a5568;">Secure Password</label>
+                    <small style="display: block; color: #4b5b70; margin-bottom: 8px; font-size: 0.85rem;">
+                        Must be min 6 chars, include 1 uppercase letter, 1 lowercase letter, and 1 digit.
+                    </small>
+                    <input type="password" name="password" minlength="6" required placeholder="••••••••" 
+                           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$"
+                           title="Password requirement validation: Minimum 6 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number."
+                           style="width: 100%; padding: 10px 12px; border-radius: 4px; border: 1px solid #cbd5e0; box-sizing: border-box; font-size: 1rem;">
+                </div>
+
+                <div style="margin-top: 10px;">
+                    <button type="submit" 
+                            style="background-color: #0f6f6c; color: white; border: none; padding: 12px 20px; font-size: 1rem; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background 0.2s; box-sizing: border-box;">
+                        🚀 Provision New Account Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const error = params.get("error");
+
+if (error === "user_exists") {
+    alert("⚠️ Operational Exception: This username is already registered in the system database.");
+}
+</script>
+</main>
+{% include "partials/footer.html" %}
+</body>
+</html>

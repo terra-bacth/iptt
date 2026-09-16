@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Audit Logs</title>
+
+  <style>
+    body { font-family: Arial; padding: 20px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      font-size: 12px;
+    }
+
+    th {
+      background: #1f2933;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .back {
+      text-decoration: none;
+      color: #16509f;
+    }
+  </style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/theme.css?v=9">
+<script src="/static/ui.js?v=8" defer></script>
+</head>
+
+<body class="iptt-ui">
+<a class="iptt-skip" href="#iptt-main">Skip to main content</a>
+<main id="iptt-main" tabindex="-1">
+
+{% include "partials/nav.html" %}
+
+
+<div class="header">
+  <h2>📜 Audit Logs</h2>
+  <a class="back" href="/home">⬅ Back</a>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Action</th>
+      <th>Scope</th>
+      <th>Task</th>
+      <th>Field</th>
+      <th>Old Value</th>
+      <th>New Value</th>
+      <th>Timestamp</th>
+    </tr>
+  </thead>
+
+  <tbody id="logTable"></tbody>
+</table>
+
+<script>
+async function loadLogs() {
+
+  const res = await fetch("/api/execution/audit-logs");
+  const data = await res.json();
+
+  const table = document.getElementById("logTable");
+  table.innerHTML = "";
+
+  data.forEach(log => {
+    table.innerHTML += `
+      <tr>
+        <td>${log.user}</td>
+        <td>${log.action}</td>
+        <td>${log.scope_id || ""}</td>
+        <td>${log.task_id || ""}</td>
+        <td>${log.field}</td>
+        <td>${log.old_value || ""}</td>
+        <td>${log.new_value || ""}</td>
+        <td>${log.timestamp}</td>
+      </tr>
+    `;
+  });
+}
+
+loadLogs();
+</script>
+
+</main>
+{% include "partials/footer.html" %}
+</body>
+</html>

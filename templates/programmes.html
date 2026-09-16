@@ -1,0 +1,148 @@
+
+{% extends "base.html" %}
+
+{% block title %}Programmes{% endblock %}
+
+{% block content %}
+
+<style>
+    /* ===== NAV BAR ===== */
+        
+
+
+
+
+
+    /* ===== CREATE FORM ===== */
+    .create-form {
+        margin-bottom: 15px;
+    }
+
+    .create-form input {
+        padding: 6px;
+        margin-right: 8px;
+    }
+
+    /* ===== GRID LAYOUT ===== */
+    .programme-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .programme-card {
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .programme-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 6px;
+    }
+
+    .programme-meta {
+        font-size: 13px;
+        color: #4b5b70;
+        margin-bottom: 10px;
+    }
+
+    .programme-actions a {
+        margin-right: 10px;
+        font-size: 13px;
+        text-decoration: none;
+        color: #16509f;
+    }
+
+    .programme-actions a.delete {
+        color: #a4262c;
+    }
+
+</style>
+
+<!-- ===== NAV BAR ===== -->
+{% include "partials/nav.html" %}
+
+<h2>Programmes</h2>
+
+<!-- ✅ KEEP EXISTING WORKING CREATE FORM -->
+<form class="create-form" method="post" action="/">
+    <input type="text" name="name" placeholder="Programme Name" required>
+    <button type="submit">➕ Create Programme</button>
+</form>
+
+<hr>
+
+<!-- ✅ CARD LAYOUT -->
+<div class="programme-grid">
+
+{% for p in programmes %}
+    <div class="programme-card">
+
+        <div class="programme-title">
+            {{ p.name }}
+        </div>
+
+
+        <div class="programme-meta">
+            Status: {{ p.status }} <br>
+            Projects: {{ programme_summary[p.id].total }}
+        
+            <br><br>
+        
+            ✅ Completed: {{ programme_summary[p.id].completed }}
+            |
+            ⚙ In Progress: {{ programme_summary[p.id].in_progress }}
+            |
+            🔴 At Risk: {{ programme_summary[p.id].at_risk }}
+        </div>
+
+
+      <div class="programme-actions">
+    
+        <a href="/projects/{{ p.id }}">📂 View Projects</a>
+    
+        <!-- ✅ NEW: Create Project Button -->
+        <a href="/projects/{{ p.id }}#create-project">➕ Create Project</a>
+    
+        <a href="/programme/edit/{{ p.id }}">✏ Edit</a>
+    
+
+        <form method="post" action="/programme/delete/{{ p.id }}" style="display:inline;"
+              onsubmit="return confirm('Are you sure you want to delete this programme?');">
+            
+            <button type="submit" class="delete" style="background:none;border:none;color: #a4262c;cursor:pointer;">
+                🗑 Delete
+            </button>
+        </form>
+
+</div>
+
+    </div>
+
+{% else %}
+    <p>No programmes created yet.</p>
+{% endfor %}
+
+</div>
+<script>
+const params = new URLSearchParams(window.location.search);
+
+const error = params.get("error");
+
+if (error === "admin_required") {
+    alert("⚠️ Only Admin can perform this action");
+}
+if (error === "pm_only") {
+    alert("⚠️ Only PM or Admin can perform this action");
+}
+
+// ✅ optional improvement: clean URL after alert
+if (error) {
+    window.history.replaceState({}, document.title, window.location.pathname);
+}
+</script>
+
+{% endblock %}

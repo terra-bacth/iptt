@@ -1,0 +1,98 @@
+
+<h2>Execution Tracking – {{ scope.name }}</h2>
+
+<style>
+input[type="date"] {
+    background-color: white !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+</style>
+
+<form method="post" action="/scope/{{ scope.id }}/execution/update">
+<table border="1" cellpadding="6" cellspacing="0">
+    <tr>
+        <th>Task</th>
+        <th>Planned Start</th>
+        <th>Planned Finish</th>
+        <th>Actual Start</th>
+        <th>Actual Finish</th>
+        <th>Status</th>
+        <th>Delay (Days)</th>
+        <th>Delay Reason</th>
+    </tr>
+
+    {% for row in execution_rows %}
+    <tr>
+        <td>{{ row.task.name }}</td>
+
+        <!-- ✅ FIX: Show revised if available -->
+        <td>
+            {% if row.revised_start %}
+                <span style="color: #0f6b45; font-weight:600;">
+                    {{ row.revised_start.strftime('%Y-%m-%d') }}
+                </span>
+                <br>
+                <small style="color: #4b5b70;">
+                    Planned: {{ row.planned_start.strftime('%Y-%m-%d') }}
+                </small>
+            {% else %}
+                {{ row.planned_start.strftime('%Y-%m-%d') }}
+            {% endif %}
+        </td>
+
+        <td>
+            {% if row.revised_finish %}
+                <span style="color: #0f6b45; font-weight:600;">
+                    {{ row.revised_finish.strftime('%Y-%m-%d') }}
+                </span>
+                <br>
+                <small style="color: #4b5b70;">
+                    Planned: {{ row.planned_finish.strftime('%Y-%m-%d') }}
+                </small>
+            {% else %}
+                {{ row.planned_finish.strftime('%Y-%m-%d') }}
+            {% endif %}
+        </td>
+
+        <!-- ✅ FIX: Proper date format -->
+        <td>
+            <input type="date"
+                   name="actual_start_{{ row.id }}"
+                   value="{{ row.actual_start.strftime('%Y-%m-%d') if row.actual_start else '' }}">
+        </td>
+
+        <td>
+            <input type="date"
+                   name="actual_finish_{{ row.id }}"
+                   value="{{ row.actual_finish.strftime('%Y-%m-%d') if row.actual_finish else '' }}">
+        </td>
+
+        <!-- ✅ STATUS -->
+        <td>
+            <select name="status_{{ row.id }}">
+                {% for s in ["Not Started", "In Progress", "Completed"] %}
+                <option value="{{ s }}"
+                    {% if row.status == s %}selected{% endif %}>
+                    {{ s }}
+                </option>
+                {% endfor %}
+            </select>
+        </td>
+
+        <td>{{ row.delay_days }}</td>
+
+        <td>
+            <textarea name="delay_reason_{{ row.id }}"
+                      rows="2" cols="20">{{ row.delay_reason }}</textarea>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<button type="submit">Save Execution Updates</button>
+</form>
+
+<br>
+<a href="/project/{{ scope.project_id }}/scopes">⬅ Back to Scope Tasks</a>

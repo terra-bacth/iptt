@@ -1,0 +1,26 @@
+{# Shared primary navigation - the single source of truth for every page.
+
+   Why a partial: each template used to carry its own copy of the menu, so the
+   labels, order and colours drifted apart and page-local CSS could override the
+   shared theme (white links on a white bar). Pages now include this file only.
+
+   The brand is a link to /home on every screen, so the IPTT logo always takes
+   the user back to the workspace.
+#}
+<div class="top-nav iptt-nav">
+  <a class="iptt-brand" href="/home" title="IPTT home" aria-label="IPTT home">
+    <span class="iptt-brand-mark" aria-hidden="true">I</span>
+    <span class="iptt-brand-text">IPTT<small>PROJECT WORKSPACE</small></span>
+  </a>
+  <div class="nav-links iptt-nav-items">
+    <a href="/home">Home</a>
+    <a href="/programmes">Programmes</a>
+    <a href="/dashboard">Governance</a>
+    {% if user is defined and user and user.role == "admin" %}
+    <a href="/users">Users</a>
+    <a href="/audit-logs">Audit Logs</a>
+    {% endif %}
+    <a href="/profile">Security settings</a>
+    <a href="/logout">Sign out</a>
+  </div>
+</div>

@@ -1,0 +1,242 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+/* ✅ Hide base header */
+h1, nav {
+    display: none;
+}
+
+
+
+
+.user-table-container {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ✅ Search + filter */
+.filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.filters input,
+.filters select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* ✅ Table */
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-table th {
+    background: #f3f4f6;
+    padding: 10px;
+    text-align: left;
+}
+
+.user-table td {
+    padding: 10px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.user-table tr:hover {
+    background: #f9fafb;
+}
+
+/* ✅ Role badge */
+.role-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+/* ✅ Button */
+.update-btn {
+    padding: 6px 10px;
+    background-color: #16509f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.update-btn:hover {
+    background-color: #005fa3;
+}
+</style>
+
+<!-- ✅ NAV -->
+
+
+{% include "partials/nav.html" %}
+
+
+
+<h2>👥 User Management</h2>
+
+<div class="user-table-container">
+
+    <!-- ✅ FILTERS -->
+    <div class="filters">
+        <input type="text" id="searchInput" placeholder="Search username...">
+        
+        <select id="roleFilter">
+            <option value="">All Roles</option>
+            <option value="viewer">Viewer</option>
+            <option value="pm">PM</option>
+            <option value="admin">Admin</option>
+        </select>
+    </div>
+
+    <table class="user-table" id="userTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Update</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for u in users %}
+        <tr>
+            <td>{{ u.id }}</td>
+
+            <td class="username">{{ u.username }}</td>
+
+            <td class="role">
+                <span class="role-badge"
+                    style="
+                        background:
+                        {% if u.role == 'admin' %}#fdecea
+                        {% elif u.role == 'pm' %}#e7f3ff
+                        {% else %}#f3f4f6{% endif %};
+                        color:
+                        {% if u.role == 'admin' %}#a4262c
+                        {% elif u.role == 'pm' %}#16509f
+                        {% else %}#555{% endif %};
+                    "
+                >
+                    {{ u.role }}
+                </span>
+            </td>
+
+            <td>
+                <form method="post" action="/users/update-role">
+                    <input type="hidden" name="user_id" value="{{ u.id }}">
+            
+                    <select name="role">
+                        <option value="viewer" {% if u.role == "viewer" %}selected{% endif %}>Viewer</option>
+                        <option value="pm" {% if u.role == "pm" %}selected{% endif %}>PM</option>
+                        <option value="admin" {% if u.role == "admin" %}selected{% endif %}>Admin</option>
+                    </select>
+            
+                    <button type="submit" class="update-btn">Update</button>
+                </form>
+            </td>
+
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</table>
+</div>   <!-- ✅ end of table container -->
+
+<!-- ✅ ✅ ADD PAGINATION HERE -->
+
+<div style="margin-top:15px; text-align:center;">
+    <button onclick="prevPage()">⬅ Previous</button>
+    <span id="pageInfo" style="margin: 0 10px;"></span>
+    <button onclick="nextPage()">Next ➡</button>
+</div>
+
+<script>
+const rowsPerPage = 5;
+let currentPage = 1;
+
+const tableRows = document.querySelectorAll("#userTable tbody tr");
+const totalRows = tableRows.length;
+const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+function showPage(page) {
+    currentPage = page;
+
+    tableRows.forEach((row, index) => {
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        row.style.display = (index >= start && index < end) ? "" : "none";
+    });
+
+    document.getElementById("pageInfo").innerText =
+        "Page " + currentPage + " of " + totalPages;
+}
+
+function nextPage() {
+    if (currentPage < totalPages) {
+        showPage(currentPage + 1);
+    }
+}
+
+function prevPage() {
+    if (currentPage > 1) {
+        showPage(currentPage - 1);
+    }
+}
+
+// ✅ Initial load
+showPage(1);
+</script>
+
+
+<script>
+// ✅ SEARCH + FILTER LOGIC
+const searchInput = document.getElementById("searchInput");
+const roleFilter = document.getElementById("roleFilter");
+const tableRows = document.querySelectorAll("#userTable tbody tr");
+
+function filterTable() {
+    const searchValue = searchInput.value.toLowerCase();
+    const roleValue = roleFilter.value;
+
+    tableRows.forEach(row => {
+        const username = row.querySelector(".username").innerText.toLowerCase();
+        const role = row.querySelector(".role").innerText.toLowerCase();
+
+        const matchSearch = username.includes(searchValue);
+        const matchRole = roleValue === "" || role.includes(roleValue);
+
+        row.style.display = (matchSearch && matchRole) ? "" : "none";
+    });
+}
+
+searchInput.addEventListener("keyup", filterTable);
+roleFilter.addEventListener("change", filterTable);
+
+// ✅ ERROR HANDLING
+const params = new URLSearchParams(window.location.search);
+
+if (params.get("error") === "admin_required") {
+    alert("⚠️ Admin access required");
+}
+if (params.get("error") === "self_change_not_allowed") {
+    alert("⚠️ You cannot change your own role");
+}
+</script>
+
+{% endblock %}

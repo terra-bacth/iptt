@@ -1,0 +1,76 @@
+# Apply in a NEW test project. Replace the image with your approved mirror.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: iptt-postgres-data
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iptt-postgres
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: iptt-postgres
+  template:
+    metadata:
+      labels:
+        app: iptt-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: registry.redhat.io/rhel9/postgresql-16:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRESQL_DATABASE
+              value: iptt
+            - name: POSTGRESQL_USER
+              value: iptt
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: iptt-postgres-secret
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/pgsql/data
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {cpu: "1", memory: 1Gi}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          readinessProbe:
+            exec:
+              command: ["sh", "-c", "pg_isready -h localhost -p 5432"]
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: iptt-postgres-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iptt-postgres
+spec:
+  selector:
+    app: iptt-postgres
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
