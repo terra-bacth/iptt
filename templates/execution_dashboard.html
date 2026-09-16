@@ -82,12 +82,12 @@
 .metric {
     font-size: 18px;
     font-weight: bold;
-    color: #0078d4;
+    color: #16509f;
 }
 
 .metric-label {
     font-size: 10px;
-    color: #666;
+    color: #4b5b70;
 }
 
 .metric-block {
@@ -138,7 +138,7 @@
 
 /* ✅ BUTTONS */
 .download-btn {
-    background-color: #0078d4;
+    background-color: #16509f;
     color: white;
     border: none;
     padding: 8px 14px;
@@ -151,7 +151,7 @@
 }
 
 .upload-btn {
-    background-color: #ff9800;
+    background-color: #8a4b08;
     color: white;
     border: none;
     padding: 8px 14px;
@@ -193,15 +193,15 @@
 
 .upload-info {
     margin-top: 6px;
-    color: gray;
+    color: #4b5b70;
     font-size: 12px;
 }
 
 /* ✅ STATUS COLORS */
-.completed { color: green; }
-.in-progress { color: orange; }
-.at-risk { color: red; }
-.not-started { color: gray; }
+.completed { color: #0f6b45; }
+.in-progress { color: #8a4b08; }
+.at-risk { color: #a4262c; }
+.not-started { color: #4b5b70; }
 
 </style>
 
@@ -209,16 +209,16 @@
 <div class="top-nav">
     <div><strong>IPTT</strong></div>
     <div>
-        <a href="/home">🏠 Home</a>
-        <a href="/programmes">📦 Programmes</a>
-        <a href="/logout">🚪 Logout</a>
+        <a href="/home">Home</a>
+        <a href="/programmes">Programmes</a>
+        <a href="/logout">Sign out</a>
     </div>
 </div>
 
 <!-- ✅ BREADCRUMB -->
 <!-- <div class="breadcrumb">
-    <a href="/home">🏠 Home</a> >
-    <a href="/programmes">📦 Programmes</a> >
+    <a href="/home">Home</a> >
+    <a href="/programmes">Programmes</a> >
     <a href="/projects/{{ project_id }}">📂 Projects</a> >
     <strong>▶ Execution</strong>
 </div> -->
@@ -227,7 +227,7 @@
 <div class="page-header">
     <h3>📦 Programme: <strong>{{ programme_name }}</strong></h3>
     <h2>📂 {{ project_name }} — Execution Workspace</h2>
-    <p style="color:gray; font-size:13px;">
+    <p style="color: #4b5b70; font-size:13px;">
     Select a circle and node to update task execution status
     </p>
 </div>

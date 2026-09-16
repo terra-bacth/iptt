@@ -28,9 +28,13 @@
     button.setAttribute('aria-controls', items.id);
     button.setAttribute('aria-expanded', 'false');
     nav.insertBefore(button, nav.firstChild);
-    // Place the button after the brand when one is present.
-    const brand = nav.querySelector('.iptt-brand, .app-title');
-    if (brand) brand.after(button);
+    // Keep the button on the right of the leading brand/title, never in front
+    // of it. Templates use several lead elements: .iptt-brand, .app-title or a
+    // plain <div>/<strong> holding the product name.
+    const brand = nav.querySelector(
+      ':scope > .iptt-brand, :scope > .app-title, :scope > div:first-child, :scope > strong, :scope > b'
+    );
+    if (brand) { brand.after(button); } else { nav.append(button); }
     const close = () => {
       items.classList.remove('iptt-nav-open');
       button.setAttribute('aria-expanded', 'false');

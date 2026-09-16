@@ -66,7 +66,7 @@
     .page-subtitle {
 
         margin-top:6px;
-        color:#6b7280;
+        color: #4b5b70;
         font-size:16px;
     }
 
@@ -99,7 +99,7 @@
 
     .kpi-label {
 
-        color:#6b7280;
+        color: #4b5b70;
         font-size:14px;
     }
 
@@ -182,19 +182,19 @@
 
     .status-green {
 
-        color:#16a34a;
+        color: #0f6b45;
         font-weight:bold;
     }
 
     .status-orange {
 
-        color:#f59e0b;
+        color: #8a4b08;
         font-weight:bold;
     }
 
     .status-red {
 
-        color:#dc2626;
+        color: #a4262c;
         font-weight:bold;
     }
 
@@ -230,8 +230,8 @@
     </style>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/static/theme.css?v=2">
-<script src="/static/ui.js?v=2" defer></script>
+<link rel="stylesheet" href="/static/theme.css?v=3">
+<script src="/static/ui.js?v=4" defer></script>
 </head>
 
 <body class="iptt-ui">
@@ -252,17 +252,17 @@
 
     <div>
 
-        <a href="/home">🏠 Home</a>
+        <a href="/home">Home</a>
 
-        <a href="/programmes">📦 Programmes</a>
+        <a href="/programmes">Programmes</a>
 
         {% if user.role == "admin" %}
 
-            <a href="/users">👥 Users</a>
+            <a href="/users">Users</a>
 
         {% endif %}
 
-        <a href="/logout">🚪 Logout</a>
+        <a href="/logout">Sign out</a>
 
     </div>
 

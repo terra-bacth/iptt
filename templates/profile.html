@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Settings | IPTT</title>
     <link rel="stylesheet" href="/static/style.css">
-<link rel="stylesheet" href="/static/theme.css?v=2">
-<script src="/static/ui.js?v=2" defer></script>
+<link rel="stylesheet" href="/static/theme.css?v=3">
+<script src="/static/ui.js?v=4" defer></script>
 </head>
 <body class="iptt-ui">
 <a class="iptt-skip" href="#iptt-main">Skip to main content</a>
@@ -18,15 +18,15 @@
         <b>IPTT</b>
     </div>
     <div class="nav-links">
-        <a href="/home">🏠 Home</a>
-        <a href="/programmes">📦 Programmes</a>
-        <a href="/logout">🚪 Logout</a>
+        <a href="/home">Home</a>
+        <a href="/programmes">Programmes</a>
+        <a href="/logout">Sign out</a>
     </div>
 </div>
 
 <div style="max-width: 1200px; margin: 30px auto; padding: 0 20px; box-sizing: border-box;">
 
-    <div class="welcome-banner" style="background: linear-gradient(135deg, #1f4e78, #2e75b6); color: white; padding: 25px 30px; border-radius: 6px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <div class="welcome-banner" style="background: linear-gradient(135deg, #1f4e78, #1a4f8a); color: white; padding: 25px 30px; border-radius: 6px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         <div class="welcome-title" style="font-size: 1.6rem; font-weight: bold; margin-bottom: 5px;">
             ⚙️ Security Credentials Management
         </div>
@@ -51,7 +51,7 @@
             {% endif %}
             
             {% if success %}
-                <div class="alert-banner alert-success" style="background-color: #c6efce; color: #006100; padding: 12px 15px; border-radius: 4px; margin-bottom: 20px; font-weight: 500; border-left: 5px solid #28a745;">
+                <div class="alert-banner alert-success" style="background-color: #c6efce; color: #006100; padding: 12px 15px; border-radius: 4px; margin-bottom: 20px; font-weight: 500; border-left: 5px solid #146c43;">
                     {{ success }}
                 </div>
             {% endif %}
@@ -66,7 +66,7 @@
 
                 <div class="form-group">
                     <label style="display: block; margin-bottom: 4px; font-weight: 600; color: #4a5568;">New Target Password</label>
-                    <small style="display: block; color: #718096; margin-bottom: 8px; font-size: 0.85rem;">
+                    <small style="display: block; color: #4b5b70; margin-bottom: 8px; font-size: 0.85rem;">
                         Must be min 6 chars, include 1 uppercase letter, 1 lowercase letter, and 1 digit.
                     </small>
                     <input type="password" name="new_password" minlength="6" required placeholder="••••••••" 
@@ -85,7 +85,7 @@
 
                 <div style="margin-top: 10px;">
                     <button class="btn btn-green" type="submit" 
-                            style="background-color: #28a745; color: white; border: none; padding: 12px 20px; font-size: 1rem; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background 0.2s; box-sizing: border-box;">
+                            style="background-color: #146c43; color: white; border: none; padding: 12px 20px; font-size: 1rem; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background 0.2s; box-sizing: border-box;">
                         💾 Commit Security Revision
                     </button>
                 </div>

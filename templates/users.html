@@ -85,7 +85,7 @@ h1, nav {
 /* ✅ Button */
 .update-btn {
     padding: 6px 10px;
-    background-color: #0078d4;
+    background-color: #16509f;
     color: white;
     border: none;
     border-radius: 5px;
@@ -104,8 +104,9 @@ h1, nav {
     <div class="app-title">IPTT</div>
 
     <div class="nav-links">
-        <a href="/home">🏠 Home</a>
-        <a href="/logout">🚪 Logout</a>
+        <a href="/home">Home</a>
+        <a href="/programmes">Programmes</a>
+        <a href="/logout">Sign out</a>
     </div>
 </div>
 
@@ -153,7 +154,7 @@ h1, nav {
                         {% else %}#f3f4f6{% endif %};
                         color:
                         {% if u.role == 'admin' %}#a4262c
-                        {% elif u.role == 'pm' %}#0078d4
+                        {% elif u.role == 'pm' %}#16509f
                         {% else %}#555{% endif %};
                     "
                 >
