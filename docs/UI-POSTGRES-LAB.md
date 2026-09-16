@@ -13,7 +13,9 @@ enforced; existing orphan records or deletion paths need validation.
 
 ## 1. Killercoda: container test
 
-Use a Killercoda environment with Docker and Docker Compose v2 installed.
+Use a Killercoda environment with Docker and either Compose v2 (`docker compose`)
+or legacy Compose v1.21+ (`docker-compose`) installed. The file uses format 2.4
+for compatibility with both; modern Compose may warn that `version` is obsolete.
 This step tests the app and database in containers, not Kubernetes scheduling.
 Check both commands before proceeding:
 
@@ -28,11 +30,29 @@ From this branch's repository checkout:
 # Create credentials only once; retain .env when restarting the lab.
 test -e .env || (umask 077; printf 'POSTGRES_PASSWORD=%s\nSESSION_SECRET=%s\n' \
   "$(openssl rand -hex 24)" "$(openssl rand -hex 32)" > .env)
-docker compose -f compose.postgres.yaml up -d --build --wait
-docker compose -f compose.postgres.yaml exec app python seed_admin.py
-docker compose -f compose.postgres.yaml exec app python scripts/check_database.py
+docker compose -p iptt-lab -f compose.postgres.yaml up -d --build --wait
+docker compose -p iptt-lab -f compose.postgres.yaml exec app python seed_admin.py
+docker compose -p iptt-lab -f compose.postgres.yaml exec app python scripts/check_database.py
 curl -f http://localhost:8080/login >/dev/null
 ```
+
+### If your environment uses `docker-compose`
+
+Use the same .env setup above, then run these commands instead of the v2 commands:
+
+```bash
+docker-compose -p iptt-lab -f compose.postgres.yaml config --quiet
+docker-compose -p iptt-lab -f compose.postgres.yaml up -d --build
+docker-compose -p iptt-lab -f compose.postgres.yaml ps
+# Once app is running, seed and check the database:
+docker-compose -p iptt-lab -f compose.postgres.yaml exec app python seed_admin.py
+docker-compose -p iptt-lab -f compose.postgres.yaml exec app python scripts/check_database.py
+```
+
+Legacy Compose does not support `up --wait`. The dependency health check still
+waits for PostgreSQL before starting the app. Use `ps` to confirm app health.
+For subsequent commands, replace `docker compose` with `docker-compose -p iptt-lab`.
+Keep the project name consistent so restarts reuse the same database volume.
 
 Open Killercoda's **Traffic / Ports** interface and access port **8080**.
 Use the existing lab accounts from seed_admin.py: admin/admin123,
@@ -60,17 +80,17 @@ this branch. Compare results, not just page appearance:
 | Persistence | Create a programme, restart both containers, log in and verify the programme remains |
 
 ```bash
-docker compose -f compose.postgres.yaml restart
-docker compose -f compose.postgres.yaml ps
-docker compose -f compose.postgres.yaml logs --tail=100 app postgres
-docker compose -f compose.postgres.yaml exec app python scripts/check_database.py
+docker compose -p iptt-lab -f compose.postgres.yaml restart
+docker compose -p iptt-lab -f compose.postgres.yaml ps
+docker compose -p iptt-lab -f compose.postgres.yaml logs --tail=100 app postgres
+docker compose -p iptt-lab -f compose.postgres.yaml exec app python scripts/check_database.py
 ```
 
 The named volume survives container recreation but is local to the Killercoda
 environment. Export a backup before the environment expires:
 
 ```bash
-docker compose -f compose.postgres.yaml exec -T postgres \
+docker compose -p iptt-lab -f compose.postgres.yaml exec -T postgres \
   pg_dump -U iptt -d iptt -Fc > iptt-lab.dump
 ```
 
