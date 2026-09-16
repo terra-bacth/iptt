@@ -1,0 +1,162 @@
+# =====================================================================
+# IPTT - all-in-one OpenShift manifest
+#
+# Prereqs:
+#   oc login ...                 (logged in to your cluster)
+#   oc new-project iptt          (project/namespace created)
+#   git push                     (Dockerfile + requirements.txt pushed to
+#                                 https://github.com/spandey171294/iptt)
+#
+# Usage:
+#   oc apply -f openshift/iptt-all-in-one.yaml
+#   oc create secret generic iptt-secret \
+#       --from-literal=SESSION_SECRET="$(openssl rand -hex 32)"
+#   oc start-build iptt --follow
+#   oc exec deploy/iptt -- python seed_admin.py     (first time only)
+#
+# NOTE: the internal image URL below assumes the project name is "iptt".
+# If you use a different project name, replace "iptt" in the Deployment
+# image: field -> <your-project>/iptt:latest
+# =====================================================================
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: iptt
+  labels:
+    app: iptt
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: iptt
+  labels:
+    app: iptt
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: iptt:latest
+  source:
+    type: Git
+    git:
+      uri: https://github.com/spandey171294/iptt.git
+      ref: main
+    contextDir: /
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  triggers:
+    - type: ConfigChange
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: iptt-data
+  labels:
+    app: iptt
+spec:
+  accessModes:
+    - ReadWriteOnce          # SQLite = single writer. Keep replicas: 1.
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iptt
+  labels:
+    app: iptt
+  annotations:
+    # Auto-roll the Deployment when a new build pushes iptt:latest
+    # (works on clusters with the image-trigger controller enabled;
+    #  otherwise use: oc start-build + oc rollout restart)
+    image.openshift.io/triggers: >-
+      [{"from":{"kind":"ImageStreamTag","name":"iptt:latest"},
+      "fieldPath":"spec.template.spec.containers[0].image"}]
+spec:
+  replicas: 1                  # SQLite limitation — do not scale beyond 1
+  strategy:
+    type: Recreate             # avoids two pods mounting the RWO PVC at once
+  selector:
+    matchLabels:
+      app: iptt
+  template:
+    metadata:
+      labels:
+        app: iptt
+    spec:
+      containers:
+        - name: iptt
+          image: image-registry.openshift-image-registry.svc:5000/iptt/iptt:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: DATABASE_URL
+              value: sqlite:////app/data/iptt.db
+            - name: SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: iptt-secret
+                  key: SESSION_SECRET
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 20
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: iptt-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iptt
+  labels:
+    app: iptt
+spec:
+  selector:
+    app: iptt
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: iptt
+  labels:
+    app: iptt
+spec:
+  to:
+    kind: Service
+    name: iptt
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

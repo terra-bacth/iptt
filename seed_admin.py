@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-Author: Manoj Mishra
-"""
-
-# -*- coding: utf-8 -*-
-"""
 Seed users (Admin, PM, Viewer)
+
+- Creates DB tables first (safe to run multiple times)
+- Set SEED_ADMIN_PASSWORD to override the default admin password
 """
 
-from database import get_db
-from models import User
+import os
+
+from database import Base, engine, get_db
+from models import User  # noqa: F401  (import registers all models on Base)
 from passlib.context import CryptContext
+
+# ✅ Ensure tables exist (idempotent)
+Base.metadata.create_all(bind=engine)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -37,10 +40,13 @@ def create_user(username, password, role):
     print(f"✅ Created {role} user: {username}")
 
 
+admin_password = os.getenv("SEED_ADMIN_PASSWORD", "admin123")
+
 # ✅ Create users
-create_user("admin", "admin123", "admin")
+create_user("admin", admin_password, "admin")
 create_user("Manoj_PM", "pm123", "pm")
 create_user("Manoj_Viewer", "viewer123", "viewer")
 
 
 db.close()
+print("🌱 Seeding complete")

@@ -64,7 +64,7 @@ app.include_router(
 Base.metadata.create_all(bind=engine)
 app.add_middleware(
     SessionMiddleware,
-    secret_key="iptt-secret-key-change-later"
+    secret_key=os.getenv("SESSION_SECRET", "iptt-dev-secret-change-me")
 )
 
 @app.exception_handler(HTTPException)
