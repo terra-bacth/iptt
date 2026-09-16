@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 
 <head>
 
@@ -154,10 +154,13 @@
     </style>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/static/theme.css?v=1">
+<link rel="stylesheet" href="/static/theme.css?v=2">
+<script src="/static/ui.js?v=2" defer></script>
 </head>
 
-<body>
+<body class="iptt-ui">
+<a class="iptt-skip" href="#iptt-main">Skip to main content</a>
+<main id="iptt-main" tabindex="-1">
 
 <!-- TOP -->
 
@@ -590,6 +593,8 @@ function toggleSection(id){
 }
 
 </script>
+</main>
+{% include "partials/footer.html" %}
 </body>
 
 </html>

@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>Audit Logs</title>
 
@@ -40,10 +40,13 @@
     }
   </style>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/static/theme.css?v=1">
+<link rel="stylesheet" href="/static/theme.css?v=2">
+<script src="/static/ui.js?v=2" defer></script>
 </head>
 
-<body>
+<body class="iptt-ui">
+<a class="iptt-skip" href="#iptt-main">Skip to main content</a>
+<main id="iptt-main" tabindex="-1">
 
 <div class="header">
   <h2>📜 Audit Logs</h2>
@@ -95,5 +98,7 @@ async function loadLogs() {
 loadLogs();
 </script>
 
+</main>
+{% include "partials/footer.html" %}
 </body>
 </html>

@@ -1,96 +1,155 @@
-/* Shared presentation only. Keep status colours and existing JS hooks intact.
-   The body prefix outranks page-local class selectors, including child templates. */
+/* IPTT workspace theme v2. Local assets; presentation only. */
 :root {
-  --iptt-ink: #172b43;
-  --iptt-muted: #52657c;
-  --iptt-line: #dce4ed;
-  --iptt-blue: #235bc0;
-  --iptt-shadow: 0 5px 22px rgba(24, 47, 79, .06);
+  color-scheme: light;
+  --iptt-ink: #192d43;
+  --iptt-muted: #52657a;
+  --iptt-blue: #2259bd;
+  --iptt-line: #dce5ee;
+  --iptt-shadow: 0 5px 22px rgb(31 52 80 / 5%);
 }
-body {
-  font-family: "Segoe UI", Arial, sans-serif;
-  color: var(--iptt-ink);
-  background: #f3f6fa;
-  line-height: 1.5;
-  margin: 0;
-  padding: clamp(16px, 2.4vw, 36px);
-}
-body .top-nav {
-  background: #12283f;
-  border: 1px solid #233e59;
-  border-radius: 14px;
-  padding: 17px 24px;
-  box-shadow: var(--iptt-shadow);
-  gap: 16px;
-  flex-wrap: wrap;
-}
-body .top-nav .app-title { font-size: 20px; letter-spacing: .04em; }
-body .top-nav a { color: #f3f7ff; font-weight: 500; }
-body .top-nav .nav-links { display: flex; flex-wrap: wrap; gap: 10px 20px; }
-body .top-nav .nav-links a { margin-left: 0; }
-body .welcome-banner {
-  border: 1px solid var(--iptt-line);
-  border-left: 5px solid var(--iptt-blue);
-  padding: clamp(20px, 3vw, 36px);
-  background: linear-gradient(110deg, #fff 65%, #edf3ff);
-}
-body .welcome-title { font-size: clamp(24px, 2.4vw, 34px); letter-spacing: -.035em; }
-body .welcome-subtitle, body .programme-meta, body .project-meta { color: var(--iptt-muted); }
-body .section-card, body .project-card, body .programme-card,
-body .user-table-container, body .welcome-banner {
-  border-radius: 14px;
-  box-shadow: var(--iptt-shadow);
-}
-body .section-card, body .project-card, body .programme-card,
-body .user-table-container { border: 1px solid var(--iptt-line); }
-body .section-title h3 { font-size: 19px; letter-spacing: -.02em; }
-body .programme-name, body .programme-title, body .project-title { color: var(--iptt-ink); }
-body .breadcrumb { padding: 10px 0; color: var(--iptt-muted); }
-body .btn, body .login-btn, body .update-btn, body .show-more-btn {
-  border-radius: 8px;
-  font-weight: 600;
-  padding: 10px 16px;
-  line-height: 1.35;
-  transition: box-shadow .15s ease, filter .15s ease;
-}
-body .btn:hover, body .login-btn:hover, body .update-btn:hover {
-  filter: brightness(.94);
-  box-shadow: 0 3px 8px rgba(24, 47, 79, .15);
-}
-body input, body select, body textarea, body button { font: inherit; }
-body input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
-body select, body textarea {
-  border: 1px solid #bdcad9;
-  border-radius: 8px;
-  padding: 9px 11px;
-  max-width: 100%;
+html { font-size: 16px; scroll-padding-top: 24px; }
+body.iptt-ui {
   box-sizing: border-box;
+  margin: 0;
+  padding: clamp(16px, 2.5vw, 36px);
+  min-height: 100vh;
+  background: #f2f5f9;
+  color: var(--iptt-ink);
+  font: 400 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
 }
-body :focus-visible { outline: 3px solid #377bdf; outline-offset: 3px; }
-body button:disabled, body input:disabled, body select:disabled { cursor: not-allowed; }
-body table { border-spacing: 0; font-size: 14px; }
-body th { font-size: 12px; letter-spacing: .025em; }
-body td, body th { padding: 12px 14px; }
-body .proj-table th, body .user-table th { background: #edf2f8; color: #334963; }
-body .proj-table td, body .user-table td { border-bottom: 1px solid #e7edf4; }
-body .status-badge, body .role-badge { border-radius: 6px; padding: 4px 9px; font-weight: 600; }
-body .empty-state { border: 1px dashed #c5d1df; border-radius: 10px; padding: 28px; color: var(--iptt-muted); }
-body .project-grid, body .programme-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
-/* Login uses a full-height split layout; other pages retain their own structure. */
-body:has(> .left-panel):has(> .right-panel) { padding: 0; min-height: 100vh; height: auto; width: auto; overflow: auto; }
-body .left-panel { background: linear-gradient(145deg, #10273e, #214b72); min-height: 100vh; box-sizing: border-box; }
-body .right-panel { min-height: 100vh; height: auto; box-sizing: border-box; }
-body .login-box { max-width: 420px; }
-body .login-title { letter-spacing: -.03em; }
-body .login-btn { background: var(--iptt-blue); }
-@media (max-width: 760px) {
-  body .top-nav { padding: 16px; align-items: flex-start; }
-  body .programme-header, body .section-title { gap: 12px; flex-wrap: wrap; }
-  body .section-card, body .user-table-container { padding: 16px; overflow-x: auto; }
-  body:has(> .left-panel):has(> .right-panel) { flex-direction: column; }
-  body .left-panel { min-height: auto; padding: 32px 24px; }
-  body .right-panel { min-height: auto; padding: 36px 24px; }
+.iptt-ui *, .iptt-ui *::before, .iptt-ui *::after { box-sizing: border-box; }
+.iptt-ui #iptt-main { display: block; max-width: 1440px; margin: 0 auto; min-width: 0; }
+.iptt-ui h1, .iptt-ui h2, .iptt-ui h3 { line-height: 1.25; letter-spacing: -.025em; }
+.iptt-ui h2 { font-size: 26px; }
+.iptt-ui h3 { font-size: 20px; }
+.iptt-ui a { text-underline-offset: 4px; }
+.iptt-ui a:focus-visible, .iptt-ui button:focus-visible,
+.iptt-ui input:focus-visible, .iptt-ui select:focus-visible,
+.iptt-ui textarea:focus-visible, .iptt-ui [tabindex]:focus-visible {
+  outline: 3px solid #b55700; outline-offset: 4px;
+}
+.iptt-ui .iptt-skip { position: fixed; top: -120px; left: 20px; z-index: 1000; padding: 12px 18px; background: white; color: #192d43; border: 2px solid #2259bd; border-radius: 8px; }
+.iptt-ui .iptt-skip:focus { top: 12px; }
+.iptt-ui .top-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px; padding: 16px 22px;
+  margin: 0 0 28px; background: white; color: var(--iptt-ink);
+  border: 1px solid var(--iptt-line); border-radius: 14px;
+  box-shadow: var(--iptt-shadow);
+}
+.iptt-ui .top-nav .app-title, .iptt-ui .top-nav > b { font-size: 22px; letter-spacing: .02em; }
+.iptt-ui .top-nav a { display: inline-flex; align-items: center; min-height: 44px; margin: 0; padding: 9px 13px; color: #334b65; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; }
+.iptt-ui .top-nav a:hover { background: #edf3fa; color: #173e80; text-decoration: none; }
+.iptt-ui .top-nav a[aria-current="page"] { background: #eaf1ff; color: #194caa; }
+.iptt-ui .top-nav .nav-links, .iptt-ui .top-nav .iptt-nav-items { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.iptt-ui .top-nav .iptt-brand { display: flex; gap: 12px; padding: 0; color: #192d43; font-size: 23px; letter-spacing: -.025em; }
+.iptt-brand small { display: block; color: #52657a; font-size: 10px; letter-spacing: .12em; line-height: 1.4; }
+.iptt-brand-mark { display: grid; place-items: center; width: 42px; height: 44px; color: white; background: #2259bd; border-radius: 12px 12px 12px 3px; font-weight: 800; }
+.iptt-ui .iptt-menu-toggle { display: none; }
+.iptt-ui .welcome-banner { position: relative; padding: 34px 38px; margin: 0 0 26px; border: 1px solid #254463; border-radius: 18px; color: white; background: linear-gradient(115deg, #152e49 15%, #254f72); box-shadow: var(--iptt-shadow); }
+.iptt-ui .iptt-eyebrow { margin: 0 0 12px; color: #bcdaef; font-size: 12px; font-weight: 700; letter-spacing: .13em; }
+.iptt-ui .welcome-title { display: block; margin: 0 0 12px; font-size: clamp(28px, 3vw, 40px); font-weight: 700; color: white; overflow-wrap: anywhere; }
+.iptt-ui .welcome-subtitle { max-width: 680px; color: #dbe8f4; font-size: 16px; }
+.iptt-ui .iptt-home-grid { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 24px; margin: 0; }
+.iptt-ui .iptt-home-grid > * { min-width: 0; }
+.iptt-ui .section-card, .iptt-ui .project-card, .iptt-ui .programme-card,
+.iptt-ui .user-table-container { background: white; border: 1px solid var(--iptt-line); border-radius: 14px; box-shadow: var(--iptt-shadow); }
+.iptt-ui .section-card { padding: 26px; margin-bottom: 24px; }
+.iptt-ui .iptt-home-grid > .section-card { margin: 0; padding: 26px; }
+.iptt-ui .iptt-ongoing { grid-column: 1 / -1; }
+.iptt-ui .section-title { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+.iptt-ui .section-title h2, .iptt-ui .section-title h3 { margin: 0; font-size: 20px; color: #192d43; }
+.iptt-ui .iptt-create .section-title, .iptt-ui .iptt-reports .section-title { padding-bottom: 16px; border-bottom: 1px solid #e6edf4; }
+.iptt-ui .start-actions, .iptt-ui .action-row, .iptt-ui .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.iptt-ui .start-actions form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; width: 100%; margin: 0; }
+.iptt-ui .iptt-field-label { display: block; flex-basis: 100%; margin: 0; font-size: 14px; font-weight: 600; color: #425971; }
+.iptt-ui .start-actions select { flex: 1; min-width: 150px; }
+.iptt-ui button, .iptt-ui input, .iptt-ui select, .iptt-ui textarea { font-family: inherit; font-size: 15px; }
+.iptt-ui button { cursor: pointer; }
+.iptt-ui .btn, .iptt-ui .login-btn, .iptt-ui .update-btn,
+.iptt-ui .show-more-btn, .iptt-ui .create-form button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 10px 16px; border: 1px solid transparent;
+  border-radius: 8px; background: #2259bd; color: white;
+  font-size: 14px; font-weight: 650; line-height: 1.4; text-decoration: none;
+  white-space: normal; text-align: center;
+}
+.iptt-ui .btn:hover, .iptt-ui .login-btn:hover, .iptt-ui .create-form button:hover { background: #174593; transform: none; }
+.iptt-ui .btn-green { background: #08794e; }
+.iptt-ui .btn-green:hover { background: #06643f; }
+.iptt-ui .btn-dark { background: #334b65; }
+.iptt-ui .btn-dark:hover { background: #22384e; }
+.iptt-ui .show-more-btn { margin: 16px; background: #edf3fa; color: #204a83; border-color: #cad9ec; }
+.iptt-ui input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),
+.iptt-ui select, .iptt-ui textarea { min-height: 44px; max-width: 100%; padding: 10px 12px; border: 1px solid #aebed0; border-radius: 8px; background: white; color: #192d43; }
+.iptt-ui input[type="checkbox"], .iptt-ui input[type="radio"] { width: 18px; height: 18px; accent-color: #2259bd; }
+.iptt-ui button:disabled, .iptt-ui input:disabled, .iptt-ui select:disabled { cursor: not-allowed; opacity: .65; }
+.iptt-ui .create-form, .iptt-ui .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.iptt-ui .programme-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding: 18px; border-bottom: 1px solid var(--iptt-line); background: #f7f9fc; }
+.iptt-ui .programme-name, .iptt-ui .programme-title, .iptt-ui .project-title { font-size: 19px; font-weight: 700; color: #192d43; overflow-wrap: anywhere; }
+.iptt-ui .programme-meta, .iptt-ui .project-meta { font-size: 14px; color: #52657a; }
+.iptt-ui .project-grid, .iptt-ui .programme-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 22px; }
+.iptt-ui .project-card, .iptt-ui .programme-grid > .programme-card { padding: 24px; min-width: 0; }
+.iptt-ui .programme-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.iptt-ui .programme-actions a { display: inline-flex; align-items: center; min-height: 44px; color: #2259bd; font-size: 15px; }
+.iptt-ui .breadcrumb { margin: 14px 0; font-size: 14px; color: #52657a; }
+.iptt-ui table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.iptt-ui table th { padding: 13px 16px; font-size: 13px; text-align: left; line-height: 1.4; }
+.iptt-ui table td { padding: 15px 16px; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+.iptt-ui .proj-table { table-layout: auto; }
+.iptt-ui .proj-table th, .iptt-ui .user-table th { background: #eef3f8; color: #334b65; }
+.iptt-ui .proj-table td, .iptt-ui .user-table td { border-bottom: 1px solid #e4ebf3; }
+.iptt-ui .proj-table tr:hover { background: #f7faff; }
+.iptt-ui .iptt-table-scroll { width: 100%; max-width: 100%; overflow-x: auto; border-radius: 8px; }
+.iptt-ui .iptt-table-scroll > table { min-width: 620px; }
+.iptt-ui .status-badge, .iptt-ui .role-badge { display: inline-block; border-radius: 6px; padding: 5px 9px; font-size: 12px; font-weight: 650; }
+.iptt-ui .status-green { background: #e2f5eb; color: #16613c; }
+.iptt-ui .status-red { background: #fce7e7; color: #9b2226; }
+.iptt-ui .status-yellow { background: #fff0cc; color: #774d06; }
+.iptt-ui .empty-state { display: grid; place-items: center; min-height: 130px; padding: 30px 20px; border: 1px dashed #bdcddd; border-radius: 10px; background: #f8fafd; font-size: 15px; text-align: center; color: #52657a; }
+.iptt-ui .iptt-footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; max-width: 1440px; margin: 32px auto 0; padding: 20px 0 4px; border-top: 1px solid #d6e0eb; color: #52657a; font-size: 13px; }
+.iptt-ui .iptt-footer strong { color: #334b65; }
+.iptt-ui .iptt-footer [role="img"] { color: #c0344c; }
+.iptt-ui img, .iptt-ui canvas { max-width: 100%; }
+.iptt-ui .iptt-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+/* Keep the login split view, with the footer outside its main landmark. */
+body.iptt-ui.iptt-login { display: block; padding: 0; height: auto; width: auto; overflow: auto; }
+.iptt-login #iptt-main { display: grid; grid-template-columns: 1.1fr 1fr; max-width: none; min-height: calc(100vh - 80px); }
+.iptt-login .left-panel { min-width: 0; padding: 48px; background: linear-gradient(140deg, #152e49, #254f72); }
+.iptt-login .right-panel { min-width: 0; height: auto; padding: 48px; }
+.iptt-login .login-box { width: 100%; max-width: 430px; }
+.iptt-login .iptt-footer { margin: 0; max-width: none; padding: 22px 32px; }
+@media (max-width: 1000px) {
+  .iptt-ui .iptt-home-grid { grid-template-columns: 1fr; }
+  .iptt-ui .top-nav .iptt-menu-toggle { display: inline-flex; min-height: 44px; padding: 8px 16px; border: 1px solid #bacbde; border-radius: 8px; background: #f2f6fc; color: #244b79; font-weight: 600; }
+  .iptt-ui .top-nav.iptt-nav-ready .iptt-nav-items { flex-basis: 100%; flex-direction: column; align-items: stretch; }
+  .iptt-ui .top-nav.iptt-nav-ready .iptt-nav-items:not(.iptt-nav-open) { display: none; }
+  .iptt-ui .top-nav .iptt-nav-items a { width: 100%; }
+}
+@media (max-width: 640px) {
+  body.iptt-ui { padding: 14px; }
+  .iptt-ui .top-nav { padding: 14px; margin-bottom: 18px; }
+  .iptt-ui .welcome-banner { padding: 26px 22px; border-radius: 14px; }
+  .iptt-ui .iptt-home-grid { gap: 18px; }
+  .iptt-ui .iptt-home-grid > .section-card, .iptt-ui .section-card { padding: 20px; }
+  .iptt-ui .action-row { align-items: stretch; flex-direction: column; }
+  .iptt-ui .start-actions form { align-items: stretch; }
+  .iptt-ui .start-actions select { width: 100%; flex-basis: 100%; }
+  .iptt-ui .start-actions .btn { width: 100%; }
+  .iptt-ui .iptt-footer { flex-direction: column; text-align: center; align-items: center; }
+  .iptt-login #iptt-main { grid-template-columns: 1fr; }
+  .iptt-login .left-panel, .iptt-login .right-panel { padding: 30px 22px; }
+  .iptt-login .product-title { font-size: 28px; }
+  .iptt-ui .filters > *, .iptt-ui .create-form > * { max-width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
-  body *, body *::before, body *::after { animation: none !important; transition: none !important; }
+  .iptt-ui *, .iptt-ui *::before, .iptt-ui *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media print {
+  body.iptt-ui { background: white; padding: 0; }
+  .iptt-ui .top-nav, .iptt-ui .iptt-skip, .iptt-ui .iptt-menu-toggle { display: none !important; }
+  .iptt-ui .iptt-home-grid { display: block; }
+  .iptt-ui .iptt-table-scroll { overflow: visible; }
+  .iptt-ui .iptt-table-scroll > table { min-width: 0; }
+  .iptt-ui .section-card { box-shadow: none; }
 }

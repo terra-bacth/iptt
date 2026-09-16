@@ -1,8 +1,10 @@
 # UI refresh and PostgreSQL lab
 
-This branch adds a shared CSS theme and a PostgreSQL driver. Routes, forms,
-JavaScript, authentication, roles, calculations, models and PDF templates are
-unchanged. SQLite remains the default when DATABASE_URL is absent.
+This branch adds a responsive UI and a PostgreSQL driver. Backend routes, form
+actions, authentication, roles, calculations, models and PDF templates are
+unchanged. The small local ui.js adds presentation behavior (mobile navigation,
+table scrolling and accessible labels). SQLite remains the default when
+DATABASE_URL is absent.
 
 The lab starts with an **empty PostgreSQL database**. Changing DATABASE_URL does
 not migrate SQLite data. Keep the existing deployment and its database intact.
@@ -152,14 +154,18 @@ Reverting an image does not transfer data back from PostgreSQL to SQLite.
 - Seeded all three existing roles; checked login/logout, five main pages per
   role, admin user-list access, programme creation and non-admin creation denial
   with FastAPI TestClient.
-- Compiled all Jinja templates and verified the original template bytes are
-  preserved after removing only the added stylesheet and viewport tags.
+- Compiled all Jinja templates; verified home data conditions, loops, form actions
+  and option values remain unchanged after the responsive revision.
+- Checked all three roles across seven pages, one main landmark and one footer
+  per page, and role-specific home controls. Checked JavaScript syntax.
 - Parsed deployment YAML; compiled all nine SQLAlchemy tables to PostgreSQL DDL.
 - Checked database connectivity and table inventory against SQLite.
 
-Not yet executed: live PostgreSQL operations, container builds, Killercoda,
-OpenShift and visual browser QA. This workspace had no container runtime or
-PostgreSQL server; browser installation failed on the download endpoint.
+Not yet executed: live PostgreSQL operations, container builds, Killercoda and
+OpenShift. This workspace has no container runtime or PostgreSQL server.
+The responsive revision was browser-tested locally at 390px, 768px and 1440px;
+home had no horizontal overflow and the mobile Menu/Escape behavior passed.
+Six additional pages passed a 390px horizontal-overflow check.
 DDL compilation is not proof of PostgreSQL workflow compatibility. Complete the
 acceptance checks above before promoting this draft.
 
@@ -169,3 +175,36 @@ acceptance checks above before promoting this draft.
 - [SQLAlchemy database URLs](https://docs.sqlalchemy.org/en/20/core/engines.html)
 - [Official PostgreSQL container](https://hub.docker.com/_/postgres)
 - [OpenShift-oriented PostgreSQL containers](https://github.com/sclorg/postgresql-container)
+
+
+## Responsive UI revision (theme v2)
+
+- Home uses a bounded-width workspace, a clear welcome heading, a two-column
+  action/report grid on desktops and one column on smaller screens.
+- Shared navigation has current-page styling and a keyboard-operable mobile
+  menu with expanded state and Escape-to-close behavior. Without JavaScript,
+  navigation links remain visible.
+- Larger type and controls, visible focus indicators, a skip link, associated
+  form labels, reduced-motion support and keyboard-focusable table scrolling
+  improve accessibility. These are improvements, not a completed WCAG audit.
+- Each full HTML page includes `made with ❤️ CloudTeam` in a shared footer.
+- CSS/JS are local, have no added runtime dependencies or background API calls,
+  and use `?v=2` cache keys. Existing reporting/CDN dependencies are unchanged.
+
+Update the existing lab without removing the database volume:
+
+```bash
+git switch ui-postgres-lab
+git pull --ff-only origin ui-postgres-lab
+docker-compose -p iptt-lab -f compose.postgres.yaml up -d --build --force-recreate app
+curl -fsS 'http://localhost:8080/static/theme.css?v=2' | head
+```
+
+Refresh the browser with Ctrl+Shift+R. If Git reports the earlier local Compose
+fix as an overlapping change, compare it first: the remote file already uses
+`version: "2.4"`. Preserve any other local edits before pulling.
+
+During visual acceptance, check 390px, 768px and desktop widths, 200% zoom,
+keyboard-only navigation, the Menu/Escape behavior, long project names and
+populated tables. Local browser layout checks passed at phone, tablet and desktop widths.
+A full accessibility audit and your deployment acceptance checks remain pending.

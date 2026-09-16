@@ -6,20 +6,19 @@
     <title>{% block title %}IPTT{% endblock %}</title>
     <link rel="stylesheet" href="/static/style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/static/theme.css?v=1">
+<link rel="stylesheet" href="/static/theme.css?v=2">
+<script src="/static/ui.js?v=2" defer></script>
 </head>
-<body>
+<body class="iptt-ui">
+<a class="iptt-skip" href="#iptt-main">Skip to main content</a>
+<main id="iptt-main" tabindex="-1">
 
-    <h1>Integrated Project Tracking Tool</h1>
 
-    <nav>
-        <a href="/programmes">Programmes</a>
-    </nav>
-
-    <hr>
 
     {% block content %}
     {% endblock %}
 
+</main>
+{% include "partials/footer.html" %}
 </body>
 </html>

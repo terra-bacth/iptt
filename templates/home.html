@@ -8,351 +8,30 @@
 
 <title>IPTT Home</title>
 
-<style>
 
-/* =========================================
-PAGE
-========================================= */
-
-body{
-    font-family:Arial,sans-serif;
-    background:#f4f6f8;
-    margin:0;
-    padding:20px;
-    color:#1f2937;
-}
-
-/* =========================================
-TOP NAV
-========================================= */
-
-.top-nav{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:#1f2933;
-    color:white;
-    padding:14px 22px;
-    border-radius:10px;
-    box-shadow:0 2px 6px rgba(0,0,0,0.15);
-}
-
-.top-nav a{
-    color:white;
-    margin-left:18px;
-    text-decoration:none;
-    font-size:14px;
-}
-
-.top-nav a:hover{
-    text-decoration:underline;
-}
-
-/* =========================================
-WELCOME
-========================================= */
-
-.welcome-banner{
-    background:white;
-    margin-top:20px;
-    padding:24px;
-    border-radius:12px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.08);
-}
-
-.welcome-title{
-    font-size:28px;
-    font-weight:bold;
-    margin-bottom:6px;
-}
-
-.welcome-subtitle{
-    color:#6b7280;
-    font-size:15px;
-}
-
-/* =========================================
-LAYOUT
-========================================= */
-
-.container{
-    margin-top:20px;
-}
-
-/* =========================================
-COMMON CARD
-========================================= */
-
-.section-card{
-    background:white;
-    border-radius:12px;
-    padding:20px;
-    margin-bottom:22px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.08);
-}
-
-/* =========================================
-SECTION TITLE
-========================================= */
-
-.section-title{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:18px;
-}
-
-.section-title h3{
-    margin:0;
-    font-size:20px;
-}
-
-/* =========================================
-ACTION BUTTONS
-========================================= */
-
-.action-row{
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-}
-
-.btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-
-    padding:9px 14px;
-
-    background:#2563eb;
-    color:white;
-
-    border-radius:8px;
-    text-decoration:none;
-
-    font-size:13px;
-    font-weight:600;
-
-    transition:0.2s;
-    border:none;
-    cursor:pointer;
-}
-
-.btn:hover{
-    background:#1d4ed8;
-    transform:translateY(-1px);
-}
-
-.btn-dark{
-    background:#374151;
-}
-
-.btn-dark:hover{
-    background:#1f2937;
-}
-
-.btn-green{
-    background:#16a34a;
-}
-
-.btn-green:hover{
-    background:#15803d;
-}
-
-/* =========================================
-START SECTION
-========================================= */
-
-.start-actions{
-    display:flex;
-    gap:14px;
-    flex-wrap:wrap;
-    align-items:center;
-}
-
-.start-actions form{
-    display:flex;
-    gap:10px;
-    align-items:center;
-    margin:0;
-}
-
-select{
-    padding:9px 12px;
-    border-radius:8px;
-    border:1px solid #d1d5db;
-    background:white;
-}
-
-/* =========================================
-PROGRAMME CARD
-========================================= */
-
-.programme-card{
-    border:1px solid #e5e7eb;
-    border-radius:12px;
-    overflow:hidden;
-    margin-bottom:22px;
-    background:#ffffff;
-}
-
-.programme-header{
-    display:flex;
-    justify-content:flex-start;
-    align-items:center;
-    gap:16px;
-
-    background:#f9fafb;
-
-    padding:16px 18px;
-
-    border-bottom:1px solid #e5e7eb;
-}
-
-.programme-name{
-    font-size:18px;
-    font-weight:700;
-    color:#111827;
-}
-
-.programme-meta{
-    font-size:13px;
-    color:#6b7280;
-    margin-top:4px;
-}
-
-/* =========================================
-TABLE
-========================================= */
-
-.proj-table{
-    width:100%;
-    border-collapse:collapse;
-    table-layout:fixed;
-}
-
-.proj-table th{
-    background:#4b5563;
-    color:white;
-    text-align:left;
-    padding:12px;
-    font-size:14px;
-}
-
-.proj-table td{
-    padding:12px;
-    border-bottom:1px solid #eeeeee;
-    font-size:14px;
-    vertical-align:middle;
-}
-
-.proj-table tr:hover{
-    background:#f9fafb;
-}
-
-/* =========================================
-STATUS BADGES
-========================================= */
-
-.status-badge{
-    display:inline-block;
-    padding:5px 10px;
-    border-radius:999px;
-    font-size:12px;
-    font-weight:600;
-}
-
-.status-green{
-    background:#dcfce7;
-    color:#166534;
-}
-
-.status-red{
-    background:#fee2e2;
-    color:#991b1b;
-}
-
-.status-yellow{
-    background:#fef3c7;
-    color:#92400e;
-}
-
-/* =========================================
-ACTION CELL
-========================================= */
-
-.actions{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-}
-
-/* =========================================
-SHOW MORE
-========================================= */
-
-.show-more-btn{
-    margin:14px;
-    border:none;
-    background:#e5e7eb;
-    padding:8px 12px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:600;
-}
-
-.show-more-btn:hover{
-    background:#d1d5db;
-}
-
-/* =========================================
-EMPTY STATE
-========================================= */
-
-.empty-state{
-    padding:25px;
-    text-align:center;
-    color:#6b7280;
-    font-size:15px;
-}
-
-</style>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/static/theme.css?v=1">
+<link rel="stylesheet" href="/static/theme.css?v=2">
+<script src="/static/ui.js?v=2" defer></script>
 </head>
 
-<body>
+<body class="iptt-ui iptt-home">
+<a class="iptt-skip" href="#iptt-main">Skip to main content</a>
+<main id="iptt-main" tabindex="-1">
 
 <!-- =========================================
 TOP NAV
 ========================================= -->
 
-<div class="top-nav">
-
-    <div>
-
-        <b>IPTT</b>
-
+<div class="top-nav" role="navigation" aria-label="Primary">
+    <a class="iptt-brand" href="/home"><span class="iptt-brand-mark" aria-hidden="true">I</span><span>IPTT<small>PROJECT WORKSPACE</small></span></a>
+    <div class="nav-links">
+        <a href="/home" aria-current="page">Overview</a>
+        <a href="/programmes">Programmes</a>
+        {% if user.role == "admin" %}<a href="/users">Users</a>{% endif %}
+        <a href="/profile">Security settings</a>
+        <a href="/logout">Sign out</a>
     </div>
-
-    <div>
-
-        <a href="/home">🏠 Home</a>
-
-        <a href="/programmes">📦 Programmes</a>
-
-        {% if user.role == "admin" %}
-            <a href="/users">👥 Users</a>
-        {% endif %}
-
-        <a href="/logout">🚪 Logout</a>
-        
-        <a href="/profile">⚙️ Security Settings</a>
-
-    </div>
-
 </div>
 
 <!-- =========================================
@@ -360,23 +39,23 @@ WELCOME
 ========================================= -->
 
 <div class="welcome-banner">
+    <p class="iptt-eyebrow">YOUR PROJECT WORKSPACE</p>
 
-    <div class="welcome-title">
+    <h1 class="welcome-title">
 
-        Welcome Back, {{ user.username }}
+        Welcome back, {{ user.username }}
 
-    </div>
+    </h1>
 
     <div class="welcome-subtitle">
 
-        Integrated Project Tracking Tool (IPTT)
-        • Governance • Deployment • Execution Monitoring
+        A clear view of your programmes, delivery progress and next steps.
 
     </div>
 
 </div>
 
-<div class="container">
+<div class="container iptt-home-grid">
 
     <!-- =========================================
     START NEW
@@ -384,11 +63,11 @@ WELCOME
 
     {% if user.role != "viewer" %}
 
-    <div class="section-card">
+    <section class="section-card iptt-create">
 
         <div class="section-title">
 
-            <h3>🧭 Start New Journey</h3>
+            <h2>Start something new</h2>
 
         </div>
 
@@ -396,13 +75,14 @@ WELCOME
 
             <a class="btn" href="/programmes">
 
-                ➕ Create Programme
+                Create Programme
 
             </a>
 
             <form action="/projects" method="get">
 
-                <select name="programme_id">
+                <label class="iptt-field-label" for="home-programme">Select programme</label>
+                <select id="home-programme" name="programme_id">
 
                     {% for prog in programmes %}
 
@@ -418,7 +98,7 @@ WELCOME
 
                 <button class="btn btn-green" type="submit">
 
-                    ➕ Create Project
+                    Create Project
 
                 </button>
 
@@ -426,7 +106,7 @@ WELCOME
 
         </div>
 
-    </div>
+    </section>
 
     {% endif %}
 
@@ -434,11 +114,11 @@ WELCOME
     QUICK REPORTS
     ========================================= -->
 
-    <div class="section-card">
+    <section class="section-card iptt-reports">
 
         <div class="section-title">
 
-            <h3>📊 Quick Reports</h3>
+            <h2>Explore your reports</h2>
 
         </div>
 
@@ -446,35 +126,35 @@ WELCOME
 
             <a class="btn" href="/dashboard">
 
-                📊 Governance Dashboard
+                Governance Dashboard
 
             </a>
 
             <a class="btn btn-dark" href="/programmes">
 
-                📦 Programme View
+                Programme View
 
             </a>
             
             <a class="btn btn-green" href="/circle-dashboard">
             
-                🌍 Circle Intelligence Dashboard
+                Circle Intelligence Dashboard
                 
             </a>
 
         </div>
 
-    </div>
+    </section>
 
     <!-- =========================================
     ONGOING PROJECTS
     ========================================= -->
 
-    <div class="section-card">
+    <section class="section-card iptt-ongoing">
 
         <div class="section-title">
 
-            <h3>▶ Ongoing Projects</h3>
+            <h2>Ongoing projects</h2>
 
         </div>
 
@@ -492,7 +172,7 @@ WELCOME
 
                     <div class="programme-name">
 
-                        📦 {{ programme }}
+                        {{ programme }}
 
                     </div>
 
@@ -509,7 +189,7 @@ WELCOME
                     <a class="btn"
                        href="/programme/{{ projects[0].programme_id }}/executive-dashboard">
 
-                        📈 Programme Dashboard
+                        Programme Dashboard
 
                     </a>
 
@@ -584,7 +264,7 @@ WELCOME
                             <a class="btn btn-dark"
                                href="/project/{{ p.project_id }}/execution">
 
-                                ▶ Execution
+                                Execution
 
                             </a>
 
@@ -593,7 +273,7 @@ WELCOME
                             <a class="btn"
                                href="/project/{{ p.project_id }}/executive-dashboard">
 
-                                📊 Dashboard
+                                Dashboard
 
                             </a>
 
@@ -610,7 +290,8 @@ WELCOME
             {% if projects|length > 5 %}
 
             <button class="show-more-btn"
-                    onclick="toggle('{{ loop.index }}')">
+                    aria-expanded="false" aria-controls="more-{{ loop.index }}"
+                    onclick="toggle('{{ loop.index }}'); this.setAttribute('aria-expanded', document.getElementById('more-{{ loop.index }}').style.display !== 'none')">
 
                 Show More ▼
 
@@ -669,7 +350,7 @@ WELCOME
 
         {% endif %}
 
-    </div>
+    </section>
 
     <!-- =========================================
     SETUP PROJECTS
@@ -677,11 +358,11 @@ WELCOME
 
     {% if user.role != "viewer" %}
 
-    <div class="section-card">
+    <section class="section-card iptt-setup">
 
         <div class="section-title">
 
-            <h3>🛠 Setup Projects</h3>
+            <h2>Projects in setup</h2>
 
         </div>
 
@@ -746,7 +427,7 @@ WELCOME
 
         {% endif %}
 
-    </div>
+    </section>
 
     {% endif %}
 
@@ -754,11 +435,11 @@ WELCOME
     COMPLETED PROJECTS
     ========================================= -->
 
-    <div class="section-card">
+    <section class="section-card iptt-completed">
 
         <div class="section-title">
 
-            <h3>✅ Completed Projects</h3>
+            <h2>Completed projects</h2>
 
         </div>
 
@@ -789,7 +470,7 @@ WELCOME
                     <a class="btn"
                        href="/project/{{ p.project_id }}/executive-dashboard">
 
-                        📊 Executive Dashboard
+                        Executive Dashboard
 
                     </a>
 
@@ -811,7 +492,7 @@ WELCOME
 
         {% endif %}
 
-    </div>
+    </section>
 
 </div>
 
@@ -829,5 +510,7 @@ function toggle(id){
 
 </script>
 
+</main>
+{% include "partials/footer.html" %}
 </body>
 </html>
