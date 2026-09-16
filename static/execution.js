@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Author: Manoj Mishra
-"""
+/* Author: Manoj Mishra
+*/
 
 // ✅ RESET SAFE HEADER
 let executionData = [];

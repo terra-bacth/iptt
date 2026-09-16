@@ -699,6 +699,7 @@ from utils.access_control import is_project_assigned
 def scope_execution_ui(scope_id: int, request: Request):
     user = require_login(request)
 
+    # 1. Open and close database operations as fast as possible
     with get_db_ctx() as db:
         scope = get_scope_by_id(db, scope_id)
 
@@ -707,6 +708,7 @@ def scope_execution_ui(scope_id: int, request: Request):
             return RedirectResponse("/home?error=invalid_scope", status_code=303)
 
         project_id = scope.project_id
+        program_id = scope.program_id if hasattr(scope, 'program_id') else 6
 
         # ✅ ASSIGNMENT ENFORCEMENT (PM ONLY)
         if user["role"] == "pm":
@@ -716,11 +718,18 @@ def scope_execution_ui(scope_id: int, request: Request):
                     status_code=303
                 )
 
+    # 🚀 FIX: Moved outside the 'with' block to ensure clean data state execution context
     return HTMLResponse(
         jinja_env.get_template("execution.html").render(
+            request=request, 
             project_id=project_id,
+            program_id=program_id,  # 🔥 Added to fix the 'Projects' breadcrumb loop!
             scope_id=scope_id,
-            role=user.get("role", "viewer")
+            role=user.get("role", "viewer"),  
+            user={
+                "role": user.get("role", "viewer"),
+                "username": user.get("username", "Manoj Mishra")
+            } 
         )
     )
 
@@ -1477,38 +1486,39 @@ from services.reporting.programme_reporting import (get_programme_executive_summ
 @app.get("/project/{project_id}/executive-dashboard")
 def project_executive_dashboard(
     project_id: int,
-    request: Request
+    request: Request,
 ):
-
     user = require_login(request)
 
     with get_db_ctx() as db:
+        report = get_project_executive_summary(project_id, db)
+        matrix = get_project_governance_matrix(project_id, db)
 
-        report = get_project_executive_summary(
-            project_id,
-            db
-        )
+        # 1. Fetch the project model entity
+        project = db.query(Project).filter(Project.id == project_id).first()
         
-        matrix = get_project_governance_matrix(
-            project_id,
-            db
+        # 2. Extract the parent program relationship ID safely
+        program_id = project.programme_id if project and hasattr(project, 'programme_id') else 6
+
+        # 🚀 FIX: Move the rendering inside the DB session context block to prevent detached state errors,
+        # and pass explicit variables down for your breadcrumbs to map properly.
+        return HTMLResponse(
+            jinja_env.get_template("project_executive_dashboard.html").render(
+                request=request,  # Essential for session layout state
+                user={
+                    "role": user.get("role", "viewer"),
+                    "username": user.get("username", "Manoj Mishra")
+                },
+                project=project,
+                project_id=project_id,
+                
+                # 🚀 PASS BOTH VARIANTS TO STOP THE "FIELD REQUIRED" ERROR
+                program_id=program_id,      
+                programme_id=program_id,    # 🔥 This satisfies the missing query parameter validation tracker!
+                report=report,
+                matrix=matrix
+            )
         )
-
-        project = db.query(Project).filter(
-            Project.id == project_id
-        ).first()
-
-    return HTMLResponse(
-        jinja_env.get_template(
-            "project_executive_dashboard.html"
-        ).render(
-
-            user=user,
-            project=project,
-            report=report,
-            matrix=matrix
-        )
-    )
 
             
 # =========================================

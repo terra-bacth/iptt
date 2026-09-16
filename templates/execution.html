@@ -174,7 +174,7 @@
     <div>
         <a href="/home">🏠 Home</a>
         <a href="/programmes">📦 Programmes</a>
-        <a href="/projects/{{ project_id }}">📂 Projects</a>
+        <a href="/projects/{{ program_id }}">📂 Projects</a>
         <a href="/logout">🚪 Logout</a>
         
         {% if role == "admin" %}
@@ -220,15 +220,12 @@
 <div id="executionContainer"></div>
 
 <script>
-  const USER_ROLE = "{{ role | default('user') }}";  // backend will populate later
-</script>
-
-<script>
+  const USER_ROLE = "{{ role | default('viewer') }}";
   const PROJECT_ID = {{ project_id | default(0) }};
   const SCOPE_ID = {{ scope_id | default(0) }};
 </script>
 
-<script src="/static/execution.js"></script>
+<script src="/static/execution.js?v=1.0.1"></script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
