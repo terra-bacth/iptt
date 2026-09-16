@@ -296,8 +296,46 @@ def create_programme_ui(
 
 
 @app.get("/projects")
-def projects_entry(programme_id: int):
-    return RedirectResponse(f"/projects/{programme_id}")
+def projects_entry(request: Request, programme_id: str | None = None):
+    """Entry point for /projects.
+
+    The programme id is optional. The home page form omits it while a programme
+    list is empty, so instead of failing request validation the user is
+    forwarded to the first programme they can open, or to the programme list.
+    """
+
+    user = require_login(request)
+
+    if programme_id and programme_id.strip().isdigit():
+        return RedirectResponse(f"/projects/{int(programme_id)}", status_code=303)
+
+    with get_db_ctx() as db:
+
+        if user["role"] == "admin":
+            programmes = db.query(Programme).order_by(Programme.name).all()
+        elif user["role"] == "pm":
+            project_ids = [
+                a.project_id
+                for a in db.query(ProjectAssignment).filter(
+                    ProjectAssignment.user_id == user["id"]
+                ).all()
+            ]
+            programme_ids = {
+                p.programme_id
+                for p in db.query(Project).filter(Project.id.in_(project_ids)).all()
+                if p.programme_id
+            }
+            programmes = [
+                p for p in db.query(Programme).order_by(Programme.name).all()
+                if p.id in programme_ids
+            ]
+        else:
+            programmes = db.query(Programme).order_by(Programme.name).all()
+
+        if len(programmes) == 1:
+            return RedirectResponse(f"/projects/{programmes[0].id}", status_code=303)
+
+    return RedirectResponse("/programmes", status_code=303)
 
 
 @app.get("/projects/{programme_id}", response_class=HTMLResponse)

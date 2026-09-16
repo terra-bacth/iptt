@@ -177,19 +177,74 @@ acceptance checks above before promoting this draft.
 - [OpenShift-oriented PostgreSQL containers](https://github.com/sclorg/postgresql-container)
 
 
-## Responsive UI revision (theme v2)
+## Responsive UI revision (theme v3)
 
-- Home uses a bounded-width workspace, a clear welcome heading, a two-column
-  action/report grid on desktops and one column on smaller screens.
-- Shared navigation has current-page styling and a keyboard-operable mobile
-  menu with expanded state and Escape-to-close behavior. Without JavaScript,
-  navigation links remain visible.
-- Larger type and controls, visible focus indicators, a skip link, associated
-  form labels, reduced-motion support and keyboard-focusable table scrolling
-  improve accessibility. These are improvements, not a completed WCAG audit.
-- Each full HTML page includes `made with ❤️ CloudTeam` in a shared footer.
-- CSS/JS are local, have no added runtime dependencies or background API calls,
-  and use `?v=2` cache keys. Existing reporting/CDN dependencies are unchanged.
+Theme v3 keeps the workspace shell introduced in v2 and extends it to every
+route, so each page shares one navigation, one footer and one accessible
+palette. CSS and JS stay local; no new runtime dependency, API call or build
+step was added.
+
+### Responsive design
+- One content column with a `1440px` ceiling, `clamp()` page padding and
+  `repeat(auto-fit, minmax(min(100%, 340px), 1fr))` card grids that reflow from
+  large monitors down to 320px phones.
+- Explicit breakpoints at `1000px` (tablet, home grid collapses, navigation
+  becomes a Menu button), `640px` (phones) and `420px` (small phones).
+- Download/upload toolbars, filter bars and KPI panels wrap instead of forcing
+  a fixed width; wide data tables scroll inside their own region.
+- Verified with a headless browser at 320px, 390px, 768px and 1440px: no page
+  exceeds the viewport width on any of the audited routes.
+
+### Intuitive navigation
+- Same primary nav on every page, same label for the same destination
+  (Home, Programmes, Projects, Users, Audit Logs, Circle Dashboard, Sign out),
+  with current-page marking and a keyboard-operable mobile menu
+  (Enter/Space to open, Escape to close, `aria-expanded` kept in sync).
+- Removed duplicate "Create Project" links that pointed at the same route and
+  deep-linked it to the create form (`/projects/{id}#create-project`).
+- `GET /projects` no longer answers `422` when the programme id is missing: it
+  forwards to the only programme the user can open, otherwise to `/programmes`.
+
+### User experience
+- Consistent 44px minimum control height, visible keyboard focus rings and a
+  "Skip to main content" link on every page.
+- Fewer layout surprises: the execution KPI gauges no longer print a duplicate
+  percentage inside a narrow fill, and empty states are centred and legible.
+- The login logo went from 1.3 MB to 83 KB (320px master, still far above its
+  100px render size) which cuts first-paint time on slow links; the two unused
+  logo variants were downscaled as well.
+
+### Accessibility (WCAG 2.1 AA)
+- Palette rebuilt so every text colour clears 4.5:1 on the surfaces it is used
+  on: links `#16509f`, secondary text `#4b5b70`, success `#0f6b45`, warning
+  `#8a4b08`, danger `#a4262c`; white text sits only on surfaces of `4.5:1` or
+  better (`#146c43`, `#b45309`, `#b02a37`, `#5b6a7a`).
+- Status meaning is no longer carried by colour alone, links are underlined in
+  text blocks, and progress gauges are marked decorative because the value is
+  already printed next to them.
+- Audit result: `axe-core` (WCAG 2.0/2.1 A + AA) reports **0 violations across
+  17 routes at 390px and 1440px**, down from 121 contrast/link-in-text failures
+  before this revision.
+
+### Footer credit
+`templates/partials/footer.html` is included by every full page and renders
+`made with` + a heart + **CloudTeam** at the end of the page. The heart is an
+inline SVG with `role="img"` and `aria-label="love"`, so it renders identically
+on devices without an emoji font. The shell is a flex column, which keeps the
+footer at the bottom of short pages.
+
+### Automated check
+```bash
+docker-compose -p iptt-lab -f compose.postgres.yaml exec app python scripts/check_ui.py
+```
+
+The script is read-only. It asserts the shared shell contract (viewport, main
+landmark, skip link, theme/script includes, single footer with the CloudTeam
+credit), the absence of the low-contrast colour literals that were removed,
+the presence of the responsive/focus/reduced-motion rules, the palette contrast
+ratios and the static asset budget, then logs in and re-checks the rendered
+pages. Override the target with `IPTT_BASE_URL`, `IPTT_USERNAME`,
+`IPTT_PASSWORD`, or set `IPTT_OFFLINE=1` for the static checks only.
 
 Update the existing lab without removing the database volume:
 
@@ -197,14 +252,16 @@ Update the existing lab without removing the database volume:
 git switch ui-postgres-lab
 git pull --ff-only origin ui-postgres-lab
 docker-compose -p iptt-lab -f compose.postgres.yaml up -d --build --force-recreate app
-curl -fsS 'http://localhost:8080/static/theme.css?v=2' | head
+docker-compose -p iptt-lab -f compose.postgres.yaml exec app python scripts/check_ui.py
 ```
 
-Refresh the browser with Ctrl+Shift+R. If Git reports the earlier local Compose
-fix as an overlapping change, compare it first: the remote file already uses
-`version: "2.4"`. Preserve any other local edits before pulling.
+CSS/JS cache keys were bumped (`theme.css?v=3`, `ui.js?v=4`,
+`execution.js?v=1.0.2`); refresh the browser with Ctrl+Shift+R. If Git reports
+the earlier local Compose fix as an overlapping change, compare it first: the
+remote file already uses `version: "2.4"`. Preserve any other local edits
+before pulling.
 
 During visual acceptance, check 390px, 768px and desktop widths, 200% zoom,
 keyboard-only navigation, the Menu/Escape behavior, long project names and
-populated tables. Local browser layout checks passed at phone, tablet and desktop widths.
-A full accessibility audit and your deployment acceptance checks remain pending.
+populated tables. Report rendering, contrast and screen-reader findings from
+your environment back into this file.

@@ -37,7 +37,7 @@
 
     .back-link a {
         text-decoration: none;
-        color: #0078d4;
+        color: #16509f;
     }
 
     .page-header {
@@ -53,7 +53,7 @@
     .save-btn {
         padding: 8px 14px;
         border-radius: 4px;
-        background: #28a745;
+        background: #146c43;
         color: white;
         border: none;
     }
@@ -69,7 +69,7 @@
     .upload-btn {
         padding: 8px 14px;
         border-radius: 4px;
-        background: #ff9800;
+        background: #b45309;
         color: white;
         border: none;
     }
@@ -116,11 +116,13 @@
         cursor: pointer;
         border: none;
         border-radius: 4px;
-        background: #e0e0e0;
+        background: #5b6a7a;
+        color: white;
+        font-weight: 600;
     }
 
     #filterBar button.active {
-        background-color: #0078d4;
+        background-color: #16509f;
         color: white;
     }
 
@@ -137,7 +139,7 @@
         padding: 4px 8px;
         font-size: 11px;
         border-radius: 4px;
-        background-color: #28a745;
+        background-color: #146c43;
         color: white;
         border: none;
     }
@@ -165,8 +167,8 @@
 
   </style>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/static/theme.css?v=2">
-<script src="/static/ui.js?v=2" defer></script>
+<link rel="stylesheet" href="/static/theme.css?v=3">
+<script src="/static/ui.js?v=4" defer></script>
 </head>
 
 <body class="iptt-ui">
@@ -177,13 +179,13 @@
 <div class="top-nav">
     <div><strong>IPTT</strong></div>
     <div>
-        <a href="/home">🏠 Home</a>
-        <a href="/programmes">📦 Programmes</a>
+        <a href="/home">Home</a>
+        <a href="/programmes">Programmes</a>
         <a href="/projects/{{ program_id }}">📂 Projects</a>
-        <a href="/logout">🚪 Logout</a>
+        <a href="/logout">Sign out</a>
         
         {% if role == "admin" %}
-        <a href="/audit-logs">📜 Audit Logs</a>
+        <a href="/audit-logs">Audit Logs</a>
         {% endif %}
     </div>
 </div>
@@ -203,7 +205,7 @@
 
     <button class="download-btn" onclick="downloadExecution()">📥 Download</button>
 
-    <span style="margin-left:20px;">
+    <span class="upload-group">
         <input type="file" id="excelFile">
         <button class="upload-btn" onclick="uploadExcel()">📤 Upload</button>
     </span>
@@ -230,7 +232,7 @@
   const SCOPE_ID = {{ scope_id | default(0) }};
 </script>
 
-<script src="/static/execution.js?v=1.0.1"></script>
+<script src="/static/execution.js?v=1.0.2"></script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {

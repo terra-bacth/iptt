@@ -143,7 +143,7 @@ body {
 
     font-size: 12px;
 
-    color: #666;
+    color: #4b5b70;
 
     margin-bottom: 10px;
 
@@ -393,19 +393,19 @@ body {
 
     <div>
 
-        <a href="/home">🏠 Home</a>
+        <a href="/home">Home</a>
         
-        <a href="/programmes">📦 Programmes</a>
+        <a href="/programmes">Programmes</a>
 
         <a href="/projects/{{ project.programme_id }}">
             📂 Projects
         </a>
 
         {% if user.role == "admin" %}
-            <a href="/users">👥 Users</a>
+            <a href="/users">Users</a>
         {% endif %}
 
-        <a href="/logout">🚪 Logout</a>
+        <a href="/logout">Sign out</a>
 
     </div>
 
@@ -457,7 +457,7 @@ body {
 
         <button onclick="location.reload()"
                 style="
-                    background:#16a34a;
+                    background: #146c43;
                     color:white;
                     border:none;
                     padding:10px 16px;
@@ -521,7 +521,7 @@ body {
             {{ report.kpis.progress }}%
         </div>
         
-        <div class="progress-wrapper">
+        <div class="progress-wrapper" aria-hidden="true">
         
             <div class="progress-bar"
         
@@ -530,8 +530,6 @@ body {
                     background:#2563eb;
                 "
             >
-        
-                {{ report.kpis.progress }}%
         
             </div>
         
@@ -553,7 +551,7 @@ body {
 
         </div>
 
-        <div class="progress-wrapper">
+        <div class="progress-wrapper" aria-hidden="true">
 
             <div class="progress-bar"
 
@@ -561,7 +559,7 @@ body {
                     width: {{ report.kpis.health }}%;
 
                     {% if report.kpis.health >= 80 %}
-                        background: #16a34a;
+                        background: #146c43;
 
                     {% elif report.kpis.health >= 50 %}
                         background: #f59e0b;
@@ -572,8 +570,6 @@ body {
                     {% endif %}
                 "
             >
-
-                {{ report.kpis.health }}%
 
             </div>
 
@@ -603,7 +599,7 @@ body {
             Delayed Items
         </div>
 
-        <div class="kpi-value" style="color:#d13438;">
+        <div class="kpi-value" style="color: #a4262c;">
             {{ report.delayed_count }}
         </div>
 
@@ -791,7 +787,7 @@ body {
 
     <div style="
         margin-top:10px;
-        color:#6b7280;
+        color: #4b5b70;
         font-size:13px;
     ">
 
@@ -847,7 +843,7 @@ body {
         style="
             text-align:center;
             padding:20px;
-            color:gray;
+            color: #4b5b70;
         ">
 
         ✅ No critical risk nodes found
@@ -882,19 +878,19 @@ body {
 
         {% if item.max_delay > 15 %}
 
-            <span style="color:red; font-weight:bold;">
+            <span style="color: #a4262c; font-weight:bold;">
                 🔴 {{ item.max_delay }} days
             </span>
 
         {% elif item.max_delay > 7 %}
 
-            <span style="color:#ff9800; font-weight:bold;">
+            <span style="color: #8a4b08; font-weight:bold;">
                 🟠 {{ item.max_delay }} days
             </span>
 
         {% else %}
 
-            <span style="color:green; font-weight:bold;">
+            <span style="color: #0f6b45; font-weight:bold;">
                 🟢 {{ item.max_delay }} days
             </span>
 
@@ -948,7 +944,7 @@ body {
         </div>
 
         <div class="kpi-value"
-             style="color:#dc2626;">
+             style="color: #a4262c;">
 
             {{ report.leadership_summary.open }}
 
@@ -966,7 +962,7 @@ body {
         </div>
 
         <div class="kpi-value"
-             style="color:#f59e0b;">
+             style="color: #8a4b08;">
 
             {{ report.leadership_summary.in_progress }}
 
@@ -984,7 +980,7 @@ body {
         </div>
 
         <div class="kpi-value"
-             style="color:#16a34a;">
+             style="color: #0f6b45;">
 
             {{ report.leadership_summary.closed }}
 
@@ -1187,7 +1183,7 @@ body {
         style="
             text-align:center;
             padding:20px;
-            color:gray;
+            color: #4b5b70;
         ">
 
         ✅ No leadership actions pending
@@ -1230,7 +1226,7 @@ body {
         {% if item.priority == "High" %}
 
             <span style="
-                color:red;
+                color: #a4262c;
                 font-weight:bold;
             ">
                 🔴 High
@@ -1239,7 +1235,7 @@ body {
         {% elif item.priority == "Medium" %}
 
             <span style="
-                color:#ff9800;
+                color: #8a4b08;
                 font-weight:bold;
             ">
                 🟠 Medium
@@ -1248,7 +1244,7 @@ body {
         {% else %}
 
             <span style="
-                color:green;
+                color: #0f6b45;
                 font-weight:bold;
             ">
                 🟢 Low
@@ -1373,7 +1369,7 @@ body {
     
             <button type="submit"
                     style="
-                        background:#16a34a;
+                        background: #146c43;
                         color:white;
                         border:none;
                         padding:5px;
@@ -1444,7 +1440,7 @@ body {
         {% else %}
     
             <span style="
-                color:green;
+                color: #0f6b45;
                 font-weight:bold;
             ">
     
@@ -1553,19 +1549,19 @@ body {
 
         {% if item.status == "Healthy" %}
 
-            <span style="color:green; font-weight:bold;">
+            <span style="color: #0f6b45; font-weight:bold;">
                 🟢 Healthy
             </span>
 
         {% elif item.status == "Attention" %}
 
-            <span style="color:#ff9800; font-weight:bold;">
+            <span style="color: #8a4b08; font-weight:bold;">
                 🟠 Attention
             </span>
 
         {% else %}
 
-            <span style="color:red; font-weight:bold;">
+            <span style="color: #a4262c; font-weight:bold;">
                 🔴 Critical
             </span>
 
@@ -1630,7 +1626,7 @@ body {
         style="
             text-align:center;
             padding:20px;
-            color:gray;
+            color: #4b5b70;
         ">
 
         ✅ No delayed execution items
@@ -1658,7 +1654,7 @@ body {
         {% if item.delay > 15 %}
 
             <span style="
-                color:red;
+                color: #a4262c;
                 font-weight:bold;
             ">
                 🔴 {{ item.delay }} days
@@ -1667,7 +1663,7 @@ body {
         {% elif item.delay > 5 %}
 
             <span style="
-                color:#ff9800;
+                color: #8a4b08;
                 font-weight:bold;
             ">
                 🟠 {{ item.delay }} days
@@ -1676,7 +1672,7 @@ body {
         {% else %}
 
             <span style="
-                color:green;
+                color: #0f6b45;
                 font-weight:bold;
             ">
                 🟢 {{ item.delay }} days
@@ -1739,7 +1735,7 @@ body {
         style="
             text-align:center;
             padding:20px;
-            color:gray;
+            color: #4b5b70;
         ">
 
         ✅ No stage aging issues found
@@ -1774,19 +1770,19 @@ body {
 
         {% if item.risk == "Healthy" %}
 
-            <span style="color:green; font-weight:bold;">
+            <span style="color: #0f6b45; font-weight:bold;">
                 🟢 Healthy
             </span>
 
         {% elif item.risk == "Attention" %}
 
-            <span style="color:#ff9800; font-weight:bold;">
+            <span style="color: #8a4b08; font-weight:bold;">
                 🟠 Attention
             </span>
 
         {% else %}
 
-            <span style="color:red; font-weight:bold;">
+            <span style="color: #a4262c; font-weight:bold;">
                 🔴 Critical
             </span>
 

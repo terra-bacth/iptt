@@ -36,7 +36,7 @@ h2 {
     font-size: 11px;
     border: none;
     border-radius: 3px;
-    background-color: #28a745;
+    background-color: #146c43;
     color: white;
     cursor: pointer;
 }
@@ -142,7 +142,7 @@ td {
 }
 
 .progress-bar-bg {
-  background: #e0e0e0;
+  background: #e4ebf3;
   border-radius: 6px;
   height: 10px;
   overflow: hidden;

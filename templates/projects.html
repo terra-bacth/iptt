@@ -44,7 +44,7 @@
 
     .breadcrumb a {
         text-decoration: none;
-        color: #0078d4;
+        color: #16509f;
     }
 
     .breadcrumb span {
@@ -78,7 +78,7 @@
 
     .project-meta {
         font-size: 13px;
-        color: #555;
+        color: #4b5b70;
         margin-bottom: 10px;
     }
 
@@ -94,7 +94,7 @@
        
     .step-locked {
         background: #eeeeee;
-        color: #777;
+        color: #4b5b70;
     }
 
 
@@ -103,13 +103,13 @@
         margin-right: 10px;
         margin-top: 5px;
         text-decoration: none;
-        color: #0078d4;
+        color: #16509f;
         font-size: 13px;
     }
 
     /* ✅ Progress */
     .progress-bar {
-        background: #e0e0e0;
+        background: #e4ebf3;
         border-radius: 5px;
         height: 6px;
         margin-top: 6px;
@@ -133,22 +133,22 @@
 <div class="top-nav">
     <div class="app-title">IPTT</div>
     <div class="nav-links">
-        <a href="/home">🏠 Home</a>
-        <a href="/programmes">📦 Programmes</a>
+        <a href="/home">Home</a>
+        <a href="/programmes">Programmes</a>
         
         {% if user.role == "admin" %}
-            <a href="/users">👥 Users</a>
+            <a href="/users">Users</a>
         {% endif %}
 
-        <a href="/logout">🚪 Logout</a>
+        <a href="/logout">Sign out</a>
     </div>
 </div>
 
 <!-- ✅ BREADCRUMB -->
 <div class="breadcrumb">
-    <a href="/home">🏠 Home</a>
+    <a href="/home">Home</a>
     <span>></span>
-    <a href="/programmes">📦 Programmes</a>
+    <a href="/programmes">Programmes</a>
     <span>></span>
     <span class="current">📂 Projects</span>
 </div>
@@ -164,7 +164,7 @@
 <h2>Projects</h2>
 
 <!-- ✅ CREATE PROJECT -->
-<div class="project-card">
+<div class="project-card" id="create-project">
     <h3>Create New Project</h3>
     <form method="post">
         <input type="text" name="name" placeholder="Project Name" required>
@@ -186,17 +186,17 @@
     {{ p.name }}
 
     {% if p.baseline_locked %}
-        <span style="color:red; font-size:12px; margin-left:8px;">
+        <span style="color: #a4262c; font-size:12px; margin-left:8px;">
             🔒 Locked
         </span>
     {% endif %}
 
     {% if p.baseline_locked %}
-        <span style="font-size:12px; color:#555; margin-left:10px;">
+        <span style="font-size:12px; color: #4b5b70; margin-left:10px;">
             Version 2+
         </span>
     {% else %}
-        <span style="font-size:12px; color:#555; margin-left:10px;">
+        <span style="font-size:12px; color: #4b5b70; margin-left:10px;">
             Version 1
         </span>
     {% endif %}
@@ -216,7 +216,7 @@
                 style="
                     border:none;
                     background:#fde7e9;
-                    color:#d13438;
+                    color: #a4262c;
                     cursor:pointer;
                     font-size:13px;
                     padding:5px 10px;
@@ -234,7 +234,7 @@
 <div class="project-meta">
     
     {% if project_status[p.id].setup_completed %}
-        <strong style="color: #107c41;">
+        <strong style="color: #0f6b45;">
             ✅ Setup Completed
         </strong>
     {% else %}
@@ -263,7 +263,7 @@
 
                 <span style="
                     background:#e7f3ff;
-                    color:#0078d4;
+                    color: #16509f;
                     padding:4px 8px;
                     border-radius:4px;
                 ">
@@ -284,7 +284,7 @@
                     {% endfor %}
 
                     <button type="submit"
-                            style="border:none;background:none;color:red;cursor:pointer;font-size:12px;">
+                            style="border:none;background:none;color: #a4262c;cursor:pointer;font-size:12px;">
                         ❌
                     </button>
                 </form>
@@ -294,7 +294,7 @@
 
         {% endfor %}
     {% else %}
-        <span style="color:#777;">None</span>
+        <span style="color: #4b5b70;">None</span>
     {% endif %}
 </div>
 
@@ -392,7 +392,7 @@
             padding:10px;
             border-radius:6px;
             font-size:13px;
-            color:#777;
+            color: #4b5b70;
         ">
             🔒 <strong>Baseline Locked</strong><br>
             Execution has started. Original baseline is now locked.
@@ -425,7 +425,7 @@
             padding:10px;
             border-radius:6px;
             font-size:13px;
-            color:#777;
+            color: #4b5b70;
         ">
         
             🔒 <strong>Baseline Locked</strong><br>
@@ -449,7 +449,7 @@
                 ▶ Start / Continue Execution
             </a>
         {% else %}
-            <span style="color: #888;">
+            <span style="color: #4b5b70;">
                 🔒 Execution Locked (Complete setup first)
             </span>
         {% endif %}
@@ -472,7 +472,7 @@
         <div style="
             margin-top:8px;
             font-size:12px;
-            color:#666;
+            color: #4b5b70;
             line-height:1.5;
         ">
     
@@ -494,7 +494,7 @@
         <div style="
             margin-top:8px;
             font-size:12px;
-            color:#666;
+            color: #4b5b70;
             line-height:1.5;
         ">
     

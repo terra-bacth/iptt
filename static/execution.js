@@ -154,7 +154,7 @@ async function autoSaveField(el) {
   }
 
   // ✅ INPUT SUCCESS FEEDBACK
-  el.style.border = "2px solid green";
+  el.style.border = "2px solid #0f6b45";
 
   setTimeout(() => {
     el.style.border = "";
@@ -175,7 +175,7 @@ window.toggleOverride = async function() {
   const btn = document.getElementById("overrideBtn");
 
   btn.innerText = overrideMode ? "🔓 Override ON" : "🔒 Override OFF";
-  btn.style.backgroundColor = overrideMode ? "#dc3545" : "#6c757d";
+  btn.style.backgroundColor = overrideMode ? "#b02a37" : "#5b6a7a";
 
   // ✅ audit log
   await fetch("/api/execution/log-override", {
@@ -254,9 +254,9 @@ function renderGrid() {
         const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
         
         // ✅ ADD COLOR LOGIC HERE
-        let color = "red";
-        if (percent === 100) color = "green";
-        else if (percent > 0) color = "orange";
+        let color = "#a4262c";
+        if (percent === 100) color = "#0f6b45";
+        else if (percent > 0) color = "#8a4b08";
 
 
         const autoOpen = false;
@@ -315,8 +315,8 @@ function renderGrid() {
             <td>
               ${
                 t.revised_start
-                  ? `<span style="color:green; font-weight:600;">${t.revised_start}</span>
-                     <br><small style="color:#888;">Planned: ${t.planned_start}</small>`
+                  ? `<span style="color: #0f6b45; font-weight:600;">${t.revised_start}</span>
+                     <br><small style="color: #4b5b70;">Planned: ${t.planned_start}</small>`
                   : (t.planned_start || "")
               }
             </td>
@@ -324,8 +324,8 @@ function renderGrid() {
             <td>
               ${
                 t.revised_finish
-                  ? `<span style="color:green; font-weight:600;">${t.revised_finish}</span>
-                     <br><small style="color:#888;">Planned: ${t.planned_finish}</small>`
+                  ? `<span style="color: #0f6b45; font-weight:600;">${t.revised_finish}</span>
+                     <br><small style="color: #4b5b70;">Planned: ${t.planned_finish}</small>`
                   : (t.planned_finish || "")
               }
             </td>
@@ -446,7 +446,7 @@ async function quickComplete(btn, scope_id, task_id) {
 
   // ✅ SUCCESS UI UPDATE (no reload)
   btn.innerText = "✔ Completed";
-  btn.style.backgroundColor = "#6c757d";
+  btn.style.backgroundColor = "#5b6a7a";
 
   // ✅ update row visually
   const row = btn.closest("tr");
