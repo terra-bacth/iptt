@@ -1,5 +1,8 @@
 # Deploying IPTT on OpenShift — Airgapped Cluster (IPv6)
 
+For the UI refresh and separate PostgreSQL lab, see
+[Killercoda → OpenShift test guide](docs/UI-POSTGRES-LAB.md).
+
 Your cluster has no internet access, so the app is **not** built on the cluster.
 Instead:
 
