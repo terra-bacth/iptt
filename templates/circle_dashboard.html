@@ -1,221 +1,52 @@
-
 {% extends "base.html" %}
-
 {% block content %}
-
-<style>
-
-
-body{
-    background:#f5f7fa;
-}
-
-
-
-.breadcrumb{
-    margin-bottom:15px;
-    font-size:14px;
-}
-
-.breadcrumb a{
-    color: #16509f;
-    text-decoration:none;
-}
-
-.section{
-    background:white;
-    border-radius:10px;
-    padding:18px;
-    margin-bottom:20px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
-.kpi-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:16px;
-    margin-bottom:20px;
-}
-
-.kpi-card{
-    background:white;
-    padding:18px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
-.kpi-title{
-    font-size:13px;
-    color: #4b5b70;
-}
-
-.kpi-value{
-    font-size:28px;
-    font-weight:bold;
-    margin-top:6px;
-}
-
-.blue{
-    border-left:5px solid #0078d4;
-}
-
-.green{
-    border-left:5px solid #16a34a;
-}
-
-.orange{
-    border-left:5px solid #f59e0b;
-}
-
-.red{
-    border-left:5px solid #dc2626;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th{
-    background:#f3f4f6;
-    padding:10px;
-    text-align:left;
-}
-
-td{
-    padding:10px;
-    border-bottom:1px solid #e5e7eb;
-}
-
-.circle-link{
-    font-weight:600;
-    text-decoration:none;
-    color:#2563eb;
-}
-
-.circle-link:hover{
-    text-decoration:underline;
-}
-
-</style>
-
-<!-- TOP NAV -->
-
 {% include "partials/nav.html" %}
 
-<!-- BREADCRUMB -->
-
 <div class="breadcrumb">
-
     <a href="/home">Home</a>
-
-    >
-
-    <span>Circle Intelligence Dashboard</span>
-
+    <span>›</span>
+    <span style="padding:4px 10px; border-radius:999px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.10)">Circle Intelligence Dashboard</span>
 </div>
 
-<!-- PAGE HEADER -->
-
-<div class="section">
-
-    <h2>🌍 Circle Intelligence Dashboard</h2>
-
-    <div style="color: #4b5b70;">
-
-        Portfolio-wide visibility across circles,
-        facilities, programmes, projects and nodes.
-
+<div class="section-card" style="padding:24px; margin-bottom:20px; background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06)); border:1px solid rgba(255,255,255,0.10); backdrop-filter:blur(20px); box-shadow:0 24px 64px rgba(0,0,0,0.32); color:white">
+    <div style="display:flex; justify-content:space-between; align-items:end; flex-wrap:wrap; gap:12px">
+        <div>
+            <div style="font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:700; color:#A5B8FF; margin-bottom:8px">Portfolio-wide Visibility</div>
+            <h2 style="margin:0; font-size:28px; letter-spacing:-0.03em; line-height:1; color:white">🌍 Circle <span style="font-family:'Instrument Serif'; font-style:italic; color:#D8B4FE; font-weight:400">Intelligence</span> Dashboard</h2>
+            <div style="margin-top:8px; color:rgba(230,234,242,0.58); font-size:13px">Portfolio-wide visibility across circles, facilities, programmes, projects and nodes.</div>
+        </div>
+        <span class="status-badge status-green" style="background:rgba(255,255,255,0.10); color:white; border-color:rgba(255,255,255,0.14)">● {{ total_circles }} Circles • {{ total_nodes }} Nodes</span>
     </div>
-
 </div>
-
-<!-- KPI SECTION -->
 
 <div class="kpi-grid">
-
-    <div class="kpi-card blue">
-        <div class="kpi-title">Total Circles</div>
-        <div class="kpi-value">{{ total_circles }}</div>
-    </div>
-
-    <div class="kpi-card green">
-        <div class="kpi-title">Total Facilities</div>
-        <div class="kpi-value">{{ total_facilities }}</div>
-    </div>
-
-    <div class="kpi-card orange">
-        <div class="kpi-title">Active Programmes</div>
-        <div class="kpi-value">{{ total_programmes }}</div>
-    </div>
-
-    <div class="kpi-card blue">
-        <div class="kpi-title">Active Projects</div>
-        <div class="kpi-value">{{ total_projects }}</div>
-    </div>
-
-    <div class="kpi-card green">
-        <div class="kpi-title">Total Nodes</div>
-        <div class="kpi-value">{{ total_nodes }}</div>
-    </div>
-
-    <div class="kpi-card red">
-        <div class="kpi-title">Completed Nodes</div>
-        <div class="kpi-value">{{ completed_nodes }}</div>
-    </div>
-
+    <div class="kpi-card"><div class="kpi-label">Total Circles</div><div class="kpi-value">{{ total_circles }}</div><div class="progress-wrapper"><div class="progress-bar" style="width:100%"></div></div></div>
+    <div class="kpi-card"><div class="kpi-label">Total Facilities</div><div class="kpi-value">{{ total_facilities }}</div><div class="progress-wrapper"><div class="progress-bar" style="width:84%; background:linear-gradient(90deg,#0EB368,#06B6D4)"></div></div></div>
+    <div class="kpi-card"><div class="kpi-label">Active Programmes</div><div class="kpi-value">{{ total_programmes }}</div><div class="progress-wrapper"><div class="progress-bar" style="width:72%"></div></div></div>
+    <div class="kpi-card"><div class="kpi-label">Active Projects</div><div class="kpi-value">{{ total_projects }}</div><div class="progress-wrapper"><div class="progress-bar" style="width:78%"></div></div></div>
+    <div class="kpi-card"><div class="kpi-label">Total Nodes</div><div class="kpi-value">{{ total_nodes }}</div><div class="progress-wrapper"><div class="progress-bar" style="width:88%"></div></div></div>
+    <div class="kpi-card" style="border-left:4px solid #0EB368"><div class="kpi-label">Completed Nodes</div><div class="kpi-value" style="color:#0E7A4C">{{ completed_nodes }}</div><div class="progress-wrapper"><div class="progress-bar" style="width:{{ (completed_nodes / total_nodes * 100) | round(0) if total_nodes else 0 }}%; background:linear-gradient(90deg,#0EB368,#06B6D4)"></div></div></div>
 </div>
 
-<!-- CIRCLE TABLE -->
-
-<div class="section">
-
-    <h3>🌍 Circle Summary</h3>
-
+<div class="section-card">
+    <div class="section-title">
+        <h3>🌍 Circle Summary</h3>
+        <span style="font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#64748B; font-family:'JetBrains Mono'">Drill-down enabled</span>
+    </div>
     <table>
-
-        <tr>
-            <th>Circle</th>
-            <th>Facilities</th>
-            <th>Programmes</th>
-            <th>Projects</th>
-            <th>Total Nodes</th>
-            <th>Completed</th>
-            <th>WIP</th>
-            <th>Progress</th>
-        </tr>
-
+        <tr><th>Circle</th><th>Facilities</th><th>Programmes</th><th>Projects</th><th>Total Nodes</th><th>Completed</th><th>WIP</th><th>Progress</th></tr>
         {% for row in circle_data %}
-
         <tr>
-
-            <td>
-                <a class="circle-link"
-                   href="/circle/{{ row.circle }}">
-                    {{ row.circle }}
-                </a>
-            </td>
-
+            <td><a href="/circle/{{ row.circle }}" style="font-weight:700; color:#4F6EF7; text-decoration:none; padding:6px 10px; border-radius:999px; background:#EEF2FF; border:1px solid #E0E7FF">{{ row.circle }}</a></td>
             <td>{{ row.facilities }}</td>
-
             <td>{{ row.programmes }}</td>
-
             <td>{{ row.projects }}</td>
-
-            <td>{{ row.total_nodes }}</td>
-
-            <td>{{ row.completed_nodes }}</td>
-
-            <td>{{ row.wip_nodes }}</td>
-
-            <td>{{ row.progress }}%</td>
-
+            <td><b>{{ row.total_nodes }}</b></td>
+            <td><span class="status-badge status-green">{{ row.completed_nodes }}</span></td>
+            <td><span class="status-badge status-yellow">{{ row.wip_nodes }}</span></td>
+            <td><div style="display:flex; align-items:center; gap:8px"><div style="width:56px; height:6px; background:#E2E8F0; border-radius:999px; overflow:hidden"><i style="display:block; height:100%; width:{{ row.progress }}%; background:linear-gradient(90deg,#5B7FFF,#8B5CF6)"></i></div>{{ row.progress }}%</div></td>
         </tr>
-
         {% endfor %}
-
     </table>
-
 </div>
-
 {% endblock %}

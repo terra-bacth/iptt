@@ -1,421 +1,317 @@
-/* IPTT workspace theme v4. Local assets; presentation only.
-   Shared presentation only. Keep status colours and existing JS hooks intact.
-   The body prefix outranks page-local class selectors, including child templates.
-
-   Sections
-     1. Design tokens
-     2. App shell (page frame + footer)
-     3. Navigation
-     4. Buttons, links and form controls
-     5. Cards, tables and status colours
-     6. Contrast repairs for legacy page styles
-     7. Responsive rules
-     8. Reduced motion and print
+/* IPTT Enterprise Sleek Subtle Theme v11 — Linear/Stripe inspired
+   Enterprise-grade project management: tight, muted, whitespace, subtle depth
+   Keeps legacy hooks intact.
 */
-:root {
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+
+:root{
   color-scheme: light;
-  --iptt-ink: #172b43;
-  --iptt-muted: #52657c;
-  --iptt-line: #dce4ed;
-  --iptt-blue: #235bc0;
-  --iptt-link: #16509f;          /* 5.9:1 on white, 5.6:1 on the app background */
-  --iptt-muted-strong: #4b5b70;  /* 5.2:1 - for small print on light surfaces */
-  --iptt-success: #0f6b45;       /* text on white */
-  --iptt-success-bg: #146c43;    /* surface behind white text */
-  --iptt-warning: #8a4b08;       /* text on white */
-  --iptt-warning-bg: #b45309;    /* surface behind white text */
-  --iptt-danger: #a4262c;        /* text on white / tinted */
-  --iptt-danger-bg: #b02a37;     /* surface behind white text */
-  --iptt-neutral-bg: #5b6a7a;    /* neutral button surface behind white text */
-  --iptt-shadow: 0 5px 22px rgba(24, 47, 79, .06);
-}
-html { font-size: 16px; scroll-padding-top: 24px; }
+  --bg:#F8FAFC;
+  --bg-2:#F1F5F9;
+  --surface:#FFFFFF;
+  --surface-2:#F8FAFC;
+  --surface-hover:#F8FAFF;
+  --border:#E2E8F0;
+  --border-strong:#CBD5E1;
+  --border-light:#F1F5F9;
+  --text:#0F172A;
+  --text-2:#1E293B;
+  --muted:#64748B;
+  --muted-2:#94A3B8;
+  --muted-3:#475569;
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-soft:#EFF6FF;
+  --primary-border:#DBEAFE;
+  --success:#059669;
+  --success-soft:#ECFDF5;
+  --success-border:#A7F3D0;
+  --warning:#D97706;
+  --warning-soft:#FFFBEB;
+  --warning-border:#FDE68A;
+  --danger:#DC2626;
+  --danger-soft:#FEF2F2;
+  --danger-border:#FECACA;
+  --shadow:0 1px 2px rgba(15,23,42,0.04), 0 4px 16px rgba(15,23,42,0.04);
+  --shadow-hover:0 4px 12px rgba(15,23,42,0.08), 0 1px 3px rgba(15,23,42,0.06);
+  --shadow-sm:0 1px 2px rgba(15,23,42,0.05);
+  --radius:10px;
+  --radius-sm:8px;
+  --radius-pill:999px;
 
-/* ---------- 2. App shell ---------- */
-body.iptt-ui {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  padding: clamp(16px, 2.5vw, 36px);
-  min-height: 100vh;
-  background: #f2f5f9;
-  color: var(--iptt-ink);
-  font: 400 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-.iptt-ui *, .iptt-ui *::before, .iptt-ui *::after { box-sizing: border-box; }
-.iptt-ui #iptt-main { display: block; flex: 1 0 auto; width: 100%; max-width: 1440px; margin: 0 auto; min-width: 0; }
-.iptt-ui h1, .iptt-ui h2, .iptt-ui h3 { line-height: 1.25; letter-spacing: -.025em; }
-.iptt-ui h2 { font-size: 26px; }
-.iptt-ui h3 { font-size: 20px; }
-.iptt-ui a { text-underline-offset: 4px; }
-.iptt-ui a:focus-visible, .iptt-ui button:focus-visible,
-.iptt-ui input:focus-visible, .iptt-ui select:focus-visible,
-.iptt-ui textarea:focus-visible, .iptt-ui [tabindex]:focus-visible {
-  outline: 3px solid #b55700; outline-offset: 4px;
-}
-.iptt-ui .iptt-skip { position: fixed; top: -120px; left: 20px; z-index: 1000; padding: 12px 18px; background: white; color: #192d43; border: 2px solid #2259bd; border-radius: 8px; }
-.iptt-ui .iptt-skip:focus { top: 12px; }
-
-/* ---------- 3. Navigation ---------- */
-.iptt-ui .top-nav {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 16px; padding: 16px 22px;
-  margin: 0 0 28px; background: white; color: var(--iptt-ink);
-  border: 1px solid var(--iptt-line); border-radius: 14px;
-  box-shadow: var(--iptt-shadow);
-}
-.iptt-ui .top-nav .app-title, .iptt-ui .top-nav > b, .iptt-ui .top-nav strong {
-  padding-left: 12px; border-left: 6px solid var(--iptt-blue);
-  font-size: 21px; font-weight: 800; letter-spacing: .02em; color: #14263c;
-}
-.iptt-ui .top-nav a { display: inline-flex; align-items: center; min-height: 44px; margin: 0; padding: 9px 13px; color: #334b65; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; }
-.iptt-ui .top-nav a:hover { background: #edf3fa; color: #173e80; text-decoration: none; }
-.iptt-ui .top-nav a[aria-current="page"] { background: #eaf1ff; color: #194caa; }
-.iptt-ui .top-nav .nav-links, .iptt-ui .top-nav .iptt-nav-items { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
-.iptt-ui .top-nav .iptt-brand { display: flex; gap: 12px; padding: 0; color: #192d43; font-size: 23px; letter-spacing: -.025em; }
-.iptt-brand small { display: block; color: #52657a; font-size: 10px; letter-spacing: .12em; line-height: 1.4; }
-.iptt-brand-mark { display: grid; place-items: center; width: 42px; height: 44px; color: white; background: #2259bd; border-radius: 12px 12px 12px 3px; font-weight: 800; }
-.iptt-ui .iptt-menu-toggle { display: none; }
-.iptt-ui .breadcrumb { margin: 14px 0; font-size: 14px; color: #52657a; }
-.iptt-ui .back-link { margin: 0 0 12px; font-size: 14px; }
-
-/* ---------- 4. Buttons, links and form controls ---------- */
-.iptt-ui .welcome-banner { position: relative; padding: 34px 38px; margin: 0 0 26px; border: 1px solid #254463; border-radius: 18px; color: white; background: linear-gradient(115deg, #152e49 15%, #254f72); box-shadow: var(--iptt-shadow); }
-.iptt-ui .iptt-eyebrow { margin: 0 0 12px; color: #bcdaef; font-size: 12px; font-weight: 700; letter-spacing: .13em; }
-.iptt-ui .welcome-title { display: block; margin: 0 0 12px; font-size: clamp(28px, 3vw, 40px); font-weight: 700; color: white; overflow-wrap: anywhere; }
-.iptt-ui .welcome-subtitle { max-width: 680px; color: #dbe8f4; font-size: 16px; }
-.iptt-ui .iptt-home-grid { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 24px; margin: 0; }
-.iptt-ui .iptt-home-grid > * { min-width: 0; }
-.iptt-ui .section-card, .iptt-ui .project-card, .iptt-ui .programme-card,
-.iptt-ui .user-table-container, .iptt-ui .dashboard-card { background: white; border: 1px solid var(--iptt-line); border-radius: 14px; box-shadow: var(--iptt-shadow); overflow: hidden; }
-.iptt-ui .dashboard-card { margin-bottom: 24px; }
-/* Header strip and body of the executive dashboards' summary card. */
-.iptt-ui .dashboard-card .section-title { margin: 0; border-bottom: 1px solid #e6edf4; }
-.iptt-ui .dashboard-card-body { padding: 20px 22px 24px; }
-.iptt-ui .iptt-summary-text { margin: 0 0 10px; line-height: 1.8; }
-.iptt-ui .section-card { padding: 26px; margin-bottom: 24px; }
-.iptt-ui .iptt-home-grid > .section-card { margin: 0; padding: 26px; }
-.iptt-ui .iptt-ongoing { grid-column: 1 / -1; }
-.iptt-ui .section-title { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
-.iptt-ui .section-title h2, .iptt-ui .section-title h3 { margin: 0; font-size: 20px; color: #192d43; }
-.iptt-ui .iptt-create .section-title, .iptt-ui .iptt-reports .section-title { padding-bottom: 16px; border-bottom: 1px solid #e6edf4; }
-.iptt-ui .start-actions, .iptt-ui .action-row, .iptt-ui .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-.iptt-ui .start-actions form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; width: 100%; margin: 0; }
-.iptt-ui .iptt-field-label { display: block; flex-basis: 100%; margin: 0; font-size: 14px; font-weight: 600; color: #425971; }
-.iptt-ui .start-actions select { flex: 1; min-width: 150px; }
-.iptt-ui button, .iptt-ui input, .iptt-ui select, .iptt-ui textarea { font-family: inherit; font-size: 15px; }
-.iptt-ui button { cursor: pointer; }
-.iptt-ui .btn, .iptt-ui .login-btn, .iptt-ui .update-btn,
-.iptt-ui .show-more-btn, .iptt-ui .create-form button {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 44px; padding: 10px 16px; border: 1px solid transparent;
-  border-radius: 8px; background: #2259bd; color: white;
-  font-size: 14px; font-weight: 650; line-height: 1.4; text-decoration: none;
-  white-space: normal; text-align: center;
-}
-.iptt-ui .btn:hover, .iptt-ui .login-btn:hover, .iptt-ui .create-form button:hover { background: #174593; transform: none; }
-.iptt-ui .btn-green { background: var(--iptt-success-bg); }
-.iptt-ui .btn-green:hover { background: #0f5635; }
-.iptt-ui .btn-dark { background: #334b65; }
-.iptt-ui .btn-dark:hover { background: #22384e; }
-.iptt-ui .show-more-btn { margin: 16px; background: #edf3fa; color: #204a83; border-color: #cad9ec; }
-.iptt-ui input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),
-.iptt-ui select, .iptt-ui textarea { min-height: 44px; max-width: 100%; padding: 10px 12px; border: 1px solid #aebed0; border-radius: 8px; background: white; color: #192d43; }
-.iptt-ui input[type="checkbox"], .iptt-ui input[type="radio"] { width: 18px; height: 18px; accent-color: #2259bd; }
-.iptt-ui input[type="file"] { max-width: 100%; min-width: 0; padding: 8px 10px; }
-.iptt-ui button:disabled, .iptt-ui input:disabled, .iptt-ui select:disabled { cursor: not-allowed; opacity: .65; }
-.iptt-ui .create-form, .iptt-ui .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
-.iptt-ui .programme-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding: 18px; border-bottom: 1px solid var(--iptt-line); background: #f7f9fc; }
-.iptt-ui .programme-name, .iptt-ui .programme-title, .iptt-ui .project-title { font-size: 19px; font-weight: 700; color: #192d43; overflow-wrap: anywhere; }
-.iptt-ui .programme-meta, .iptt-ui .project-meta { font-size: 14px; color: #52657a; }
-.iptt-ui .project-grid, .iptt-ui .programme-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 22px; }
-.iptt-ui .project-card, .iptt-ui .programme-grid > .programme-card { padding: 24px; min-width: 0; }
-.iptt-ui .programme-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-.iptt-ui .programme-actions a { display: inline-flex; align-items: center; min-height: 44px; color: #2259bd; font-size: 15px; }
-
-/* ---------- 5. Cards, tables and status colours ---------- */
-.iptt-ui table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.iptt-ui table th { padding: 13px 16px; font-size: 13px; text-align: left; line-height: 1.4; }
-.iptt-ui table td { padding: 15px 16px; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
-.iptt-ui table[border] { border: 0; }
-.iptt-ui table[border] th, .iptt-ui table[border] td { border: 1px solid #e4ebf3; }
-.iptt-ui .proj-table { table-layout: auto; }
-.iptt-ui .proj-table th, .iptt-ui .user-table th { background: #eef3f8; color: #334b65; }
-.iptt-ui .proj-table td, .iptt-ui .user-table td { border-bottom: 1px solid #e4ebf3; }
-.iptt-ui .proj-table tr:hover { background: #f7faff; }
-.iptt-ui .iptt-table-scroll { width: 100%; max-width: 100%; overflow-x: auto; border-radius: 8px; }
-.iptt-ui .iptt-table-scroll > table { min-width: 620px; }
-.iptt-ui .status-badge, .iptt-ui .role-badge { display: inline-block; border-radius: 6px; padding: 5px 9px; font-size: 12px; font-weight: 650; }
-.iptt-ui .status-green { background: #e2f5eb; color: #16613c; }
-.iptt-ui .status-red { background: #fce7e7; color: #9b2226; }
-.iptt-ui .status-yellow { background: #fff0cc; color: #774d06; }
-.iptt-ui .empty-state { display: grid; place-items: center; min-height: 130px; padding: 30px 20px; border: 1px dashed #bdcddd; border-radius: 10px; background: #f8fafd; font-size: 15px; text-align: center; color: #52657a; }
-.iptt-ui img, .iptt-ui canvas { max-width: 100%; }
-.iptt-ui .iptt-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-
-/* Footer: a single, centred credit line at the end of every page. It is a flex
-   item of the app shell, so it stays at the bottom of short pages too. The
-   credit fades in, rests subdued, and the heart beats on hover or focus. */
-.iptt-ui .iptt-footer {
-  display: flex; flex: 0 0 auto; flex-direction: column; align-items: center;
-  justify-content: center; gap: 6px; width: 100%; max-width: 1440px;
-  margin: 32px auto 0; padding: 22px 16px 6px;
-  border-top: 1px solid #d6e0eb; color: var(--iptt-muted-strong);
-  font-size: 13px; text-align: center;
-}
-.iptt-ui .iptt-footer-product { opacity: .9; }
-.iptt-ui .iptt-footer-credit {
-  display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center;
-  gap: 6px; margin: 0; font-size: 14px;
-  /* Muted by design, but the resting state still measures 7.2:1 against the
-     page background, so the faded look never costs legibility. */
-  color: var(--iptt-ink);
-  opacity: .8;
-  transition: opacity .35s ease, transform .35s ease;
-  animation: iptt-footer-fade 1.1s ease-out .15s backwards;
-}
-.iptt-ui .iptt-footer-credit:hover,
-.iptt-ui .iptt-footer-credit:focus-within { opacity: 1; transform: translateY(-2px); }
-.iptt-ui .iptt-footer-credit strong { color: var(--iptt-ink); }
-.iptt-ui .iptt-heart { display: inline-flex; width: 15px; height: 15px; color: #c0344c; }
-.iptt-ui .iptt-heart svg { width: 100%; height: 100%; fill: currentColor; display: block; }
-.iptt-ui .iptt-footer-credit:hover .iptt-heart,
-.iptt-ui .iptt-footer-credit:focus-within .iptt-heart { animation: iptt-heartbeat 1.05s ease-in-out infinite; }
-@keyframes iptt-footer-fade {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: .8; transform: translateY(0); }
-}
-@keyframes iptt-heartbeat {
-  0%, 100% { transform: scale(1); }
-  14% { transform: scale(1.34); }
-  28% { transform: scale(1); }
-  42% { transform: scale(1.22); }
-  60% { transform: scale(1); }
+  /* legacy compat */
+  --iptt-ink: #0F172A;
+  --iptt-muted: #64748B;
+  --iptt-line: #E2E8F0;
+  --iptt-blue: #2563EB;
+  --iptt-link: #2563EB;
+  --iptt-muted-strong: #475569;
+  --iptt-success: #059669;
+  --iptt-success-bg: #059669;
+  --iptt-warning: #D97706;
+  --iptt-warning-bg: #D97706;
+  --iptt-danger: #DC2626;
+  --iptt-danger-bg: #DC2626;
+  --iptt-neutral-bg: #334155;
+  --iptt-shadow: var(--shadow);
 }
 
-/* Login keeps its split view, with the footer outside its main landmark. */
-body.iptt-ui.iptt-login { display: block; padding: 0; height: auto; width: auto; overflow: auto; }
-.iptt-login #iptt-main { display: grid; grid-template-columns: 1.1fr 1fr; max-width: none; min-height: calc(100vh - 92px); }
-.iptt-login .left-panel { min-width: 0; padding: 48px; background: linear-gradient(140deg, #152e49, #254f72); }
-.iptt-login .right-panel { min-width: 0; height: auto; padding: 48px; }
-.iptt-login .login-box { width: 100%; max-width: 430px; }
-.iptt-login .iptt-footer { margin: 0; max-width: none; padding: 22px 32px; }
+html{font-size:15px; scroll-padding-top:24px; scroll-behavior:smooth}
+body.iptt-ui{
+  box-sizing:border-box;
+  display:flex; flex-direction:column;
+  margin:0; padding:0;
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+  font:400 14px/1.6 "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.iptt-ui *, .iptt-ui *::before, .iptt-ui *::after{box-sizing:border-box}
+.iptt-ui #iptt-main{display:block; flex:1 0 auto; width:100%; max-width:1280px; margin:0 auto; padding:0 24px 40px; min-width:0}
+.iptt-ui h1, .iptt-ui h2, .iptt-ui h3{line-height:1.2; letter-spacing:-0.02em; font-weight:700}
+.iptt-ui h2{font-size:18px} .iptt-ui h3{font-size:15px}
+.iptt-ui a{color:var(--primary); text-underline-offset:3px; text-decoration:none}
+.iptt-ui a:hover{text-decoration:underline}
+.iptt-ui a:focus-visible, .iptt-ui button:focus-visible, .iptt-ui input:focus-visible, .iptt-ui select:focus-visible, .iptt-ui textarea:focus-visible{outline:2px solid var(--primary); outline-offset:2px; border-radius:6px}
+.iptt-ui .iptt-skip{position:fixed; top:-100px; left:16px; z-index:1000; padding:10px 14px; background:var(--text); color:white; border-radius:8px; font-weight:600; font-size:13px}
+.iptt-ui .iptt-skip:focus{top:12px}
 
-/* ---------- 6. Contrast repairs for legacy page styles ----------
-   The original page styles use link and helper colours that fail WCAG AA on
-   their own light or tinted surfaces (for example #0078d4 on #f2f5f9).
-   The body prefix outranks those page-local selectors, so the palette is
-   repaired here rather than by editing every child template. */
-.iptt-ui .breadcrumb a,
-.iptt-ui .back-link a,
-.iptt-ui a.back,
-.iptt-ui a.cta,
-.iptt-ui .project-card a,
-.iptt-ui .step-card a,
-.iptt-ui .page-header a,
-.iptt-ui summary { color: var(--iptt-link); }
-.iptt-ui .breadcrumb a,
-.iptt-ui a.back,
-.iptt-ui .back-link a,
-.iptt-ui summary { text-decoration: underline; text-underline-offset: 3px; }
-.iptt-ui .page-subtitle, .iptt-ui .subtitle, .iptt-ui .upload-info,
-.iptt-ui .security-badge, .iptt-ui .footer-text,
-.iptt-ui .project-meta span, .iptt-ui .progress-text { color: var(--iptt-muted-strong); }
-/* Locked steps stay visibly muted without dropping below the contrast floor. */
-.iptt-ui .step-locked { opacity: 1; background: #f4f6f9; border-left-color: #9fb0c2; }
-.iptt-ui .step-locked strong, .iptt-ui .step-locked span, .iptt-ui .step-locked a { color: var(--iptt-muted-strong); }
-/* Status text colours used by the execution screens. */
-.iptt-ui .completed, .iptt-ui .status-completed-text { color: var(--iptt-success); }
-.iptt-ui .in-progress { color: var(--iptt-warning); }
-.iptt-ui .at-risk { color: var(--iptt-danger); }
-.iptt-ui .not-started { color: var(--iptt-muted); }
-.iptt-ui .badge-high { background: #fde7e9; color: var(--iptt-danger); }
-.iptt-ui .badge-medium { background: #fff4ce; color: var(--iptt-warning); }
-.iptt-ui .badge-low { background: #e2f5eb; color: var(--iptt-success); }
-.iptt-ui .risk-box { color: #fff; font-weight: 650; }
-.iptt-ui .risk-high { background: var(--iptt-danger); }
-.iptt-ui .risk-medium { background: var(--iptt-warning-bg); }
-.iptt-ui .risk-low { background: var(--iptt-success-bg); }
-/* Action buttons: keep the colour language, meet 4.5:1 behind white text. */
-.iptt-ui .upload-btn { background-color: var(--iptt-warning-bg); color: #fff; }
-.iptt-ui .upload-btn:hover { background-color: #92400e; }
-.iptt-ui .download-btn { background-color: #1a5fb4; color: #fff; }
-.iptt-ui .download-btn:hover { background-color: #14488c; }
-.iptt-ui .save-btn, .iptt-ui .quick-btn { background-color: var(--iptt-success-bg); color: #fff; border: 0; }
-.iptt-ui .save-btn:hover, .iptt-ui .quick-btn:hover { background-color: #0f5635; }
-.iptt-ui .delete-btn, .iptt-ui .project-card .delete, .iptt-ui .programme-actions .delete { background: none; color: var(--iptt-danger); }
-.iptt-ui #filterBar button { background: var(--iptt-neutral-bg); color: #fff; }
-.iptt-ui #filterBar button:hover { background: #485666; }
-.iptt-ui #filterBar button.active { background-color: #1a5fb4; color: #fff; }
-.iptt-ui #overrideBtn { background-color: var(--iptt-neutral-bg); color: #fff; }
-/* Alert banners. */
-.iptt-ui .alert-danger { background: #fdecea; color: var(--iptt-danger); }
-.iptt-ui .alert-success { background: #e6f4ea; color: var(--iptt-success); }
-/* Execution gauges: the number is printed next to the bar, so the bar itself
-   stays a clean track (the old in-fill label overflowed narrow fills). */
-.iptt-ui .progress-container, .iptt-ui .progress-wrapper {
-  position: relative; overflow: hidden; max-width: 100%;
-  background: #e4ebf3; border-radius: 999px;
+/* NAV — enterprise clean, sticky white with blur */
+body.iptt-ui .top-nav{
+  position:sticky; top:0; z-index:40;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:10px 24px; margin:0 0 24px;
+  background:rgba(255,255,255,0.86);
+  backdrop-filter:blur(16px) saturate(180%);
+  border-bottom:1px solid var(--border);
+  border-radius:0;
+  box-shadow:0 1px 0 rgba(15,23,42,0.04);
+  animation:iptt-drop-in .4s ease both;
 }
-.iptt-ui .progress-wrapper { height: 10px; margin-top: 12px; }
-.iptt-ui .progress-bar { min-width: 3px; max-width: 100%; border-radius: 999px; color: transparent; font-size: 0; line-height: 0; }
-.iptt-ui .progress-wrapper .progress-bar { height: 100%; }
+.iptt-ui .top-nav .iptt-brand{
+  display:flex; align-items:center; gap:10px; color:var(--text);
+  font-size:14px; font-weight:700; letter-spacing:-0.02em; text-decoration:none;
+}
+.iptt-brand-mark{
+  width:32px; height:32px; display:grid; place-items:center;
+  background:var(--text); color:white; border-radius:8px; font-weight:700; font-size:14px; letter-spacing:-0.02em;
+}
+.iptt-brand small{display:block; color:var(--muted-2); font-size:10px; letter-spacing:0.06em; font-weight:500; margin-top:1px; text-transform:uppercase}
+.iptt-ui .top-nav .nav-links, .iptt-ui .top-nav .iptt-nav-items{display:flex; align-items:center; gap:2px}
+.iptt-ui .top-nav a{
+  display:inline-flex; align-items:center; min-height:32px; padding:6px 12px;
+  color:var(--muted); border-radius:8px; font-size:13px; font-weight:500; text-decoration:none;
+  transition:all .15s ease;
+}
+.iptt-ui .top-nav a:hover{background:#F1F5F9; color:var(--text); text-decoration:none}
+.iptt-ui .top-nav a[aria-current="page"]{background:var(--text); color:white}
+.iptt-ui .top-nav a.iptt-brand:hover{background:transparent}
+.iptt-ui .iptt-menu-toggle{display:none}
+.iptt-ui .breadcrumb{margin:0 0 16px; font-size:12px; color:var(--muted); display:flex; gap:6px; align-items:center; flex-wrap:wrap}
+.iptt-ui .breadcrumb a{color:var(--muted); text-decoration:none; padding:4px 8px; border-radius:6px; background:white; border:1px solid var(--border); font-weight:500; font-size:12px}
+.iptt-ui .breadcrumb a:hover{border-color:var(--border-strong); color:var(--text)}
+.iptt-ui .back-link{margin:0 0 12px}
+.iptt-ui .back-link a{display:inline-flex; gap:6px; align-items:center; padding:6px 10px; border-radius:8px; background:white; border:1px solid var(--border); color:var(--muted); text-decoration:none; font-size:12px; font-weight:500}
+.iptt-ui .back-link a:hover{border-color:var(--border-strong); color:var(--text)}
 
-/* ---------- 6b. Navigation (authoritative) ----------
-   Templates still ship small local style blocks. They load after this file, so
-   equal-specificity rules there could win and paint, for example, white links
-   on the white bar. The body prefix raises these selectors above any page-local
-   class selector and keeps the shared shell intact everywhere. */
-body.iptt-ui .top-nav {
-  position: sticky; top: 0; z-index: 20;
-  background: rgb(255 255 255 / .88);
-  -webkit-backdrop-filter: saturate(180%) blur(10px);
-  backdrop-filter: saturate(180%) blur(10px);
-  animation: iptt-drop-in .45s ease-out both;
-  transition: box-shadow .3s ease, border-color .3s ease;
+/* WELCOME — enterprise, subtle, not dark */
+.iptt-ui .welcome-banner{
+  position:relative; padding:24px 20px; margin:0 0 20px;
+  border-radius:var(--radius); border:1px solid var(--border); border-left:4px solid var(--primary);
+  background:white; box-shadow:var(--shadow);
 }
-body.iptt-ui .top-nav:hover, body.iptt-ui .top-nav:focus-within { box-shadow: 0 10px 30px rgb(24 47 79 / .09); }
-body.iptt-ui .top-nav .iptt-brand { color: #192d43; }
-body.iptt-ui .top-nav .iptt-brand-text { font-weight: 800; letter-spacing: -.02em; }
-body.iptt-ui .top-nav .app-title, body.iptt-ui .top-nav > strong, body.iptt-ui .top-nav > b { color: #14263c; }
-body.iptt-ui .top-nav a,
-body.iptt-ui .top-nav .nav-links a,
-body.iptt-ui .top-nav .iptt-nav-items a,
-body.iptt-ui .top-nav > div > a {
-  position: relative; color: #334b65; background: transparent;
-  text-decoration: none; transition: color .25s ease, background-color .25s ease;
-}
-body.iptt-ui .top-nav a::after {
-  content: ""; position: absolute; left: 13px; right: 13px; bottom: 6px; height: 2px;
-  background: var(--iptt-blue); border-radius: 2px;
-  transform: scaleX(0); transform-origin: left center;
-  transition: transform .3s cubic-bezier(.22, .61, .36, 1);
-}
-body.iptt-ui .top-nav a:hover { color: #173e80; background-color: #edf3fa; }
-body.iptt-ui .top-nav a:hover::after { transform: scaleX(1); }
-body.iptt-ui .top-nav a[aria-current="page"] { color: #194caa; background: #eaf1ff; }
-body.iptt-ui .top-nav a[aria-current="page"]::after { transform: scaleX(1); }
-body.iptt-ui .top-nav a.iptt-brand:hover { background: transparent; }
-body.iptt-ui .top-nav a.iptt-brand::after { content: none; }
-body.iptt-ui .iptt-brand-mark { transition: transform .35s cubic-bezier(.22, .61, .36, 1), box-shadow .35s ease; }
-body.iptt-ui .top-nav .iptt-brand:hover .iptt-brand-mark { transform: rotate(-6deg) scale(1.06); box-shadow: 0 6px 16px rgb(35 91 192 / .32); }
+.iptt-ui .iptt-eyebrow{margin:0 0 6px; color:var(--muted-2); font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase}
+.iptt-ui .welcome-title{margin:0 0 6px; font-size:24px; font-weight:700; letter-spacing:-0.02em; color:var(--text); line-height:1.2}
+.iptt-ui .welcome-subtitle{max-width:56ch; color:var(--muted); font-size:13px; line-height:1.5}
+.iptt-ui .iptt-home-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:0}
+.iptt-ui .iptt-home-grid > *{min-width:0}
 
-/* ---------- 6c. Motion and modern polish ---------- */
-@keyframes iptt-drop-in { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
-@keyframes iptt-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-@keyframes iptt-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes iptt-menu-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
-.iptt-ui #iptt-main > *:not(.top-nav) { animation: iptt-rise .5s ease-out both; }
-.iptt-ui #iptt-main > *:nth-child(2):not(.top-nav) { animation-delay: .05s; }
-.iptt-ui #iptt-main > *:nth-child(3):not(.top-nav) { animation-delay: .1s; }
-.iptt-ui #iptt-main > *:nth-child(4):not(.top-nav) { animation-delay: .14s; }
-.iptt-ui .section-card, .iptt-ui .project-card, .iptt-ui .programme-card,
-.iptt-ui .kpi-card, .iptt-ui .report-card, .iptt-ui .step-card, .iptt-ui .dashboard-card {
-  transition: transform .3s cubic-bezier(.22, .61, .36, 1), box-shadow .3s ease, border-color .3s ease;
+/* CARDS — enterprise subtle */
+.iptt-ui .section-card, .iptt-ui .project-card, .iptt-ui .programme-card, .iptt-ui .user-table-container, .iptt-ui .dashboard-card, .iptt-ui .report-card, .iptt-ui .kpi-card, .iptt-ui .section, .iptt-ui .step-card{
+  background:white; border:1px solid var(--border); border-radius:var(--radius);
+  box-shadow:var(--shadow); color:var(--text); overflow:hidden;
+  transition:all .15s ease;
 }
-.iptt-ui .section-card:hover, .iptt-ui .project-card:hover, .iptt-ui .programme-card:hover,
-.iptt-ui .kpi-card:hover, .iptt-ui .report-card:hover, .iptt-ui .dashboard-card:hover {
-  transform: translateY(-3px); box-shadow: 0 14px 34px rgb(24 47 79 / .1); border-color: #c9d7e6;
+.iptt-ui .section-card:hover, .iptt-ui .project-card:hover, .iptt-ui .programme-card:hover, .iptt-ui .kpi-card:hover, .iptt-ui .report-card:hover, .iptt-ui .dashboard-card:hover{
+  box-shadow:var(--shadow-hover); border-color:var(--border-strong); transform:translateY(-1px);
 }
-.iptt-ui .btn, .iptt-ui .login-btn, .iptt-ui .update-btn, .iptt-ui .show-more-btn,
-.iptt-ui .create-form button, .iptt-ui .save-btn, .iptt-ui .download-btn,
-.iptt-ui .upload-btn, .iptt-ui .quick-btn, .iptt-ui .view-btn {
-  transition: transform .18s ease, box-shadow .25s ease, background-color .25s ease, color .25s ease;
-}
-.iptt-ui .btn:hover, .iptt-ui .login-btn:hover, .iptt-ui .update-btn:hover,
-.iptt-ui .save-btn:hover, .iptt-ui .download-btn:hover, .iptt-ui .upload-btn:hover,
-.iptt-ui .quick-btn:hover, .iptt-ui .view-btn:hover {
-  transform: translateY(-2px); box-shadow: 0 8px 20px rgb(24 47 79 / .18);
-}
-.iptt-ui .btn:active, .iptt-ui .login-btn:active, .iptt-ui .save-btn:active,
-.iptt-ui .download-btn:active, .iptt-ui .upload-btn:active, .iptt-ui .view-btn:active {
-  transform: translateY(0) scale(.985);
-}
-.iptt-ui tbody tr { transition: background-color .2s ease; }
-.iptt-ui .proj-table th, .iptt-ui .user-table th { transition: color .25s ease; }
-/* Gauges grow from the left on load; the value itself is printed beside them. */
-.iptt-ui .progress-bar {
-  transform-origin: left center;
-  animation: iptt-grow .9s cubic-bezier(.22, .61, .36, 1) both;
-}
-/* Mobile menu opens with a short slide instead of appearing abruptly. */
-body.iptt-ui .top-nav.iptt-nav-ready .iptt-nav-items.iptt-nav-open { animation: iptt-menu-in .28s ease-out both; }
-/* Progressive scroll reveal: only active once ui.js marks the document, so
-   readers without JavaScript always see the content. */
-.iptt-js .iptt-reveal { opacity: 0; transform: translateY(16px); }
-.iptt-js .iptt-reveal.iptt-reveal-in {
-  opacity: 1; transform: none;
-  transition: opacity .6s ease-out, transform .6s cubic-bezier(.22, .61, .36, 1);
-}
+.iptt-ui .dashboard-card{margin-bottom:16px}
+.iptt-ui .dashboard-card .section-title{margin:0; padding:14px 16px; border-bottom:1px solid var(--border); background:#F8FAFC}
+.iptt-ui .dashboard-card-body{padding:16px}
+.iptt-ui .section-card{padding:18px; margin-bottom:16px}
+.iptt-ui .iptt-home-grid > .section-card{margin:0; padding:18px}
+.iptt-ui .iptt-ongoing{grid-column:1 / -1}
+.iptt-ui .section-title{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px}
+.iptt-ui .section-title h2, .iptt-ui .section-title h3{margin:0; font-size:14px; color:var(--text); letter-spacing:-0.01em; font-weight:600}
+.iptt-ui .iptt-create .section-title, .iptt-ui .iptt-reports .section-title{padding-bottom:12px; border-bottom:1px solid var(--border)}
+.iptt-ui .start-actions, .iptt-ui .action-row, .iptt-ui .actions{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.iptt-ui .start-actions form{display:flex; flex-wrap:wrap; gap:8px; align-items:end; width:100%; margin:0}
+.iptt-ui .iptt-field-label{display:block; flex-basis:100%; margin:0 0 4px; font-size:11px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; color:var(--muted-2)}
+.iptt-ui .start-actions select{flex:1; min-width:140px}
 
-/* ---------- 7. Responsive rules ---------- */
-.iptt-ui .page-header, .iptt-ui .save-container, .iptt-ui .circle-toolbar { max-width: 100%; }
-/* Download / upload rows wrap instead of pushing the page sideways on phones. */
-.iptt-ui .save-container { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: flex-end; }
-.iptt-ui .upload-group { display: inline-flex; flex-wrap: wrap; gap: 10px; align-items: center; min-width: 0; max-width: 100%; }
-.iptt-ui .save-container input[type="file"] { flex: 1 1 160px; min-width: 0; }
-.iptt-ui .circle-toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
-.iptt-ui .left-actions, .iptt-ui .right-actions,
-.iptt-ui .download-container, .iptt-ui .download-box { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; max-width: 100%; min-width: 0; }
-.iptt-ui .download-container { flex-direction: column; align-items: flex-start; }
-.iptt-ui .download-box .file-input { flex: 1 1 180px; }
-.iptt-ui .kpi-card, .iptt-ui .section, .iptt-ui .report-card { min-width: 0; }
-.iptt-ui .kpi-panel { display: flex; flex-wrap: wrap; gap: 16px; }
-.iptt-ui .kpi-panel > * { flex: 1 1 180px; min-width: 0; }
-@media (max-width: 1000px) {
-  .iptt-ui .iptt-home-grid { grid-template-columns: 1fr; }
-  .iptt-ui .top-nav .iptt-menu-toggle { display: inline-flex; min-height: 44px; padding: 8px 16px; border: 1px solid #bacbde; border-radius: 8px; background: #f2f6fc; color: #244b79; font-weight: 600; }
-  .iptt-ui .top-nav.iptt-nav-ready .iptt-nav-items { flex-basis: 100%; flex-direction: column; align-items: stretch; }
-  .iptt-ui .top-nav.iptt-nav-ready .iptt-nav-items:not(.iptt-nav-open) { display: none; }
-  .iptt-ui .top-nav .iptt-nav-items a { width: 100%; }
+/* Buttons — enterprise, subtle, not pill */
+.iptt-ui button, .iptt-ui input, .iptt-ui select, .iptt-ui textarea{font-family:"Inter", inherit; font-size:13px}
+.iptt-ui button{cursor:pointer}
+.iptt-ui .btn, .iptt-ui .login-btn, .iptt-ui .update-btn, .iptt-ui .show-more-btn, .iptt-ui .create-form button, .iptt-ui .save-btn, .iptt-ui .download-btn, .iptt-ui .upload-btn, .iptt-ui .quick-btn, .iptt-ui .view-btn, .iptt-ui .action-btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  min-height:32px; padding:7px 12px; border:1px solid var(--border);
+  border-radius:8px; background:white; color:var(--text); font-size:12px; font-weight:600; line-height:1; text-decoration:none; white-space:nowrap;
+  box-shadow:var(--shadow-sm); transition:all .15s ease;
 }
-@media (max-width: 640px) {
-  body.iptt-ui { padding: 14px; }
-  /* Keep summary figures compact on phones: a single column turned six KPIs
-     into a very long scroll. */
-  .iptt-ui .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-  .iptt-ui .kpi-card { padding: 14px; }
-  .iptt-ui .kpi-value { font-size: 24px; }
-  .iptt-ui .top-nav { padding: 14px; margin-bottom: 18px; }
-  .iptt-ui .welcome-banner { padding: 26px 22px; border-radius: 14px; }
-  .iptt-ui .iptt-home-grid { gap: 18px; }
-  .iptt-ui .iptt-home-grid > .section-card, .iptt-ui .section-card { padding: 20px; }
-  .iptt-ui .action-row { align-items: stretch; flex-direction: column; }
-  .iptt-ui .start-actions form { align-items: stretch; }
-  .iptt-ui .start-actions select { width: 100%; flex-basis: 100%; }
-  .iptt-ui .start-actions .btn { width: 100%; }
-  .iptt-ui .iptt-footer { flex-direction: column; text-align: center; align-items: center; }
-  .iptt-login #iptt-main { grid-template-columns: 1fr; }
-  .iptt-login .left-panel, .iptt-login .right-panel { padding: 30px 22px; }
-  .iptt-login .product-title { font-size: 28px; }
-  .iptt-ui .filters > *, .iptt-ui .create-form > * { max-width: 100%; }
-  .iptt-ui .save-container { text-align: left; justify-content: flex-start; }
-  .iptt-ui .left-actions, .iptt-ui .right-actions,
-  .iptt-ui .download-container, .iptt-ui .download-box { width: 100%; }
-  .iptt-ui .download-box .btn, .iptt-ui .download-box button,
-  .iptt-ui .left-actions .view-btn, .iptt-ui .page-header button { flex: 1 1 auto; }
+.iptt-ui .btn:hover, .iptt-ui .login-btn:hover, .iptt-ui .create-form button:hover, .iptt-ui .save-btn:hover, .iptt-ui .download-btn:hover, .iptt-ui .upload-btn:hover, .iptt-ui .quick-btn:hover, .iptt-ui .view-btn:hover, .iptt-ui .action-btn:hover{
+  border-color:var(--border-strong); box-shadow:var(--shadow-hover); transform:translateY(-1px); text-decoration:none;
 }
-@media (max-width: 420px) {
-  .iptt-ui .top-nav { gap: 10px; }
-  .iptt-ui .top-nav .app-title, .iptt-ui .top-nav > b, .iptt-ui .top-nav strong { font-size: 19px; }
-  .iptt-ui .kpi-panel > * { flex-basis: 100%; }
+.iptt-ui .btn-primary, .iptt-ui .btn:not(.btn-dark):not(.btn-green):not(.show-more-btn){background:var(--primary); color:white; border-color:var(--primary)}
+.iptt-ui .btn-primary:hover, .iptt-ui .btn:hover{background:var(--primary-hover); border-color:var(--primary-hover)}
+.iptt-ui .btn-green{background:var(--success); color:white; border-color:var(--success)}
+.iptt-ui .btn-dark{background:var(--text); color:white; border-color:var(--text)}
+.iptt-ui .show-more-btn{margin:12px; background:#F8FAFC; color:var(--muted); border-color:var(--border); box-shadow:none; font-size:12px}
+.iptt-ui input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), .iptt-ui select, .iptt-ui textarea{
+  min-height:36px; max-width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:8px; background:white; color:var(--text); transition:all .15s;
 }
-@media (prefers-reduced-motion: reduce) {
-  .iptt-ui *, .iptt-ui *::before, .iptt-ui *::after {
-    animation: none !important; transition: none !important; scroll-behavior: auto !important;
-  }
-  /* Keep the credit legible when animation is switched off. */
-  .iptt-ui .iptt-footer-credit { opacity: 1; transform: none; }
-  .iptt-js .iptt-reveal { opacity: 1; transform: none; }
+.iptt-ui input:focus, .iptt-ui select:focus, .iptt-ui textarea:focus{border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-soft); outline:none}
+.iptt-ui .create-form, .iptt-ui .filters{display:flex; flex-wrap:wrap; align-items:center; gap:8px}
+.iptt-ui .programme-header{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 16px; border-bottom:1px solid var(--border); background:#F8FAFC}
+.iptt-ui .programme-name, .iptt-ui .programme-title, .iptt-ui .project-title{font-size:14px; font-weight:600; color:var(--text); letter-spacing:-0.01em}
+.iptt-ui .programme-meta, .iptt-ui .project-meta{font-size:12px; color:var(--muted)}
+.iptt-ui .project-grid, .iptt-ui .programme-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap:14px}
+.iptt-ui .project-card, .iptt-ui .programme-grid > .programme-card{padding:16px; min-width:0}
+.iptt-ui .programme-actions{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.iptt-ui .programme-actions a{display:inline-flex; align-items:center; min-height:28px; padding:5px 10px; border-radius:8px; background:white; border:1px solid var(--border); color:var(--text); font-size:12px; font-weight:500; text-decoration:none}
+.iptt-ui .programme-actions a:hover{border-color:var(--border-strong)}
+
+/* TABLES — enterprise dense, subtle */
+.iptt-ui table{width:100%; border-collapse:collapse; font-size:12.5px}
+.iptt-ui table th{padding:9px 12px; font-size:11px; text-align:left; letter-spacing:0.05em; text-transform:uppercase; font-weight:600; color:var(--muted-2); background:#F8FAFC; border-bottom:1px solid var(--border)}
+.iptt-ui table td{padding:10px 12px; font-size:12.5px; border-bottom:1px solid #F1F5F9; color:var(--text-2)}
+.iptt-ui .proj-table tr:hover td, .iptt-ui .report-table tr:hover td, .iptt-ui .dashboard-table tr:hover td{background:#F8FAFF}
+.iptt-ui .iptt-table-scroll{width:100%; overflow-x:auto; border-radius:8px; border:1px solid var(--border)}
+.iptt-ui .iptt-table-scroll > table{min-width:600px; border:0}
+.iptt-ui .status-badge, .iptt-ui .role-badge{display:inline-flex; align-items:center; gap:5px; border-radius:999px; padding:4px 8px; font-size:11px; font-weight:600; border:1px solid; line-height:1}
+.iptt-ui .status-green{background:var(--success-soft); color:var(--success); border-color:var(--success-border)}
+.iptt-ui .status-red{background:var(--danger-soft); color:var(--danger); border-color:var(--danger-border)}
+.iptt-ui .status-yellow{background:var(--warning-soft); color:var(--warning); border-color:var(--warning-border)}
+.iptt-ui .empty-state{display:grid; place-items:center; min-height:100px; padding:20px; border:1px dashed var(--border); border-radius:10px; background:#F8FAFC; font-size:13px; color:var(--muted)}
+
+/* KPI — enterprise */
+.iptt-ui .kpi-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-bottom:20px}
+.iptt-ui .kpi-card{padding:14px; border-radius:10px; background:white; border:1px solid var(--border)}
+.iptt-ui .kpi-label, .iptt-ui .kpi-title{font-size:11px; letter-spacing:0.05em; text-transform:uppercase; font-weight:600; color:var(--muted-2); margin-bottom:6px; display:block}
+.iptt-ui .kpi-value{font-size:22px; font-weight:700; letter-spacing:-0.02em; line-height:1.1; color:var(--text)}
+.iptt-ui .kpi-card .progress-wrapper, .iptt-ui .kpi-card .progress-container{margin-top:10px; height:4px; background:#F1F5F9; border-radius:999px; overflow:hidden}
+.iptt-ui .kpi-card .progress-bar{height:100%; border-radius:999px; background:var(--text); transform-origin:left}
+
+/* REPORTS — enterprise fine-tuned */
+.iptt-ui .report-card{background:white; border-radius:10px; border:1px solid var(--border); box-shadow:var(--shadow); overflow:hidden}
+.iptt-ui .executive-summary{
+  padding:16px 16px 14px 18px; border-radius:10px; background:var(--primary-soft); border:1px solid var(--primary-border); border-left:4px solid var(--primary);
+  margin-bottom:16px;
 }
-@media print {
-  body.iptt-ui { background: white; padding: 0; display: block; }
-  /* Scroll-revealed blocks must always print, whatever the screen state is. */
-  .iptt-js .iptt-reveal, .iptt-js .iptt-reveal.iptt-reveal-in { opacity: 1 !important; transform: none !important; }
-  .iptt-ui .top-nav, .iptt-ui .iptt-skip, .iptt-ui .iptt-menu-toggle, .iptt-ui .iptt-footer { display: none !important; }
-  .iptt-ui .iptt-home-grid { display: block; }
-  .iptt-ui .iptt-table-scroll { overflow: visible; }
-  .iptt-ui .iptt-table-scroll > table { min-width: 0; }
-  .iptt-ui .section-card { box-shadow: none; }
+.iptt-ui .executive-summary h3{margin:0 0 8px; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); font-weight:600}
+.iptt-ui .executive-summary p, .iptt-ui .iptt-summary-text{font-size:13.5px; line-height:1.6; color:var(--text-2); margin:0; font-family:"Inter", sans-serif}
+
+/* Collapsible — subtle */
+.iptt-ui .collapsible-header, .iptt-ui .section-header{
+  display:flex; justify-content:space-between; align-items:center; gap:10px;
+  background:#F8FAFC; padding:12px 14px; cursor:pointer; border:1px solid var(--border); border-left:0; border-right:0; border-top:0;
+  font-size:13px; font-weight:600; color:var(--text); transition:background .15s;
+}
+.iptt-ui .collapsible-header:first-of-type, .iptt-ui .section-header:first-of-type{border-top:1px solid var(--border); border-radius:10px 10px 0 0}
+.iptt-ui .collapsible-header:hover, .iptt-ui .section-header:hover{background:#F1F5F9}
+.iptt-ui .collapsible-icon, .iptt-ui .toggle-icon{width:24px; height:24px; display:grid; place-items:center; border-radius:6px; background:white; border:1px solid var(--border); font-size:12px; font-weight:600}
+.iptt-ui .collapsible-content, .iptt-ui .section-content{
+  display:grid; grid-template-rows:0fr; opacity:0; transition:grid-template-rows .28s ease, opacity .2s ease;
+  border:1px solid var(--border); border-top:0; border-radius:0 0 10px 10px; background:white;
+}
+.iptt-ui .collapsible-content > *, .iptt-ui .section-content > *{overflow:hidden; min-height:0}
+.iptt-ui .collapsible-content.active, .iptt-ui .section-content.active{grid-template-rows:1fr; opacity:1}
+.iptt-ui .collapsible-content.active > *, .iptt-ui .section-content.active > *{padding:14px}
+.iptt-ui .report-table th{background:var(--text); color:white; font-size:11px}
+.iptt-ui .report-table th:first-child{position:sticky; left:0; z-index:2; background:var(--text)}
+.iptt-ui .report-table td:first-child{position:sticky; left:0; background:white; font-weight:600; z-index:1}
+.iptt-ui .section{padding:0; border-radius:10px; overflow:hidden}
+.iptt-ui .side-nav{
+  position:fixed; top:72px; right:16px; width:200px; z-index:20;
+  background:rgba(255,255,255,0.92); border:1px solid var(--border); border-radius:10px; padding:10px;
+  backdrop-filter:blur(12px); box-shadow:var(--shadow);
+}
+.iptt-ui .side-nav-title{font-size:11px; letter-spacing:0.06em; text-transform:uppercase; font-weight:600; color:var(--muted-2); margin-bottom:8px}
+.iptt-ui .side-nav a{display:block; padding:7px 10px; margin-bottom:4px; border-radius:8px; text-decoration:none; color:var(--muted); font-size:12px; font-weight:500; transition:all .15s}
+.iptt-ui .side-nav a:hover{background:#F1F5F9; color:var(--text)}
+
+/* Execution */
+.iptt-ui .page-header{margin-bottom:16px}
+.iptt-ui .page-title{font-size:20px; font-weight:700; letter-spacing:-0.02em; color:var(--text)}
+.iptt-ui .page-subtitle{margin-top:4px; color:var(--muted); font-size:12px}
+.iptt-ui .kpi-panel{display:flex; flex-wrap:wrap; gap:10px}
+.iptt-ui .kpi-panel > *{flex:1 1 160px}
+.iptt-ui .progress-container, .iptt-ui .progress-wrapper{background:#F1F5F9; border-radius:999px; overflow:hidden}
+.iptt-ui .progress-wrapper{height:6px; margin-top:8px}
+.iptt-ui .progress-bar{background:var(--text); border-radius:999px; min-width:3px}
+.iptt-ui .progress-text{margin-top:4px; font-size:11px; color:var(--muted-2); font-family:"JetBrains Mono", monospace}
+
+/* Footer — subtle */
+.iptt-ui .iptt-footer{
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  width:100%; max-width:1280px; margin:32px auto 0; padding:16px;
+  border-top:1px solid var(--border); color:var(--muted-2); font-size:11px; text-align:center;
+}
+.iptt-ui .iptt-footer-credit{font-size:12px; color:var(--muted); display:inline-flex; gap:6px; align-items:center}
+.iptt-ui .iptt-heart{width:12px; height:12px; color:var(--danger); display:inline-flex}
+.iptt-ui .iptt-heart svg{width:100%; height:100%; fill:currentColor}
+
+/* Login — enterprise */
+body.iptt-ui.iptt-login{display:block; padding:0; background:var(--bg)}
+.iptt-login #iptt-main{display:grid; grid-template-columns:1.05fr 1fr; max-width:none; min-height:100vh; padding:0}
+.iptt-login .left-panel{padding:40px; background:var(--text); color:white; position:relative; overflow:hidden}
+.iptt-login .left-panel::before{content:""; position:absolute; inset:0; background:radial-gradient(600px 400px at 20% 20%, rgba(37,99,235,0.18), transparent)}
+.iptt-login .right-panel{padding:40px; background:white; display:flex; align-items:center; justify-content:center}
+.iptt-login .login-box{width:100%; max-width:380px}
+.iptt-login .iptt-footer{margin:0; max-width:none; border-top:1px solid var(--border); background:white}
+
+/* Motion — subtle */
+@keyframes iptt-drop-in{from{opacity:0; transform:translateY(-6px)} to{opacity:1; transform:none}}
+@keyframes iptt-rise{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+.iptt-ui #iptt-main > *:not(.top-nav){animation:iptt-rise .35s ease both}
+.iptt-ui #iptt-main > *:nth-child(2){animation-delay:.03s}
+.iptt-ui #iptt-main > *:nth-child(3){animation-delay:.06s}
+.iptt-ui .section-card, .iptt-ui .project-card, .iptt-ui .programme-card, .iptt-ui .kpi-card, .iptt-ui .report-card, .iptt-ui .dashboard-card{transition:all .15s ease}
+.iptt-js .iptt-reveal{opacity:0; transform:translateY(8px)}
+.iptt-js .iptt-reveal.iptt-reveal-in{opacity:1; transform:none; transition:opacity .35s ease, transform .35s ease}
+
+/* Legacy repairs */
+.iptt-ui .step-locked{background:#F8FAFC; border-left:3px solid var(--border-strong)}
+.iptt-ui .completed, .iptt-ui .status-completed-text{color:var(--success)}
+.iptt-ui .in-progress{color:var(--warning)}
+.iptt-ui .at-risk{color:var(--danger)}
+.iptt-ui .badge-high{background:var(--danger-soft); color:var(--danger); border:1px solid var(--danger-border)}
+.iptt-ui .badge-medium{background:var(--warning-soft); color:var(--warning); border:1px solid var(--warning-border)}
+.iptt-ui .badge-low{background:var(--success-soft); color:var(--success); border:1px solid var(--success-border)}
+.iptt-ui .risk-high{background:var(--danger)} .iptt-ui .risk-medium{background:var(--warning)} .iptt-ui .risk-low{background:var(--success)}
+.iptt-ui .alert-danger{background:var(--danger-soft); color:var(--danger); border:1px solid var(--danger-border); border-radius:8px; padding:10px 12px; font-size:12px}
+.iptt-ui .alert-success{background:var(--success-soft); color:var(--success); border:1px solid var(--success-border); border-radius:8px; padding:10px 12px; font-size:12px}
+
+@media (max-width: 1000px){
+  .iptt-ui .iptt-home-grid{grid-template-columns:1fr}
+  .iptt-ui .top-nav .iptt-menu-toggle{display:inline-flex; min-height:32px; padding:6px 12px; border:1px solid var(--border); border-radius:8px; background:white; color:var(--text); font-weight:600; font-size:12px}
+  .iptt-ui .top-nav.iptt-nav-ready .iptt-nav-items{flex-basis:100%; flex-direction:column; align-items:stretch; gap:2px; margin-top:8px}
+  .iptt-ui .top-nav.iptt-nav-ready .iptt-nav-items:not(.iptt-nav-open){display:none}
+  .iptt-ui .top-nav .iptt-nav-items a{width:100%}
+  .iptt-ui .side-nav{display:none}
+  .iptt-ui #iptt-main{padding:0 16px 32px}
+}
+@media (max-width: 640px){
+  .iptt-ui .kpi-grid{grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px}
+  .iptt-ui .kpi-value{font-size:18px}
+  .iptt-ui .top-nav{padding:10px 16px}
+  .iptt-ui .welcome-banner{padding:18px 16px}
+  .iptt-login #iptt-main{grid-template-columns:1fr}
+  .iptt-login .left-panel, .iptt-login .right-panel{padding:24px 16px}
+}
+@media print{
+  body.iptt-ui{background:white}
+  .iptt-ui .top-nav, .iptt-ui .iptt-skip, .iptt-ui .iptt-menu-toggle, .iptt-ui .iptt-footer, .iptt-ui .side-nav{display:none !important}
+  .iptt-ui #iptt-main{padding:0}
+  .iptt-ui .section-card, .iptt-ui .report-card, .iptt-ui .kpi-card{box-shadow:none; border:1px solid var(--border)}
 }

@@ -1,552 +1,123 @@
-
 {% extends "base.html" %}
-
 {% block content %}
-
-<style>
-    /* ✅ Hide base header + unwanted breadcrumb */
-
-    /* ===== NAV BAR ===== */
-
-
-
-    /* ===== BREADCRUMB ===== */
-    .breadcrumb {
-        font-size: 14px;
-        margin-bottom: 10px;
-    }
-
-    .breadcrumb a {
-        text-decoration: none;
-        color: #16509f;
-    }
-
-    .breadcrumb span {
-        margin: 0 5px;
-    }
-
-    .breadcrumb .current {
-        font-weight: bold;
-        color: #333;
-    }
-
-    /* ===== GRID ===== */
-    .project-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-        gap: 20px;
-    }
-
-    .project-card {
-        background: #ffffff;
-        padding: 18px;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .project-title {
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 6px;
-    }
-
-    .project-meta {
-        font-size: 13px;
-        color: #4b5b70;
-        margin-bottom: 10px;
-    }
-
-    .step-card {
-        border-radius: 6px;
-        padding: 10px;
-        margin-bottom: 10px;
-        font-size: 13px;
-    }
-
-    .step-complete { background: #e6f4ea; }
-    .step-pending { background: #fff4ce; }
-       
-    .step-locked {
-        background: #eeeeee;
-        color: #4b5b70;
-    }
-
-
-    .cta {
-        display: inline-block;
-        margin-right: 10px;
-        margin-top: 5px;
-        text-decoration: none;
-        color: #16509f;
-        font-size: 13px;
-    }
-
-    /* ✅ Progress */
-    .progress-bar {
-        background: #e4ebf3;
-        border-radius: 5px;
-        height: 6px;
-        margin-top: 6px;
-    }
-
-    .progress-fill {
-        height: 6px;
-        border-radius: 5px;
-        background: #0078d4;
-    }
-    
-    .project-card.completed {
-        border: 2px solid #107c41;
-        background-color: #eefaf1;
-    }
-
-
-</style>
-
-<!-- ✅ TOP NAV -->
 {% include "partials/nav.html" %}
 
-<!-- ✅ BREADCRUMB -->
 <div class="breadcrumb">
     <a href="/home">Home</a>
-    <span>></span>
+    <span>›</span>
     <a href="/programmes">Programmes</a>
-    <span>></span>
-    <span class="current">📂 Projects</span>
+    <span>›</span>
+    <span style="padding:4px 10px; border-radius:999px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.10)">📂 Projects</span>
 </div>
 
-<!-- ✅ PROGRAMME NAME -->
-<h3>
-    📦 Programme:
-    <a href="/programmes">
-        <strong>{{ programme_name }}</strong>
-    </a>
-</h3>
+<h3 style="margin:0 0 6px; font-size:14px; letter-spacing:0.12em; text-transform:uppercase; color:#A5B8FF; font-weight:700">Programme</h3>
+<h2 style="margin:0 0 20px; font-size:26px; letter-spacing:-0.03em; color:white">📦 <a href="/programmes" style="color:white; text-decoration:none">{{ programme_name }}</a></h2>
 
-<h2>Projects</h2>
-
-<!-- ✅ CREATE PROJECT -->
-<div class="project-card" id="create-project">
-    <h3>Create New Project</h3>
-    <form method="post">
-        <input type="text" name="name" placeholder="Project Name" required>
-        <input type="text" name="priority" placeholder="Priority (P1 / P2 / ...)" required>
-        <button type="submit">Create Project</button>
+<div class="project-card" id="create-project" style="margin-bottom:24px; padding:20px; background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06)); border:1px solid rgba(255,255,255,0.10); backdrop-filter:blur(16px); color:white">
+    <h3 style="margin:0 0 14px; color:white">Create New Project</h3>
+    <form method="post" style="display:flex; gap:10px; flex-wrap:wrap; align-items:end">
+        <div style="flex:1; min-width:180px"><label style="display:block; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.6); margin-bottom:6px">Project Name</label><input type="text" name="name" placeholder="Project Name" required style="width:100%; background:white"></div>
+        <div style="min-width:160px"><label style="display:block; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.6); margin-bottom:6px">Priority</label><input type="text" name="priority" placeholder="P1 / P2" required style="width:100%; background:white"></div>
+        <button type="submit" class="btn" style="background:white; color:#0F172A">Create Project</button>
     </form>
 </div>
-
-<br>
 
 <div class="project-grid">
-
 {% for p in projects %}
-<div class="project-card {% if project_status[p.id].setup_completed %}completed{% endif %}">
-
-
-<div class="project-title">
-
-    {{ p.name }}
-
-    {% if p.baseline_locked %}
-        <span style="color: #a4262c; font-size:12px; margin-left:8px;">
-            🔒 Locked
-        </span>
-    {% endif %}
-
-    {% if p.baseline_locked %}
-        <span style="font-size:12px; color: #4b5b70; margin-left:10px;">
-            Version 2+
-        </span>
-    {% else %}
-        <span style="font-size:12px; color: #4b5b70; margin-left:10px;">
-            Version 1
-        </span>
-    {% endif %}
-
-    <!-- ✅ DELETE BUTTON -->
+<div class="project-card {% if project_status[p.id].setup_completed %}completed{% endif %}" style="padding:0; overflow:hidden">
+<div style="padding:18px 18px 12px">
+  <div class="project-title" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap">
+    <b style="font-size:17px; letter-spacing:-0.02em">{{ p.name }}</b>
+    {% if p.baseline_locked %}<span class="status-badge status-red" style="font-size:11px">🔒 Locked</span><span style="font-size:11px; color:#64748B">Version 2+</span>{% else %}<span style="font-size:11px; color:#64748B">Version 1</span>{% endif %}
     {% if user.role == "admin" %}
-    <form method="post"
-          action="/project/delete/{{ p.id }}"
-          style="display:inline-block; margin-left:10px;"
-          onsubmit="return confirmProjectDelete('{{ p.name }}');">
-    
-        <input type="hidden"
-               name="programme_id"
-               value="{{ programme_id }}">
-    
-        <button type="submit"
-                style="
-                    border:none;
-                    background:#fde7e9;
-                    color: #a4262c;
-                    cursor:pointer;
-                    font-size:13px;
-                    padding:5px 10px;
-                    border-radius:5px;
-                    font-weight:500;
-                ">
-            🗑 Delete
-        </button>
-    
+    <form method="post" action="/project/delete/{{ p.id }}" style="display:inline-block; margin-left:auto" onsubmit="return confirmProjectDelete('{{ p.name }}');">
+        <input type="hidden" name="programme_id" value="{{ programme_id }}">
+        <button type="submit" style="border:1px solid #FFB3C1; background:#FFF0F3; color:#C2183D; cursor:pointer; font-size:11px; padding:5px 10px; border-radius:999px; font-weight:600">🗑 Delete</button>
     </form>
     {% endif %}
+  </div>
+  <div class="project-meta" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; align-items:center">
+    {% if project_status[p.id].setup_completed %}<span class="status-badge status-green">✅ Setup Completed</span>{% else %}Status: {{ p.status }}{% endif %}
+    <span style="font-size:12px; color:#64748B">Priority: {{ p.priority }}</span>
+    <span style="font-size:12px; color:#64748B">Progress: {% if project_status[p.id].setup_completed %}100%{% else %}{{ project_status[p.id].progress }}%{% endif %}</span>
+  </div>
+  <div style="margin-top:10px; height:6px; background:#E2E8F0; border-radius:999px; overflow:hidden"><div style="height:100%; width:{{ project_status[p.id].progress }}%; background:linear-gradient(90deg,#5B7FFF,#8B5CF6)"></div></div>
 
-</div>
-
-<div class="project-meta">
-    
-    {% if project_status[p.id].setup_completed %}
-        <strong style="color: #0f6b45;">
-            ✅ Setup Completed
-        </strong>
-    {% else %}
-        Status: {{ p.status }}
-    {% endif %}
-    
-    | Priority: {{ p.priority }} <br>
-
-    Progress:
-    {% if project_status[p.id].setup_completed %}
-        100%
-    {% else %}
-        {{ project_status[p.id].progress }}%
-    {% endif %}
-
-</div> <!-- ✅ FIXED: close project-meta -->
-
-<!-- ✅ ASSIGNED PMS -->
-<div style="font-size: 13px; margin-bottom: 8px;">
+  <div style="margin-top:12px; font-size:12px">
     <strong>Assigned PMs:</strong>
-
     {% if project_users_map[p.id] != "None" %}
         {% for name in project_users_map[p.id].split(', ') %}
-
-            <div style="display:inline-block; margin-right:6px; margin-top:5px;">
-
-                <span style="
-                    background:#e7f3ff;
-                    color: #16509f;
-                    padding:4px 8px;
-                    border-radius:4px;
-                ">
-                    {{ name }}
-                </span>
-
-                {% if user.role == "admin" %}
-                <form method="post"
-                      action="/project/{{ p.id }}/unassign"
-                      style="display:inline;">
-                    
-                    <input type="hidden" name="programme_id" value="{{ programme_id }}">
-
-                    {% for u in users %}
-                        {% if u.username == name %}
-                            <input type="hidden" name="user_id" value="{{ u.id }}">
-                        {% endif %}
-                    {% endfor %}
-
-                    <button type="submit"
-                            style="border:none;background:none;color: #a4262c;cursor:pointer;font-size:12px;">
-                        ❌
-                    </button>
-                </form>
-                {% endif %}
-
-            </div>
-
-        {% endfor %}
-    {% else %}
-        <span style="color: #4b5b70;">None</span>
-    {% endif %}
-</div>
-
-<!-- ✅ ASSIGN NEW PM -->
-{% if user.role == "admin" %}
-<form method="post" action="/project/{{ p.id }}/assign" style="margin-top:10px;">
-    <input type="hidden" name="programme_id" value="{{ programme_id }}">
-
-    <select name="user_id">
-        {% for u in users %}
-            <option value="{{ u.id }}">{{ u.username }}</option>
-        {% endfor %}
-    </select>
-
-    <button type="submit">➕ Assign PM</button>
-</form>
-{% endif %}
-
-<!-- ✅ PROGRESS BAR FIXED -->
-<div class="progress-bar">
-    <div class="progress-fill"
-         style="width: {{ project_status[p.id].progress }}%;">
-    </div> <!-- ✅ FIXED -->
-</div>
-
-    {% set status = project_status[p.id] %}
-
-    <!-- STEP 1 -->
-    <div class="step-card {% if status.scope_done %}step-complete{% else %}step-pending{% endif %}">
-        <strong>{{ "✅ Scope Setup" if status.scope_done else "⏳ Scope Setup" }}</strong><br>
-        <a class="cta" href="/project/{{ p.id }}/scopes">📦 Open Scope</a>
-    </div>
-
-    <!-- STEP 2 -->
-    <div class="step-card {% if status.tasks_done %}step-complete{% else %}step-pending{% endif %}">
-        <strong>{{ "✅ Task Setup" if status.tasks_done else "⏳ Task Setup" }}</strong><br>
-        <a class="cta" href="/tasks/{{ p.id }}">📋 Open Tasks</a>
-        <a class="cta" href="/static/task_template.xlsx">📄 Template</a>
-    </div>
-
-    <!-- STEP 3 -->
-    {% if status.plan_done %}
-    <div class="step-card step-complete">
-        <strong>✅ Plan Ready</strong><br>
-        Baseline: {{ p.project_start_date }}<br>
-
-    <a class="cta" href="/api/projects/{{ p.id }}/plan/download">📥 Download Plan</a>
-    
-    {% if user.role == "admin" and p.baseline_locked %}
-    <br>
-    
-    <!-- ✅ NEW BUTTON -->
-    <a class="cta"
-       href="/api/execution/projects/{{ p.id }}/download-revision-template">
-        📥 Download Revision Template
-    </a>
-    {% endif %}
-
-    
-    <hr>
-    
-    {% if p.baseline_locked %}
-    {% if user.role == "admin" %}
-        <!-- ✅ REVISE PLAN (FORM 1) -->
-        <form method="post" action="/api/execution/projects/{{ p.id }}/revise-plan">
-            <button type="submit" style="
-                margin-top:10px;
-                background:#ffb900;
-                border:none;
-                padding:6px 10px;
-                border-radius:5px;
-                cursor:pointer;
-            ">
-                🛠 Revise Plan
-            </button>
-        </form>
-
-        <!-- ✅ UPLOAD REVISED PLAN (FORM 2 - SEPARATE) -->
-        <form method="post"
-              action="/api/execution/projects/{{ p.id }}/upload-revised-plan"
-              enctype="multipart/form-data"
-              style="margin-top:10px;">
-            
-            <input type="file" name="file" required>
-
-            <button type="submit" class="update-btn">
-                📤 Upload Revised Plan
-            </button>
-        </form>
-
-    {% endif %}
-    <!-- ✅ LOCK MESSAGE (MUST BE INSIDE SAME BLOCK) -->
-        <div style="
-            background:#f3f3f3;
-            padding:10px;
-            border-radius:6px;
-            font-size:13px;
-            color: #4b5b70;
-        ">
-            🔒 <strong>Baseline Locked</strong><br>
-            Execution has started. Original baseline is now locked.
-        </div>
-    
-    {% else %}
-        <!-- ✅ RE-BASELINE -->
-        <form method="post" action="/api/projects/{{ p.id }}/initiation-date">
-            <input type="date" name="project_start_date" required>
-            <button type="submit">🔁 Re‑baseline</button>
-        </form>
-    
-    {% endif %}
-    </div>
-    {% else %}
-    <div class="step-card step-locked">
-        <strong>🔒 Planning</strong><br>
-        {% if not p.baseline_locked %}
-        
-        <form method="post" action="/api/projects/{{ p.id }}/initiation-date">
-            <input type="date" name="project_start_date" required>
-            <button type="submit">📅 Generate Plan</button>
-        </form>
-        
-        {% else %}
-        
-        
-        <div style="
-            background:#f3f3f3;
-            padding:10px;
-            border-radius:6px;
-            font-size:13px;
-            color: #4b5b70;
-        ">
-        
-            🔒 <strong>Baseline Locked</strong><br>
-            Execution has started. Re-baseline disabled.
-        
-        </div>
-        
-        {% endif %}
-
-    </div>
-    {% endif %}
-
-    <!-- STEP 4 -->
- 
-    <!-- ✅ EXECUTION SECTION -->
-    <div class="step-card {% if project_status[p.id].setup_completed %}step-complete{% else %}step-locked{% endif %}">
-        <strong>▶ Execution</strong><br>
-    
-        {% if project_status[p.id].setup_completed %}
-            <a class="cta" href="/project/{{ p.id }}/execution">
-                ▶ Start / Continue Execution
-            </a>
-        {% else %}
-            <span style="color: #4b5b70;">
-                🔒 Execution Locked (Complete setup first)
+            <span style="display:inline-flex; align-items:center; gap:6px; margin:4px 4px 0 0; background:#EEF2FF; color:#4F6EF7; padding:4px 10px; border-radius:999px; border:1px solid #E0E7FF; font-size:12px; font-weight:600">{{ name }}
+              {% if user.role == "admin" %}
+              <form method="post" action="/project/{{ p.id }}/unassign" style="display:inline;"><input type="hidden" name="programme_id" value="{{ programme_id }}">{% for u in users %}{% if u.username == name %}<input type="hidden" name="user_id" value="{{ u.id }}">{% endif %}{% endfor %}<button type="submit" style="border:0; background:transparent; color:#C2183D; cursor:pointer; font-size:12px">✕</button></form>
+              {% endif %}
             </span>
-        {% endif %}
-    
-    </div>
-
-    <!-- ✅ MONITORING SECTION -->
-    <!-- ✅ MONITORING SECTION -->
-    <div class="step-card step-pending">
-    
-        <strong>📊 Monitoring, Analytics & Forecasting</strong><br><br>
-    
-        <a class="cta"
-           href="/project/{{ p.id }}/executive-dashboard">
-    
-            📊 Executive Dashboard
-    
-        </a>
-    
-        <div style="
-            margin-top:8px;
-            font-size:12px;
-            color: #4b5b70;
-            line-height:1.5;
-        ">
-    
-            Real-time project analytics, delays,
-            execution monitoring, KPI tracking,
-            progress visibility and risk insights.
-    
-        </div>
-    
-        <br>
-    
-        <a class="cta"
-           href="/project/{{ p.id }}/forecast-dashboard">
-    
-            🔮 Forecast Dashboard
-    
-        </a>
-    
-        <div style="
-            margin-top:8px;
-            font-size:12px;
-            color: #4b5b70;
-            line-height:1.5;
-        ">
-    
-            Predicted Go-Live dates, risk forecasting,
-            confidence analysis, delay drivers,
-            critical node identification and
-            predictive project intelligence.
-    
-        </div>
-    
-    </div>
+        {% endfor %}
+    {% else %}<span style="color:#64748B">None</span>{% endif %}
+  </div>
+  {% if user.role == "admin" %}
+  <form method="post" action="/project/{{ p.id }}/assign" style="margin-top:10px; display:flex; gap:8px">
+    <input type="hidden" name="programme_id" value="{{ programme_id }}">
+    <select name="user_id" style="flex:1">{% for u in users %}<option value="{{ u.id }}">{{ u.username }}</option>{% endfor %}</select>
+    <button type="submit" class="btn" style="padding:8px 12px; min-height:32px; font-size:12px">➕ Assign PM</button>
+  </form>
+  {% endif %}
 </div>
 
+<div style="padding:0 18px 18px; display:grid; gap:10px">
+  {% set status = project_status[p.id] %}
+  <div class="step-card {% if status.scope_done %}step-complete{% else %}step-pending{% endif %}" style="margin:0; border-left:4px solid {% if status.scope_done %}#0EB368{% else %}#FF8A2B{% endif %}; background:{% if status.scope_done %}#F0FDF4{% else %}#FFF7ED{% endif %}"><strong>{{ "✅ Scope Setup" if status.scope_done else "⏳ Scope Setup" }}</strong><br><a class="cta" href="/project/{{ p.id }}/scopes">📦 Open Scope</a></div>
+  <div class="step-card {% if status.tasks_done %}step-complete{% else %}step-pending{% endif %}" style="margin:0; border-left:4px solid {% if status.tasks_done %}#0EB368{% else %}#FF8A2B{% endif %}; background:{% if status.tasks_done %}#F0FDF4{% else %}#FFF7ED{% endif %}"><strong>{{ "✅ Task Setup" if status.tasks_done else "⏳ Task Setup" }}</strong><br><a class="cta" href="/tasks/{{ p.id }}">📋 Open Tasks</a> <a class="cta" href="/static/task_template.xlsx">📄 Template</a></div>
+  {% if status.plan_done %}
+  <div class="step-card step-complete" style="margin:0; border-left:4px solid #0EB368; background:#F0FDF4"><strong>✅ Plan Ready</strong><br>Baseline: {{ p.project_start_date }}<br>
+    <a class="cta" href="/api/projects/{{ p.id }}/plan/download">📥 Download Plan</a>
+    {% if user.role == "admin" and p.baseline_locked %}<br><a class="cta" href="/api/execution/projects/{{ p.id }}/download-revision-template">📥 Download Revision Template</a>{% endif %}
+    <hr style="margin:10px 0; border:0; border-top:1px solid #E2E8F0">
+    {% if p.baseline_locked %}
+      {% if user.role == "admin" %}
+        <form method="post" action="/api/execution/projects/{{ p.id }}/revise-plan"><button type="submit" style="margin-top:6px; background:#FF8A2B; border:0; padding:6px 12px; border-radius:999px; cursor:pointer; color:white; font-weight:600; font-size:12px">🛠 Revise Plan</button></form>
+        <form method="post" action="/api/execution/projects/{{ p.id }}/upload-revised-plan" enctype="multipart/form-data" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap"><input type="file" name="file" required style="flex:1"><button type="submit" class="btn" style="padding:6px 12px; min-height:32px; font-size:12px">📤 Upload Revised</button></form>
+      {% endif %}
+      <div style="margin-top:8px; background:#F8FAFC; padding:10px; border-radius:10px; font-size:12px; color:#475569; border:1px solid #E2E8F0">🔒 <strong>Baseline Locked</strong><br>Execution has started. Original baseline is now locked.</div>
+    {% else %}
+      <form method="post" action="/api/projects/{{ p.id }}/initiation-date" style="margin-top:8px; display:flex; gap:8px"><input type="date" name="project_start_date" required style="flex:1"><button type="submit" class="btn" style="padding:6px 12px; min-height:32px; font-size:12px">🔁 Re-baseline</button></form>
+    {% endif %}
+  </div>
+  {% else %}
+  <div class="step-card step-locked" style="margin:0"><strong>🔒 Planning</strong><br>
+    {% if not p.baseline_locked %}
+      <form method="post" action="/api/projects/{{ p.id }}/initiation-date" style="margin-top:8px; display:flex; gap:8px"><input type="date" name="project_start_date" required style="flex:1"><button type="submit" class="btn" style="padding:6px 12px; min-height:32px; font-size:12px">📅 Generate Plan</button></form>
+    {% else %}
+      <div style="background:#F8FAFC; padding:10px; border-radius:10px; font-size:12px; color:#475569; border:1px solid #E2E8F0">🔒 <strong>Baseline Locked</strong><br>Execution has started. Re-baseline disabled.</div>
+    {% endif %}
+  </div>
+  {% endif %}
+  <div class="step-card {% if project_status[p.id].setup_completed %}step-complete{% else %}step-locked{% endif %}" style="margin:0"><strong>▶ Execution</strong><br>{% if project_status[p.id].setup_completed %}<a class="cta" href="/project/{{ p.id }}/execution">▶ Start / Continue Execution</a>{% else %}<span style="color:#64748B">🔒 Execution Locked (Complete setup first)</span>{% endif %}</div>
+  <div class="step-card step-pending" style="margin:0; background:#F8FAFF; border-left:4px solid #5B7FFF"><strong>📊 Monitoring, Analytics & Forecasting</strong><br><div style="margin-top:6px; display:flex; gap:8px; flex-wrap:wrap"><a class="btn" href="/project/{{ p.id }}/executive-dashboard" style="padding:6px 12px; min-height:32px; font-size:12px">📊 Executive Dashboard</a><a class="btn btn-dark" href="/project/{{ p.id }}/forecast-dashboard" style="padding:6px 12px; min-height:32px; font-size:12px">🔮 Forecast</a></div><div style="margin-top:8px; font-size:11px; color:#64748B; line-height:1.5">Real-time analytics, delays, KPI tracking, risk insights, Go-Live forecasting.</div></div>
+</div>
+</div>
 {% else %}
-<p>No projects found.</p>
+<div class="empty-state">No projects found.</div>
 {% endfor %}
-
 </div>
+
 <script>
 const params = new URLSearchParams(window.location.search);
-
-// ✅ ERROR HANDLING
 const error = params.get("error");
-
-if (error === "admin_required") {
-    alert("⚠️ Only Admin can perform this action");
-}
-if (error === "pm_only") {
-    alert("⚠️ Only PM or Admin can perform this action");
-}
-if (error === "not_allowed") {
-    alert("⚠️ You are not allowed to perform this action");
-}
-if (error === "not_assigned") {
-    alert("⚠️ You are not assigned to this project");
-}
-
-if (error === "project_not_empty") {
-    alert("⚠️ Cannot delete project with scopes/tasks/execution data");
-}
-
-// ✅ SUCCESS HANDLING
-if (params.get("success") === "upload") {
-    alert("✅ Revised Plan Uploaded");
-}
-
-if (params.get("success") === "revise") {
-    alert("✅ Plan revised successfully");
-}
-
-// ✅ CLEAN URL AFTER ALERT (DELAY IS CRITICAL)
-setTimeout(() => {
-    if (params.get("success") || error) {
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
-}, 200);
-
+if (error === "admin_required") { alert("⚠️ Only Admin can perform this action"); }
+if (error === "pm_only") { alert("⚠️ Only PM or Admin can perform this action"); }
+if (error === "not_allowed") { alert("⚠️ You are not allowed to perform this action"); }
+if (error === "not_assigned") { alert("⚠️ You are not assigned to this project"); }
+if (error === "project_not_empty") { alert("⚠️ Cannot delete project with scopes/tasks/execution data"); }
+if (params.get("success") === "upload") { alert("✅ Revised Plan Uploaded"); }
+if (params.get("success") === "revise") { alert("✅ Plan revised successfully"); }
+setTimeout(() => { if (params.get("success") || error) { window.history.replaceState({}, document.title, window.location.pathname); } }, 200);
 function confirmProjectDelete(projectName) {
-
-    // STEP 1
-    const warning = confirm(
-        "⚠ WARNING\n\n" +
-        "This project contains execution data, scopes, tasks and reports.\n\n" +
-        "Deleting is irreversible.\n\n" +
-        "Press OK to continue."
-    );
-
-    if (!warning) {
-        return false;
-    }
-
-    // STEP 2
-    const typed = prompt(
-        "Type DELETE to permanently remove project:\n\n" +
-        projectName
-    );
-
-    if (typed !== "DELETE") {
-
-        alert("❌ Delete cancelled. Confirmation text mismatch.");
-
-        return false;
-    }
-
-    // STEP 3
-    return confirm(
-        "FINAL CONFIRMATION\n\n" +
-        "Delete project permanently?"
-    );
+    const warning = confirm("⚠ WARNING\n\nThis project contains execution data, scopes, tasks and reports.\n\nDeleting is irreversible.\n\nPress OK to continue.");
+    if (!warning) return false;
+    const typed = prompt("Type DELETE to permanently remove project:\n\n" + projectName);
+    if (typed !== "DELETE") { alert("❌ Delete cancelled. Confirmation text mismatch."); return false; }
+    return confirm("FINAL CONFIRMATION\n\nDelete project permanently?");
 }
 </script>
-
 {% endblock %}

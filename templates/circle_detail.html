@@ -1,319 +1,53 @@
-
 {% extends "base.html" %}
-
 {% block content %}
-
-<style>
-
-
-body{
-    background:#f5f7fa;
-}
-
-
-
-.breadcrumb{
-    margin-bottom:15px;
-    font-size:14px;
-}
-
-.breadcrumb a{
-    color: #16509f;
-    text-decoration:none;
-}
-
-.page-title{
-    margin-bottom:20px;
-}
-
-.kpi-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:16px;
-    margin-bottom:20px;
-}
-
-.kpi-card{
-    background:white;
-    padding:18px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
-.kpi-title{
-    font-size:13px;
-    color: #4b5b70;
-}
-
-.kpi-value{
-    font-size:28px;
-    font-weight:bold;
-    margin-top:6px;
-}
-
-.blue{
-    border-left:5px solid #0078d4;
-}
-
-.green{
-    border-left:5px solid #107c41;
-}
-
-.orange{
-    border-left:5px solid #ff8c00;
-}
-
-.red{
-    border-left:5px solid #d13438;
-}
-
-.section{
-    background:white;
-    border-radius:10px;
-    padding:18px;
-    margin-bottom:20px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th{
-    background:#f0f2f5;
-    text-align:left;
-    padding:10px;
-    border-bottom:1px solid #ddd;
-}
-
-td{
-    padding:10px;
-    border-bottom:1px solid #eee;
-}
-
-.search-box{
-    margin-bottom:15px;
-}
-
-.search-box input{
-    width:350px;
-    padding:8px;
-}
-
-.facility-link{
-    text-decoration:none;
-    color: #16509f;
-    font-weight:600;
-}
-
-.facility-link:hover{
-    text-decoration:underline;
-}
-
-.summary-box{
-    color: #4b5b70;
-    margin-top:6px;
-}
-
-</style>
-
-<!-- ===================================== -->
-<!-- TOP NAVIGATION -->
-<!-- ===================================== -->
-
 {% include "partials/nav.html" %}
 
-<!-- ===================================== -->
-<!-- BREADCRUMB -->
-<!-- ===================================== -->
-
 <div class="breadcrumb">
-
-    <a href="/home">Home</a>
-
-    >
-
-    <a href="/circle-dashboard">
-        Circle Dashboard
-    </a>
-
-    >
-
-    <span>{{ circle_name }}</span>
-
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/circle-dashboard">Circle Dashboard</a> <span>›</span>
+    <span style="padding:4px 10px; border-radius:999px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.10)">{{ circle_name }}</span>
 </div>
 
-<!-- ===================================== -->
-<!-- PAGE HEADER -->
-<!-- ===================================== -->
-
-<div class="page-title">
-
-    <h2>
-        🌍 Circle Detail - {{ circle_name }}
-    </h2>
-
-    <div class="summary-box">
-
-        Facility-wise operational visibility for
-        Circle {{ circle_name }}
-
-    </div>
-
+<div style="margin-bottom:20px; padding:24px; border-radius:18px; border:1px solid rgba(255,255,255,0.10); background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06)); backdrop-filter:blur(20px); box-shadow:0 24px 64px rgba(0,0,0,0.32); color:white">
+  <h2 style="margin:0; font-size:26px; letter-spacing:-0.03em; color:white">🌍 Circle Detail — {{ circle_name }}</h2>
+  <div style="margin-top:6px; color:rgba(230,234,242,0.58); font-size:13px">Facility-wise operational visibility for Circle {{ circle_name }}</div>
 </div>
-
-<!-- ===================================== -->
-<!-- KPI SUMMARY -->
-<!-- ===================================== -->
 
 <div class="kpi-grid">
-
-    <div class="kpi-card blue">
-        <div class="kpi-title">Facilities</div>
-        <div class="kpi-value">
-            {{ facility_data|length }}
-        </div>
-    </div>
-
-    <div class="kpi-card green">
-        <div class="kpi-title">Total Nodes</div>
-        <div class="kpi-value">
-            {{ facility_data | sum(attribute='nodes') }}
-        </div>
-    </div>
-
-    <div class="kpi-card orange">
-        <div class="kpi-title">Completed Nodes</div>
-        <div class="kpi-value">
-            {{ facility_data | sum(attribute='completed_nodes') }}
-        </div>
-    </div>
-
-    <div class="kpi-card red">
-        <div class="kpi-title">WIP Nodes</div>
-        <div class="kpi-value">
-            {{ facility_data | sum(attribute='wip_nodes') }}
-        </div>
-    </div>
-
+    <div class="kpi-card"><div class="kpi-title">Facilities</div><div class="kpi-value">{{ facility_data|length }}</div></div>
+    <div class="kpi-card"><div class="kpi-title">Total Nodes</div><div class="kpi-value">{{ facility_data | sum(attribute='nodes') }}</div><div class="progress-wrapper"><div class="progress-bar" style="width:100%"></div></div></div>
+    <div class="kpi-card"><div class="kpi-title">Completed Nodes</div><div class="kpi-value" style="color:#0E7A4C">{{ facility_data | sum(attribute='completed_nodes') }}</div><div class="progress-wrapper"><div class="progress-bar" style="width:68%; background:linear-gradient(90deg,#0EB368,#06B6D4)"></div></div></div>
+    <div class="kpi-card"><div class="kpi-title">WIP Nodes</div><div class="kpi-value" style="color:#9A5A00">{{ facility_data | sum(attribute='wip_nodes') }}</div></div>
 </div>
 
-<!-- ===================================== -->
-<!-- FACILITY TABLE -->
-<!-- ===================================== -->
-
-<div class="section">
-
-    <h3>
-        🏢 Facilities in {{ circle_name }}
-    </h3>
-
-    <div class="search-box">
-
-        <input
-            type="text"
-            id="facilitySearch"
-            placeholder="Search Facility"
-            onkeyup="filterFacilityTable()">
-
-    </div>
-
+<div class="section-card">
+    <div class="section-title"><h3>🏢 Facilities in {{ circle_name }}</h3><span style="font-size:11px; color:#64748B; font-family:'JetBrains Mono'">{{ facility_data|length }} facilities</span></div>
+    <div style="margin-bottom:14px"><input type="text" id="facilitySearch" placeholder="Search Facility" onkeyup="filterFacilityTable()" style="width:100%; max-width:340px; border-radius:999px; border:1px solid #CBD5E1; padding:10px 14px"></div>
     <table id="facilityTable">
-
-        <tr>
-
-            <th>Facility</th>
-
-            <th>Projects</th>
-
-            <th>Total Nodes</th>
-
-            <th>Completed</th>
-
-            <th>WIP</th>
-
-            <th>Progress</th>
-
-        </tr>
-
+        <tr><th>Facility</th><th>Projects</th><th>Total Nodes</th><th>Completed</th><th>WIP</th><th>Progress</th></tr>
         {% for row in facility_data %}
-
         <tr>
-
-            <td>
-
-                <a
-                    class="facility-link"
-                    href="/facility/{{ row.facility }}">
-
-                    {{ row.facility }}
-
-                </a>
-
-            </td>
-
+            <td><a href="/facility/{{ row.facility }}" style="font-weight:700; color:#4F6EF7; text-decoration:none; padding:6px 10px; border-radius:999px; background:#EEF2FF; border:1px solid #E0E7FF">{{ row.facility }}</a></td>
             <td>{{ row.projects }}</td>
-
-            <td>{{ row.nodes }}</td>
-
-            <td>{{ row.completed_nodes }}</td>
-
-            <td>{{ row.wip_nodes }}</td>
-
-            <td>{{ row.progress }}%</td>
-
+            <td><b>{{ row.nodes }}</b></td>
+            <td><span class="status-badge status-green">{{ row.completed_nodes }}</span></td>
+            <td><span class="status-badge status-yellow">{{ row.wip_nodes }}</span></td>
+            <td><div style="display:flex; align-items:center; gap:8px"><div style="width:56px; height:6px; background:#E2E8F0; border-radius:999px; overflow:hidden"><i style="display:block; height:100%; width:{{ row.progress }}%; background:linear-gradient(90deg,#5B7FFF,#8B5CF6)"></i></div>{{ row.progress }}%</div></td>
         </tr>
-
         {% endfor %}
-
     </table>
-
 </div>
 
 <script>
-
 function filterFacilityTable(){
-
-    let input =
-        document.getElementById(
-            "facilitySearch"
-        );
-
-    let filter =
-        input.value.toUpperCase();
-
-    let table =
-        document.getElementById(
-            "facilityTable"
-        );
-
-    let tr =
-        table.getElementsByTagName(
-            "tr"
-        );
-
+    let input = document.getElementById("facilitySearch");
+    let filter = input.value.toUpperCase();
+    let table = document.getElementById("facilityTable");
+    let tr = table.getElementsByTagName("tr");
     for(let i=1;i<tr.length;i++){
-
-        let txt =
-            tr[i].textContent ||
-            tr[i].innerText;
-
-        if(
-            txt.toUpperCase()
-            .indexOf(filter) > -1
-        ){
-
-            tr[i].style.display = "";
-
-        }else{
-
-            tr[i].style.display = "none";
-
-        }
+        let txt = tr[i].textContent || tr[i].innerText;
+        tr[i].style.display = txt.toUpperCase().indexOf(filter) > -1 ? "" : "none";
     }
 }
-
 </script>
-
 {% endblock %}

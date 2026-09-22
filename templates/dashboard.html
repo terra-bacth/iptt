@@ -1,463 +1,105 @@
-
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
     <title>IPTT Governance Dashboard</title>
-
-    <style>
-
-    /* ===== PAGE ===== */
-
-    body {
-
-        font-family: Arial, sans-serif;
-        background: #f4f6f8;
-        margin: 0;
-        padding: 20px;
-        color:#1f2937;
-    }
-
-    /* ===== TOP NAV ===== */
-
-
-
-
-    /* ===== PAGE HEADER ===== */
-
-    .page-header {
-
-        margin-bottom:25px;
-    }
-
-    .page-title {
-
-        font-size:30px;
-        font-weight:bold;
-    }
-
-    .page-subtitle {
-
-        margin-top:6px;
-        color: #4b5b70;
-        font-size:16px;
-    }
-
-    /* ===== KPI GRID ===== */
-
-    .kpi-grid {
-
-        display:grid;
-
-        grid-template-columns:
-            repeat(auto-fit,minmax(220px,1fr));
-
-        gap:20px;
-
-        margin-bottom:30px;
-    }
-
-    /* ===== KPI CARD ===== */
-
-    .kpi-card {
-
-        background:white;
-
-        padding:20px;
-
-        border-radius:12px;
-
-        box-shadow:0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    .kpi-label {
-
-        color: #4b5b70;
-        font-size:14px;
-    }
-
-    .kpi-value {
-
-        margin-top:10px;
-
-        font-size:30px;
-        font-weight:bold;
-    }
-
-    /* ===== SECTION CARD ===== */
-
-    .section-card {
-
-        background:white;
-
-        border-radius:12px;
-
-        padding:20px;
-
-        box-shadow:0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    /* ===== TABLE ===== */
-
-    .dashboard-table {
-
-        width:100%;
-        border-collapse:collapse;
-        margin-top:15px;
-    }
-
-    .dashboard-table th {
-
-        background:#374151;
-        color:white;
-
-        padding:12px;
-        text-align:left;
-
-        font-size:14px;
-    }
-
-    .dashboard-table td {
-
-        padding:12px;
-        border-bottom:1px solid #e5e7eb;
-        font-size:14px;
-    }
-
-    .dashboard-table tr:hover {
-
-        background:#f9fafb;
-    }
-
-    /* ===== BUTTON ===== */
-
-    .btn {
-
-        background:#2563eb;
-        color:white;
-
-        padding:6px 12px;
-
-        border-radius:6px;
-
-        text-decoration:none;
-
-        font-size:13px;
-        font-weight:bold;
-    }
-
-    .btn:hover {
-
-        background:#1d4ed8;
-    }
-
-    /* ===== HEALTH STATUS ===== */
-
-    .status-green {
-
-        color: #0f6b45;
-        font-weight:bold;
-    }
-
-    .status-orange {
-
-        color: #8a4b08;
-        font-weight:bold;
-    }
-
-    .status-red {
-
-        color: #a4262c;
-        font-weight:bold;
-    }
-
-    /* ===== PROGRESS BAR ===== */
-
-    .progress-container {
-
-        width:100%;
-        background:#e5e7eb;
-
-        border-radius:999px;
-
-        height:14px;
-
-        overflow:hidden;
-    }
-
-    .progress-bar {
-
-        height:100%;
-        background:#2563eb;
-
-        border-radius:999px;
-    }
-
-    .progress-text {
-
-        margin-top:4px;
-        font-size:12px;
-        color:#374151;
-    }
-
-    </style>
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/static/theme.css?v=9">
-<script src="/static/ui.js?v=8" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/theme.css?v=11">
+    <script src="/static/ui.js?v=11" defer></script>
 </head>
-
 <body class="iptt-ui">
 <a class="iptt-skip" href="#iptt-main">Skip to main content</a>
 <main id="iptt-main" tabindex="-1">
 
-<!-- ===================================== -->
-<!-- TOP NAV -->
-<!-- ===================================== -->
-
 {% include "partials/nav.html" %}
 
-<!-- ===================================== -->
-<!-- PAGE HEADER -->
-<!-- ===================================== -->
-
-<div class="page-header">
-
-    <div class="page-title">
-
-        📊 Governance Dashboard
-
+<div class="page-header" style="margin-bottom:24px; padding:28px 24px; border-radius:18px; border:1px solid rgba(255,255,255,0.10); background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06)); backdrop-filter:blur(20px); box-shadow:0 24px 64px rgba(0,0,0,0.32)">
+    <div style="display:flex; justify-content:space-between; align-items:end; flex-wrap:wrap; gap:16px">
+        <div>
+            <div style="font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:700; color:#A5B8FF; margin-bottom:8px">Enterprise Portfolio</div>
+            <div class="page-title" style="font-size:32px; font-weight:800; letter-spacing:-0.03em; line-height:1; color:white">Governance <span style="font-family:'Instrument Serif'; font-weight:400; font-style:italic; background:linear-gradient(90deg,#A5B8FF,#D8B4FE); -webkit-background-clip:text; background-clip:text; color:transparent">Dashboard</span></div>
+            <div class="page-subtitle" style="margin-top:10px; color:rgba(230,234,242,0.58)">Portfolio overview with cinematic depth and live planning health</div>
+        </div>
+        <div style="display:flex; gap:8px">
+            <span class="status-badge status-green">● {{ data|length }} Programmes</span>
+            <span class="status-badge status-green">● Live Synced</span>
+        </div>
     </div>
-
-    <div class="page-subtitle">
-
-        Enterprise Deployment Portfolio Overview
-
-    </div>
-
 </div>
-
-<!-- ===================================== -->
-<!-- KPI CARDS -->
-<!-- ===================================== -->
 
 <div class="kpi-grid">
-
     <div class="kpi-card">
-
-        <div class="kpi-label">
-
-            Total Programmes
-
-        </div>
-
-        <div class="kpi-value">
-
-            {{ data|length }}
-
-        </div>
-
+        <div class="kpi-label">Total Programmes</div>
+        <div class="kpi-value">{{ data|length }}</div>
+        <div class="progress-wrapper"><div class="progress-bar" style="width:100%"></div></div>
     </div>
-
     <div class="kpi-card">
-
-        <div class="kpi-label">
-
-            Total Projects
-
-        </div>
-
-        <div class="kpi-value">
-
-            {{ data | sum(attribute='total') }}
-
-        </div>
-
+        <div class="kpi-label">Total Projects</div>
+        <div class="kpi-value">{{ data | sum(attribute='total') }}</div>
+        <div class="progress-wrapper"><div class="progress-bar" style="width:78%"></div></div>
     </div>
-
     <div class="kpi-card">
-
-        <div class="kpi-label">
-
-            Planned Projects
-
-        </div>
-
-        <div class="kpi-value">
-
-            {{ data | sum(attribute='planned') }}
-
-        </div>
-
+        <div class="kpi-label">Planned Projects</div>
+        <div class="kpi-value">{{ data | sum(attribute='planned') }}</div>
+        <div class="progress-wrapper"><div class="progress-bar" style="width:84%; background:linear-gradient(90deg,#0EB368,#06B6D4)"></div></div>
     </div>
-
     <div class="kpi-card">
-
-        <div class="kpi-label">
-
-            Average Planning %
-
-        </div>
-
+        <div class="kpi-label">Average Planning %</div>
         <div class="kpi-value">
-
             {% if data|length > 0 %}
-
-                {{
-                    (
-                        data | sum(attribute='percent')
-                        / data|length
-                    ) | round(0)
-                }}%
-
+                {{ (data | sum(attribute='percent') / data|length) | round(0) }}%
             {% else %}
-
                 0%
-
             {% endif %}
-
         </div>
-
+        <div class="progress-wrapper"><div class="progress-bar" style="width:{% if data|length > 0 %}{{ (data | sum(attribute='percent') / data|length) | round(0) }}%{% else %}0%{% endif %}; background:linear-gradient(90deg,#5B7FFF,#8B5CF6)"></div></div>
     </div>
-
 </div>
 
-<!-- ===================================== -->
-<!-- PROGRAMME GOVERNANCE TABLE -->
-<!-- ===================================== -->
-
 <div class="section-card">
-
-    <h2>
-
-        📦 Programme Governance Summary
-
-    </h2>
-
+    <div class="section-title">
+        <h2>📦 Programme Governance Summary</h2>
+        <span style="font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#64748B; font-family:'JetBrains Mono', monospace">{{ data|length }} programmes tracked</span>
+    </div>
     <table class="dashboard-table">
-
         <tr>
-
             <th>Programme</th>
-
             <th>Total Projects</th>
-
-            <th>Planned Projects</th>
-
+            <th>Planned</th>
             <th>Planning Completion</th>
-
             <th>Health Status</th>
-
             <th>Executive Dashboard</th>
-
         </tr>
-
         {% for row in data %}
-
         <tr>
-
-            <!-- PROGRAMME -->
-
-            <td>
-
-                <b>{{ row.programme }}</b>
-
-            </td>
-
-            <!-- TOTAL -->
-
-            <td>
-
-                {{ row.total }}
-
-            </td>
-
-            <!-- PLANNED -->
-
-            <td>
-
-                {{ row.planned }}
-
-            </td>
-
-            <!-- PROGRESS BAR -->
-
+            <td><b>{{ row.programme }}</b></td>
+            <td>{{ row.total }}</td>
+            <td>{{ row.planned }}</td>
             <td style="width:260px;">
-
-                <div class="progress-container">
-
-                    <div class="progress-bar"
-                         style="width:{{ row.percent }}%;">
-
-                    </div>
-
+                <div style="display:flex; align-items:center; gap:10px">
+                    <div class="progress-container" style="flex:1"><div class="progress-bar" style="width:{{ row.percent }}%;"></div></div>
+                    <span style="font-size:12px; font-weight:700; font-family:'JetBrains Mono', monospace; color:#0F172A; min-width:36px">{{ row.percent }}%</span>
                 </div>
-
-                <div class="progress-text">
-
-                    {{ row.percent }}%
-
-                </div>
-
             </td>
-
-            <!-- HEALTH -->
-
             <td>
-
                 {% if row.percent >= 80 %}
-
-                    <span class="status-green">
-
-                        Excellent
-
-                    </span>
-
+                    <span class="status-badge status-green">Excellent</span>
                 {% elif row.percent >= 50 %}
-
-                    <span class="status-orange">
-
-                        Moderate
-
-                    </span>
-
+                    <span class="status-badge status-yellow">Moderate</span>
                 {% else %}
-
-                    <span class="status-red">
-
-                        Needs Attention
-
-                    </span>
-
+                    <span class="status-badge status-red">Needs Attention</span>
                 {% endif %}
-
             </td>
-
-            <!-- DASHBOARD BUTTON -->
-
             <td>
-
-                <a class="btn"
-                   href="/programme/{{ row.programme_id }}/executive-dashboard">
-
-                    📈 Open Dashboard
-
-                </a>
-
+                <a class="btn" href="/programme/{{ row.programme_id }}/executive-dashboard" style="padding:8px 14px; min-height:34px; font-size:12px">📈 Open Dashboard →</a>
             </td>
-
         </tr>
-
         {% endfor %}
-
     </table>
-
 </div>
 
 </main>
 {% include "partials/footer.html" %}
 </body>
-
 </html>
