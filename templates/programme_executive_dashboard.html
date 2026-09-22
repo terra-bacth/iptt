@@ -1,1421 +1,207 @@
-
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
-    <title>
-        Programme Executive Dashboard
-    </title>
-
+    <title>Programme Executive Dashboard</title>
     <meta charset="UTF-8">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/theme.css?v=11">
+    <script src="/static/ui.js?v=11" defer></script>
     <style>
-
-        body{
-            font-family:Arial;
-            background:#f5f7fb;
-            margin:20px;
-            color:#1f2937;
-        }
-
-        .topbar{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:20px;
-            flex-wrap:wrap;
-            gap:12px;
-        }
-
-        .title{
-            font-size:30px;
-            font-weight:bold;
-        }
-
-        .download-btn{
-            background:#2563eb;
-            color:white;
-            padding:10px 16px;
-            border-radius:8px;
-            text-decoration:none;
-            font-weight:bold;
-        }
-
-        .programme-name{
-            font-size:22px;
-            font-weight:bold;
-            margin-bottom:25px;
-        }
-
-        .banner{
-            margin-bottom:25px;
-            padding:20px;
-            border-radius:12px;
-        }
-
-        .banner-title{
-            font-size:24px;
-            font-weight:bold;
-            margin-bottom:10px;
-        }
-
-        .banner-text{
-            line-height:1.7;
-            color:#374151;
-            font-size:15px;
-        }
-
-        .kpi-grid{
-            display:grid;
-            grid-template-columns:
-                repeat(auto-fit, minmax(220px,1fr));
-            gap:18px;
-            margin-bottom:25px;
-        }
-
-        .kpi-card{
-            background:white;
-            padding:20px;
-            border-radius:12px;
-            box-shadow:0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .kpi-label{
-            color: #4b5b70;
-            font-size:14px;
-        }
-
-        .kpi-value{
-            font-size:32px;
-            font-weight:bold;
-            margin-top:10px;
-        }
-
-        .section{
-            background:white;
-            border-radius:12px;
-            margin-bottom:25px;
-            box-shadow:0 2px 8px rgba(0,0,0,0.08);
-            overflow:hidden;
-        }
-
-        .section-header{
-            padding:18px 20px;
-            cursor:pointer;
-            font-size:21px;
-            font-weight:bold;
-            background:#f8fafc;
-            border-bottom:1px solid #e5e7eb;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-        }
-
-        .section-content{
-            padding:20px;
-        }
-
-        table{
-            width:100%;
-            border-collapse:collapse;
-        }
-
-        th{
-            background:#2563eb;
-            color:white;
-            padding:12px;
-            text-align:left;
-            font-size:14px;
-        }
-
-        td{
-            padding:12px;
-            border-bottom:1px solid #eeeeee;
-            font-size:14px;
-        }
-
-        .status-green{
-            color: #0f6b45;
-            font-weight:bold;
-        }
-
-        .status-orange{
-            color: #8a4b08;
-            font-weight:bold;
-        }
-
-        .status-red{
-            color: #a4262c;
-            font-weight:bold;
-        }
-
-        .action-btn{
-            background:#2563eb;
-            color:white;
-            padding:7px 12px;
-            border-radius:6px;
-            text-decoration:none;
-            font-size:13px;
-            font-weight:bold;
-            display:inline-block;
-        }
-
-        .project-link{
-            text-decoration:none;
-            color:#2563eb;
-            font-weight:bold;
-        }
-
-        .summary-box{
-            line-height:1.8;
-            font-size:16px;
-            color:#4b5563;
-            background:linear-gradient(135deg,#eef6ff,#ffffff);
-            border-left:6px solid #2563eb;
-            padding:20px;
-            border-radius:10px;
-        }
-
-        .analytics-grid{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:25px;
-        }
-
-        .chart-box{
-            background:#fafafa;
-            padding:15px;
-            border-radius:10px;
-        }
-        
-        @media(max-width:900px){
-
-            .analytics-grid{
-                grid-template-columns:1fr;
-            }
-        }
-
-        @media print {
-
-            body{
-                background:white;
-                margin:0;
-            }
-
-            .download-btn{
-                display:none;
-            }
-
-            .section{
-                box-shadow:none;
-                page-break-inside:avoid;
-            }
-
-            .section-content{
-                display:block !important;
-            }
-
-            .toggle-icon{
-                display:none;
-            }
-
-            canvas{
-                max-width:100%;
-            }
-        }
-        
-        .section-summary{
-    
-        font-size:22px;
-        font-weight:bold;
-        cursor:pointer;
-        color:#1f2937;
-        list-style:none;
-        }
-    
-        details summary::-webkit-details-marker{
-    
-        display:none;
-        }
-    
-        details{
-    
-        width:100%;
-        }
-        
-        .side-nav{
-    
-        position:fixed;
-        top:120px;
-        right:20px;
-        width:220px;
-        background:white;
-        border-radius:12px;
-        padding:18px;
-        box-shadow:0 2px 12px rgba(0,0,0,0.12);
-        z-index:999;
-    }
-    
-    .side-nav-title{
-    
-        font-size:16px;
-        font-weight:bold;
-        margin-bottom:15px;
-        color:#1f2937;
-    }
-    
-    .side-nav a{
-    
-        display:block;
-        padding:10px 12px;
-        margin-bottom:8px;
-        text-decoration:none;
-        color:#374151;
-        border-radius:6px;
-        transition:0.2s;
-    }
-    
-    .side-nav a:hover{
-    
-        background:#2563eb;
-        color:white;
-    }
-    
-    html{
-    
-        scroll-behavior:smooth;
-    }
-    
-    @media(max-width:1200px){
-    
-        .side-nav{
-    
-            display:none;
-        }
-    }
-
-    .analytics-grid{
-    
-        display:grid;
-        grid-template-columns:1fr 1fr;
-        gap:24px;
-        margin-top:25px;
-    }
-    
-    .analytics-card{
-    
-        background:#fafcff;
-        border-radius:12px;
-        padding:20px;
-        border:1px solid #e5e7eb;
-    }
-    
-    .analytics-card h3{
-    
-        margin-top:0;
-        margin-bottom:20px;
-        font-size:18px;
-        color:#1f2937;
-    }
-    
-    .chart-container{
-    
-        position:relative;
-        height:320px;
-    }
-    
-    .chart-container-large{
-    
-        position:relative;
-        height:420px;
-    }
-    
-    canvas{
-
-    width:100% !important;
-    }
-    
-    .full-width-card{
-    
-        margin-top:25px;
-    }
-    
-    @media(max-width:900px){
-    
-        .analytics-grid{
-    
-            grid-template-columns:1fr;
-        }
-    }
-    
-    
-    /* =========================================
-    TOP NAV
-    ========================================= */
-    
-    
-    
-
-
+      @media print { .top-nav, .side-nav, .download-btn, .toggle-icon { display:none !important } .section-content { display:block !important; opacity:1 !important } }
     </style>
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/static/theme.css?v=9">
-<script src="/static/ui.js?v=8" defer></script>
 </head>
-
 <body class="iptt-ui">
 <a class="iptt-skip" href="#iptt-main">Skip to main content</a>
 <main id="iptt-main" tabindex="-1">
 
-<!-- =========================================
-TOP NAV
-========================================= -->
-
 {% include "partials/nav.html" %}
 
-
-<!-- STICKY NAVIGATION -->
-
 <div class="side-nav">
-
-    <div class="side-nav-title">
-
-        Dashboard Navigation
-
-    </div>
-
-    <a href="#kpi-overview">
-        KPI Overview
-    </a>
-
-    <a href="#stage-mix">
-        Stage Mix
-    </a>
-
-    <a href="#analytics">
-        Analytics
-    </a>
-
-    <a href="#circle-summary">
-        Circle Summary
-    </a>
-
-    <a href="#project-dashboard">
-        Projects
-    </a>
-
-    <a href="#risk-projects">
-        Risks
-    </a>
-
-    <a href="#executive-summary">
-        Executive Summary
-    </a>
-
+    <div class="side-nav-title">Dashboard Navigation</div>
+    <a href="#kpi-overview">KPI Overview</a>
+    <a href="#executive-summary">Executive Summary</a>
+    <a href="#project-dashboard">Projects</a>
+    <a href="#stage-mix">Stage Mix</a>
+    <a href="#analytics">Analytics</a>
+    <a href="#circle-summary">Circle Summary</a>
+    <a href="#risk-projects">Risks</a>
 </div>
 
-<!-- TOP BAR -->
-
-<div class="topbar">
-
-    <div class="title">
-        📊 Programme Executive Dashboard
-    </div>
-
-    <a href="/programme/{{ report.programme_id }}/executive-dashboard/pdf"
-       target="_blank"
-       class="download-btn">
-
-        🖨 Download PDF
-
-    </a>
-
+<div style="display:flex; justify-content:space-between; align-items:end; flex-wrap:wrap; gap:16px; margin-bottom:20px; padding:24px; border-radius:18px; border:1px solid rgba(255,255,255,0.10); background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06)); backdrop-filter:blur(20px); box-shadow:0 24px 64px rgba(0,0,0,0.32)">
+  <div>
+    <div style="font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:700; color:#A5B8FF; margin-bottom:8px">Programme Executive</div>
+    <div style="font-size:28px; font-weight:800; letter-spacing:-0.03em; line-height:1; color:white">Programme <span style="font-family:'Instrument Serif'; font-weight:400; font-style:italic; color:#D8B4FE">Executive Dashboard</span></div>
+    <div style="margin-top:10px; font-size:22px; font-weight:700; letter-spacing:-0.02em; color:white">{{ report.programme_name }}</div>
+  </div>
+  <a href="/programme/{{ report.programme_id }}/executive-dashboard/pdf" target="_blank" class="btn" style="background:white; color:#0F172A">🖨 Download PDF</a>
 </div>
 
-<div class="programme-name">
-
-    {{ report.programme_name }}
-
-</div>
-
-<!-- STATUS BANNER -->
-
-<div class="banner"
-
-    {% if report.avg_health >= 80 %}
-
-        style="
-            background:#f0fdf4;
-            border-left:6px solid #16a34a;
-        "
-
-    {% elif report.avg_health >= 50 %}
-
-        style="
-            background:#fff7ed;
-            border-left:6px solid #f59e0b;
-        "
-
-    {% else %}
-
-        style="
-            background:#fff1f0;
-            border-left:6px solid #dc2626;
-        "
-
-    {% endif %}
->
-
-    <div class="banner-title">
-
-        {% if report.avg_health >= 80 %}
-
-            🟢 Programme Healthy
-
-        {% elif report.avg_health >= 50 %}
-
-            🟠 Programme Needs Attention
-
-        {% else %}
-
-            🔴 Programme Critical
-
-        {% endif %}
-
+<div class="banner" {% if report.avg_health >= 80 %}style="margin-bottom:20px; padding:20px 22px; border-radius:16px; background:#F0FDF4; border:1px solid #B9E9D0; border-left:6px solid #0EB368"{% elif report.avg_health >= 50 %}style="margin-bottom:20px; padding:20px 22px; border-radius:16px; background:#FFF7ED; border:1px solid #FFD89A; border-left:6px solid #FF8A2B"{% else %}style="margin-bottom:20px; padding:20px 22px; border-radius:16px; background:#FFF0F3; border:1px solid #FFB3C1; border-left:6px solid #FF3B5C"{% endif %}>
+    <div style="font-size:18px; font-weight:800; letter-spacing:-0.02em; margin-bottom:6px">
+        {% if report.avg_health >= 80 %}🟢 Programme Healthy{% elif report.avg_health >= 50 %}🟠 Programme Needs Attention{% else %}🔴 Programme Critical{% endif %}
     </div>
-
-    <div class="banner-text">
-
-        Programme currently tracking
-        <b>{{ report.total_projects }}</b>
-        projects with average health of
-        <b>{{ report.avg_health }}%</b>
-        and overall progress of
-        <b>{{ report.avg_progress }}%</b>.
-
-    </div>
-
+    <div style="line-height:1.6; color:#334155; font-size:14px">Programme currently tracking <b>{{ report.total_projects }}</b> projects with average health of <b>{{ report.avg_health }}%</b> and overall progress of <b>{{ report.avg_progress }}%</b>.</div>
 </div>
-
-<!-- KPI SECTION -->
 
 <div id="kpi-overview" class="kpi-grid">
-
-    <div class="kpi-card">
-
-        <div class="kpi-label">
-            Programme Health
-        </div>
-
-        <div class="kpi-value">
-            {{ report.avg_health }}%
-        </div>
-
-    </div>
-
-    <div class="kpi-card">
-
-        <div class="kpi-label">
-            Overall Progress
-        </div>
-
-        <div class="kpi-value">
-            {{ report.avg_progress }}%
-        </div>
-
-    </div>
-
-    <div class="kpi-card">
-
-        <div class="kpi-label">
-            Total Projects
-        </div>
-
-        <div class="kpi-value">
-            {{ report.total_projects }}
-        </div>
-
-    </div>
-
-    <div class="kpi-card">
-
-        <div class="kpi-label">
-            Delayed Items
-        </div>
-
-        <div class="kpi-value">
-            {{ report.total_delays }}
-        </div>
-
-    </div>
-
+    <div class="kpi-card"><div class="kpi-label">Programme Health</div><div class="kpi-value">{{ report.avg_health }}%</div><div class="progress-wrapper"><div class="progress-bar" style="width:{{ report.avg_health }}%; {% if report.avg_health >= 80 %}background:linear-gradient(90deg,#0EB368,#06B6D4){% elif report.avg_health >= 50 %}background:linear-gradient(90deg,#F59E0B,#FF8A2B){% else %}background:linear-gradient(90deg,#FF3B5C,#FF8A2B){% endif %}"></div></div></div>
+    <div class="kpi-card"><div class="kpi-label">Overall Progress</div><div class="kpi-value">{{ report.avg_progress }}%</div><div class="progress-wrapper"><div class="progress-bar" style="width:{{ report.avg_progress }}%"></div></div></div>
+    <div class="kpi-card"><div class="kpi-label">Total Projects</div><div class="kpi-value">{{ report.total_projects }}</div><div class="progress-wrapper"><div class="progress-bar" style="width:100%"></div></div></div>
+    <div class="kpi-card" style="border-left:4px solid #FF3B5C"><div class="kpi-label">Delayed Items</div><div class="kpi-value" style="color:#C2183D">{{ report.total_delays }}</div></div>
 </div>
 
-<!-- EXECUTIVE SUMMARY -->
-
-<div id="executive-summary" class="section">
-
-    <div class="section-header" onclick="toggleSection(this)">
-
-        📌 Executive Summary
-
-        <span class="toggle-icon">▼</span>
-
+<div id="executive-summary" class="section" style="margin-bottom:20px">
+    <div class="section-header" onclick="toggleSection(this.nextElementSibling)"><span>📌 Executive Summary</span><span class="toggle-icon">▼</span></div>
+    <div class="section-content active" style="display:block; opacity:1; grid-template-rows:1fr">
+        <div style="line-height:1.7; font-size:15px; color:#334155; background:linear-gradient(135deg,#EEF2FF,#FFFFFF); border-left:4px solid #5B7FFF; padding:18px; border-radius:12px; font-family:'Instrument Serif', serif; font-size:18px">{{ report.executive_summary | replace('\n\n', '<br><br>') | replace('\n', ' ') | safe }}</div>
     </div>
-
-    <div class="section-content">
-
-        <div class="summary-box">
-
-            {{ report.executive_summary
-                | replace('\n\n', '<br><br>')
-                | replace('\n', ' ')
-                | safe }}
-
-        </div>
-
-    </div>
-
 </div>
 
-<!-- PROJECT DASHBOARD -->
-
-<div id="project-dashboard" class="section">
-
-    <div class="section-header" onclick="toggleSection(this)">
-
-        📊 Project Deployment Dashboard
-
-        <span class="toggle-icon">▼</span>
-
-    </div>
-
-    <div class="section-content">
-
-        <div style="overflow-x:auto;">
-
+<div id="project-dashboard" class="section" style="margin-bottom:20px">
+    <div class="section-header" onclick="toggleSection(this.nextElementSibling)"><span>📊 Project Deployment Dashboard</span><span class="toggle-icon">▼</span></div>
+    <div class="section-content active" style="display:block; opacity:1; grid-template-rows:1fr">
+        <div style="overflow-x:auto">
             <table>
-
-                <tr>
-
-                    <th>Project</th>
-                    <th>Health</th>
-                    <th>Progress</th>
-                    <th>Delayed Items</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-
-                </tr>
-
+                <tr><th>Project</th><th>Health</th><th>Progress</th><th>Delayed Items</th><th>Status</th><th>Actions</th></tr>
                 {% for p in report.projects %}
-
-                <tr
-
-                    {% if p.health < 50 %}
-                        style="background:#fff1f0;"
-
-                    {% elif p.health < 80 %}
-                        style="background:#fff7e6;"
-                    {% endif %}
-                >
-
-                    <td>
-
-                        <a href="/project/{{ p.project_id }}/executive-dashboard"
-                           class="project-link">
-
-                            {{ p.project_name }}
-
-                        </a>
-
-                    </td>
-
-                    <td>
-
-                        {% if p.health >= 80 %}
-
-                            <span class="status-green">
-                                🟢 {{ p.health }}%
-                            </span>
-
-                        {% elif p.health >= 50 %}
-
-                            <span class="status-orange">
-                                🟠 {{ p.health }}%
-                            </span>
-
-                        {% else %}
-
-                            <span class="status-red">
-                                🔴 {{ p.health }}%
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-                    <td>{{ p.progress }}%</td>
-
+                <tr {% if p.health < 50 %}style="background:#FFF0F3"{% elif p.health < 80 %}style="background:#FFF7E6"{% endif %}>
+                    <td><a href="/project/{{ p.project_id }}/executive-dashboard" style="font-weight:700; color:#4F6EF7; text-decoration:none">{{ p.project_name }}</a></td>
+                    <td>{% if p.health >= 80 %}<span class="status-badge status-green">{{ p.health }}%</span>{% elif p.health >= 50 %}<span class="status-badge status-yellow">{{ p.health }}%</span>{% else %}<span class="status-badge status-red">{{ p.health }}%</span>{% endif %}</td>
+                    <td><div style="display:flex; align-items:center; gap:8px"><div style="width:64px; height:6px; background:#E2E8F0; border-radius:999px; overflow:hidden"><i style="display:block; height:100%; width:{{ p.progress }}%; background:linear-gradient(90deg,#5B7FFF,#8B5CF6)"></i></div>{{ p.progress }}%</div></td>
                     <td>{{ p.delayed_items }}</td>
-
                     <td>{{ p.status }}</td>
-
-                    <td>
-
-                        <a href="/project/{{ p.project_id }}/executive-dashboard"
-                           class="action-btn">
-
-                            Open Dashboard
-
-                        </a>
-
-                    </td>
-
+                    <td><a href="/project/{{ p.project_id }}/executive-dashboard" class="btn" style="padding:7px 12px; min-height:32px; font-size:12px">Open Dashboard →</a></td>
                 </tr>
-
                 {% endfor %}
-
             </table>
-
         </div>
-
     </div>
-
 </div>
 
-<!-- STAGE MIX SUMMARY -->
-
-<div id="stage-mix" class="section">
-
-    <div class="section-header" onclick="toggleSection(this)">
-
-        🧩 Stage Mix Summary
-
-        <span class="toggle-icon">▼</span>
-
-    </div>
-
+<div id="stage-mix" class="section" style="margin-bottom:20px">
+    <div class="section-header" onclick="toggleSection(this.nextElementSibling)"><span>🧩 Stage Mix Summary</span><span class="toggle-icon">▼</span></div>
     <div class="section-content">
-
         <table>
-
-            <tr>
-
-                <th>Execution Stage</th>
-
-                <th>Total Nodes</th>
-
-                <th>Observation</th>
-
-            </tr>
-
+            <tr><th>Execution Stage</th><th>Total Nodes</th><th>Observation</th></tr>
             {% for stage, count in report.stage_mix.items() %}
-
             <tr>
-
-                <td>
-                    <b>{{ stage }}</b>
-                </td>
-
-                <td>
-                    {{ count }}
-                </td>
-
-                <td>
-
-                    {% if count > 100 %}
-
-                        <span style="color: #a4262c;font-weight:bold;">
-                            Heavy concentration
-                        </span>
-
-                    {% elif count > 50 %}
-
-                        <span style="color: #8a4b08;font-weight:bold;">
-                            Moderate concentration
-                        </span>
-
-                    {% else %}
-
-                        <span style="color: #0f6b45;font-weight:bold;">
-                            Balanced
-                        </span>
-
-                    {% endif %}
-
-                </td>
-
+                <td><b>{{ stage }}</b></td>
+                <td>{{ count }}</td>
+                <td>{% if count > 100 %}<span class="status-badge status-red">Heavy concentration</span>{% elif count > 50 %}<span class="status-badge status-yellow">Moderate concentration</span>{% else %}<span class="status-badge status-green">Balanced</span>{% endif %}</td>
             </tr>
-
             {% endfor %}
-
         </table>
-
     </div>
-
 </div>
 
-<!-- PROGRAMME ANALYTICS -->
-
-<div id="analytics" class="section">
-
-    <div class="section-header" onclick="toggleSection(this)">
-
-        📈 Programme Analytics
-
-        <span class="toggle-icon">▼</span>
-
-    </div>
-
+<div id="analytics" class="section" style="margin-bottom:20px">
+    <div class="section-header" onclick="toggleSection(this.nextElementSibling)"><span>📈 Programme Analytics</span><span class="toggle-icon">▼</span></div>
     <div class="section-content">
-
-        <div class="analytics-grid">
-
-            <!-- HEALTH DISTRIBUTION -->
-
-            <div class="analytics-card">
-
-                <h3>
-                    Project Health Distribution
-                </h3>
-
-                <div class="chart-container">
-
-                    <canvas id="healthChart"></canvas>
-
-                </div>
-
-            </div>
-
-            <!-- PROGRESS COMPARISON -->
-
-            <div class="analytics-card">
-
-                <h3>
-                    Project Progress Comparison
-                </h3>
-
-                <div class="chart-container">
-
-                    <canvas id="progressChart"></canvas>
-
-                </div>
-
-            </div>
-
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px">
+            <div style="background:#F8FAFF; border-radius:12px; padding:18px; border:1px solid #E2E8F0"><h3 style="margin:0 0 14px; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:#64748B">Project Health Distribution</h3><div style="position:relative; height:300px"><canvas id="healthChart"></canvas></div></div>
+            <div style="background:#F8FAFF; border-radius:12px; padding:18px; border:1px solid #E2E8F0"><h3 style="margin:0 0 14px; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:#64748B">Project Progress Comparison</h3><div style="position:relative; height:300px"><canvas id="progressChart"></canvas></div></div>
         </div>
-
-        <!-- DELAY DISTRIBUTION -->
-
-        <div class="analytics-card full-width-card">
-
-            <h3>
-                Delay Distribution
-            </h3>
-
-            <div class="chart-container-large">
-
-                <canvas id="delayChart"></canvas>
-
-            </div>
-
-        </div>
-
+        <div style="margin-top:20px; background:#F8FAFF; border-radius:12px; padding:18px; border:1px solid #E2E8F0"><h3 style="margin:0 0 14px; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:#64748B">Delay Distribution</h3><div style="position:relative; height:380px"><canvas id="delayChart"></canvas></div></div>
     </div>
-
 </div>
 
-<!-- RISK HEATMAP -->
-
-<div class="section">
-
-    <div class="section-header" onclick="toggleSection(this)">
-
-        🌍 Programme Risk Heatmap
-
-        <span class="toggle-icon">▼</span>
-
-    </div>
-
+<div class="section" style="margin-bottom:20px">
+    <div class="section-header" onclick="toggleSection(this.nextElementSibling)"><span>🌍 Programme Risk Heatmap</span><span class="toggle-icon">▼</span></div>
     <div class="section-content">
-
         <table>
-
-            <tr>
-
-                <th>Project</th>
-                <th>Health</th>
-                <th>Progress</th>
-                <th>Delayed Items</th>
-                <th>Risk Level</th>
-
-            </tr>
-
+            <tr><th>Project</th><th>Health</th><th>Progress</th><th>Delayed Items</th><th>Risk Level</th></tr>
             {% for p in report.projects %}
-
-            <tr
-
-                {% if p.health < 50 %}
-                    style="background:#fff1f0;"
-
-                {% elif p.health < 80 %}
-                    style="background:#fff7e6;"
-
-                {% else %}
-                    style="background:#f0fdf4;"
-                {% endif %}
-            >
-
-                <td>
-                    <b>{{ p.project_name }}</b>
-                </td>
-
+            <tr {% if p.health < 50 %}style="background:#FFF0F3"{% elif p.health < 80 %}style="background:#FFF7E6"{% else %}style="background:#F0FDF4"{% endif %}>
+                <td><b>{{ p.project_name }}</b></td>
                 <td>{{ p.health }}%</td>
-
                 <td>{{ p.progress }}%</td>
-
                 <td>{{ p.delayed_items }}</td>
-
-                <td>
-
-                    {% if p.health >= 80 %}
-
-                        <span class="status-green">
-                            🟢 Healthy
-                        </span>
-
-                    {% elif p.health >= 50 %}
-
-                        <span class="status-orange">
-                            🟠 Attention
-                        </span>
-
-                    {% else %}
-
-                        <span class="status-red">
-                            🔴 Critical
-                        </span>
-
-                    {% endif %}
-
-                </td>
-
+                <td>{% if p.health >= 80 %}<span class="status-badge status-green">Healthy</span>{% elif p.health >= 50 %}<span class="status-badge status-yellow">Attention</span>{% else %}<span class="status-badge status-red">Critical</span>{% endif %}</td>
             </tr>
-
             {% endfor %}
-
         </table>
-
     </div>
-
 </div>
 
-<!-- CIRCLE PERFORMANCE -->
-
-<div id="circle-summary" class="section">
-
-    <div class="section-header" onclick="toggleSection(this)">
-
-        🌐 Circle Performance Summary
-
-        <span class="toggle-icon">▼</span>
-
-    </div>
-
+<div id="circle-summary" class="section" style="margin-bottom:20px">
+    <div class="section-header" onclick="toggleSection(this.nextElementSibling)"><span>🌐 Circle Performance Summary</span><span class="toggle-icon">▼</span></div>
     <div class="section-content">
-
         <table>
-
-            <tr>
-
-                <th>Circle</th>
-                <th>Nodes</th>
-                <th>Health</th>
-                <th>Status</th>
-
-            </tr>
-
+            <tr><th>Circle</th><th>Nodes</th><th>Health</th><th>Status</th></tr>
             {% for c in report.circle_summary %}
-
-            <tr
-
-                {% if c.health < 50 %}
-                    style="background:#fff1f0;"
-
-                {% elif c.health < 80 %}
-                    style="background:#fff7e6;"
-
-                {% else %}
-                    style="background:#f0fdf4;"
-                {% endif %}
-            >
-
-                <td>
-                    <b>{{ c.circle }}</b>
-                </td>
-
+            <tr {% if c.health < 50 %}style="background:#FFF0F3"{% elif c.health < 80 %}style="background:#FFF7E6"{% else %}style="background:#F0FDF4"{% endif %}>
+                <td><b>{{ c.circle }}</b></td>
                 <td>{{ c.nodes }}</td>
-
-                <td>
-
-                    {% if c.health >= 80 %}
-
-                        <span class="status-green">
-                            🟢 {{ c.health }}%
-                        </span>
-
-                    {% elif c.health >= 50 %}
-
-                        <span class="status-orange">
-                            🟠 {{ c.health }}%
-                        </span>
-
-                    {% else %}
-
-                        <span class="status-red">
-                            🔴 {{ c.health }}%
-                        </span>
-
-                    {% endif %}
-
-                </td>
-
+                <td>{% if c.health >= 80 %}<span class="status-badge status-green">{{ c.health }}%</span>{% elif c.health >= 50 %}<span class="status-badge status-yellow">{{ c.health }}%</span>{% else %}<span class="status-badge status-red">{{ c.health }}%</span>{% endif %}</td>
                 <td>{{ c.status }}</td>
-
             </tr>
-
             {% endfor %}
-
         </table>
-
     </div>
-
 </div>
 
-<!-- EXECUTIVE ACTION CENTER -->
-
-<div class="section">
-
-    <div class="section-header" onclick="toggleSection(this)">
-
-        🎯 Executive Action Center
-
-        <span class="toggle-icon">▼</span>
-
-    </div>
-
+<div class="section" style="margin-bottom:20px">
+    <div class="section-header" onclick="toggleSection(this.nextElementSibling)"><span>🎯 Executive Action Center</span><span class="toggle-icon">▼</span></div>
     <div class="section-content">
-
         <div class="kpi-grid">
-
-            <!-- HIGHEST DELAY PROJECT -->
-
-            <div class="kpi-card">
-
-                <div class="kpi-label">
-                    Highest Delay Project
-                </div>
-
-                <div style="margin-top:12px;">
-
-                    <div style="font-weight:bold;font-size:18px;">
-
-                        {{ report.highest_delay_project.project_name }}
-
-                    </div>
-
-                    <div style="margin-top:8px;">
-
-                        Delays:
-                        <b>
-                            {{ report.highest_delay_project.delayed_items }}
-                        </b>
-
-                    </div>
-
-                    <div>
-
-                        Health:
-                        <b>
-                            {{ report.highest_delay_project.health }}%
-                        </b>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- WORST CIRCLE -->
-
-            <div class="kpi-card">
-
-                <div class="kpi-label">
-                    Worst Performing Circle
-                </div>
-
-                <div style="margin-top:12px;">
-
-                    <div style="font-weight:bold;font-size:18px;">
-
-                        {{ report.worst_circle.circle }}
-
-                    </div>
-
-                    <div style="margin-top:8px;">
-
-                        Health:
-                        <b>
-                            {{ report.worst_circle.health }}%
-                        </b>
-
-                    </div>
-
-                    <div>
-
-                        Nodes:
-                        <b>
-                            {{ report.worst_circle.nodes }}
-                        </b>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- DOMINANT STAGE -->
-
-            <div class="kpi-card">
-
-                <div class="kpi-label">
-                    Dominant Bottleneck Stage
-                </div>
-
-                <div style="margin-top:12px;">
-
-                    <div style="font-weight:bold;font-size:18px;">
-
-                        {{ report.dominant_stage }}
-
-                    </div>
-
-                    <div style="margin-top:8px;">
-
-                        Requires leadership focus
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- ACTION -->
-
-            <div class="kpi-card">
-
-                <div class="kpi-label">
-                    Recommended Action
-                </div>
-
-                <div style="
-                    margin-top:12px;
-                    line-height:1.6;
-                    font-size:15px;
-                ">
-
-                    Immediate escalation recommended for
-                    execution stabilization and delay recovery.
-
-                </div>
-
-            </div>
-
+            <div class="kpi-card"><div class="kpi-label">Highest Delay Project</div><div style="margin-top:10px; font-weight:700; font-size:16px">{{ report.highest_delay_project.project_name }}</div><div style="margin-top:6px; font-size:13px; color:#64748B">Delays: <b style="color:#0F172A">{{ report.highest_delay_project.delayed_items }}</b> • Health: <b>{{ report.highest_delay_project.health }}%</b></div></div>
+            <div class="kpi-card"><div class="kpi-label">Worst Performing Circle</div><div style="margin-top:10px; font-weight:700; font-size:16px">{{ report.worst_circle.circle }}</div><div style="margin-top:6px; font-size:13px; color:#64748B">Health: <b>{{ report.worst_circle.health }}%</b> • Nodes: <b>{{ report.worst_circle.nodes }}</b></div></div>
+            <div class="kpi-card"><div class="kpi-label">Dominant Bottleneck Stage</div><div style="margin-top:10px; font-weight:700; font-size:16px">{{ report.dominant_stage }}</div><div style="margin-top:6px; font-size:13px; color:#64748B">Requires leadership focus</div></div>
+            <div class="kpi-card"><div class="kpi-label">Recommended Action</div><div style="margin-top:10px; line-height:1.6; font-size:14px">Immediate escalation recommended for execution stabilization and delay recovery.</div></div>
         </div>
-
     </div>
-
 </div>
-
-<!-- TOP RISK -->
 
 <div id="risk-projects" class="section">
-
-    <div class="section-header" onclick="toggleSection(this)">
-
-        🚨 Top Risk Projects
-
-        <span class="toggle-icon">▼</span>
-
-    </div>
-
+    <div class="section-header" onclick="toggleSection(this.nextElementSibling)"><span>🚨 Top Risk Projects</span><span class="toggle-icon">▼</span></div>
     <div class="section-content">
-
         <table>
-
-            <tr>
-
-                <th>Project</th>
-                <th>Health</th>
-                <th>Status</th>
-                <th>Delayed Items</th>
-                <th>Actions</th>
-
-            </tr>
-
+            <tr><th>Project</th><th>Health</th><th>Status</th><th>Delayed Items</th><th>Actions</th></tr>
             {% for p in report.worst_projects %}
-
-            <tr style="background:#fff1f0;">
-
-                <td>
-                    <b>{{ p.project_name }}</b>
-                </td>
-
-                <td>
-
-                    <span class="status-red">
-                        🔴 {{ p.health }}%
-                    </span>
-
-                </td>
-
+            <tr style="background:#FFF0F3; border-left:4px solid #FF3B5C">
+                <td><b>{{ p.project_name }}</b></td>
+                <td><span class="status-badge status-red">{{ p.health }}%</span></td>
                 <td>{{ p.status }}</td>
-
                 <td>{{ p.delayed_items }}</td>
-
-                <td>
-
-                    <a href="/project/{{ p.project_id }}/executive-dashboard"
-                       class="action-btn">
-
-                        Open Dashboard
-
-                    </a>
-
-                </td>
-
+                <td><a href="/project/{{ p.project_id }}/executive-dashboard" class="btn" style="padding:7px 12px; min-height:32px; font-size:12px">Open Dashboard →</a></td>
             </tr>
-
             {% endfor %}
-
         </table>
-
     </div>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-
-function toggleSection(header){
-
-    const content = header.nextElementSibling;
-
-    const icon = header.querySelector(".toggle-icon");
-
-    if(content.style.display === "none"){
-
-        content.style.display = "block";
-        icon.innerHTML = "▼";
-
-    }else{
-
-        content.style.display = "none";
-        icon.innerHTML = "►";
-    }
+function toggleSection(el){
+  const header = el.classList.contains('section-header') ? el : el.previousElementSibling;
+  const content = el.classList.contains('section-content') ? el : el.nextElementSibling;
+  if(!content) return;
+  const isActive = content.classList.toggle('active');
+  if(header) header.classList.toggle('active', isActive);
+  const icon = header?.querySelector('.toggle-icon');
+  if(icon) icon.textContent = isActive ? '▼' : '►';
+  if(content.style.display === 'none' || !isActive && !content.classList.contains('active')) {
+    // handled by class
+  }
 }
-
-const projectNames = [
-
-    {% for p in report.projects %}
-        "{{ p.project_name }}",
-    {% endfor %}
-
-];
-
-const healthValues = [
-
-    {% for p in report.projects %}
-        {{ p.health }},
-    {% endfor %}
-
-];
-
-const progressValues = [
-
-    {% for p in report.projects %}
-        {{ p.progress }},
-    {% endfor %}
-
-];
-
-const delayValues = [
-
-    {% for p in report.projects %}
-        {{ p.delayed_items }},
-    {% endfor %}
-
-];
-
-let healthy = 0;
-let attention = 0;
-let critical = 0;
-
-{% for p in report.projects %}
-
-    {% if p.health >= 80 %}
-        healthy++;
-
-    {% elif p.health >= 50 %}
-        attention++;
-
-    {% else %}
-        critical++;
-
-    {% endif %}
-
-{% endfor %}
-
-new Chart(
-
-    document.getElementById("healthChart"),
-
-    {
-
-        type: "pie",
-
-        data: {
-
-            labels: [
-
-                "Healthy",
-                "Attention",
-                "Critical"
-
-            ],
-
-            datasets: [{
-
-                data: [
-
-                    healthy,
-                    attention,
-                    critical
-
-                ],
-
-                backgroundColor: [
-
-                    "#16a34a",
-                    "#f59e0b",
-                    "#dc2626"
-
-                ]
-
-            }]
-        }
-    }
-);
-
-new Chart(
-
-    document.getElementById("progressChart"),
-
-    {
-
-        type: "bar",
-
-        data: {
-
-            labels: projectNames,
-
-            datasets: [{
-
-                label: "Progress %",
-
-                data: progressValues,
-
-                backgroundColor: "#2563eb"
-
-            }]
-        },
-
-            options: {
-        
-            responsive: true,
-        
-            maintainAspectRatio: false,
-        
-            plugins: {
-        
-                legend: {
-        
-                    display: false
-                }
-            },
-        
-            scales: {
-        
-                y: {
-        
-                    beginAtZero: true,
-                    max: 100
-                }
-            }
-        }
-    }
-);
-
-new Chart(
-
-    document.getElementById("delayChart"),
-
-    {
-
-        type: "bar",
-
-        data: {
-
-            labels: projectNames,
-
-            datasets: [{
-
-                label: "Delayed Items",
-
-                data: delayValues,
-
-                backgroundColor: "#dc2626"
-
-            }]
-        },
-
-        options: {
-    
-        indexAxis: 'y',
-    
-        responsive: true,
-    
-        maintainAspectRatio: false,
-    
-        plugins: {
-    
-            legend: {
-    
-                display: false
-            }
-        }
-    }
-    }
-);
-
+const projectNames = [{% for p in report.projects %}"{{ p.project_name }}",{% endfor %}];
+const healthValues = [{% for p in report.projects %}{{ p.health }},{% endfor %}];
+const progressValues = [{% for p in report.projects %}{{ p.progress }},{% endfor %}];
+const delayValues = [{% for p in report.projects %}{{ p.delayed_items }},{% endfor %}];
+let healthy=0, attention=0, critical=0;
+{% for p in report.projects %}{% if p.health >= 80 %}healthy++;{% elif p.health >= 50 %}attention++;{% else %}critical++;{% endif %}{% endfor %}
+new Chart(document.getElementById("healthChart"), {type:"doughnut", data:{labels:["Healthy","Attention","Critical"], datasets:[{data:[healthy,attention,critical], backgroundColor:["#0EB368","#FF8A2B","#FF3B5C"], borderWidth:0}]}, options:{plugins:{legend:{position:'bottom', labels:{boxWidth:12, padding:16, font:{family:'Inter'}}}}}}});
+new Chart(document.getElementById("progressChart"), {type:"bar", data:{labels:projectNames, datasets:[{label:"Progress %", data:progressValues, backgroundColor:"#5B7FFF", borderRadius:8}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, max:100, grid:{color:'#F1F5F9'}}, x:{grid:{display:false}}}}});
+new Chart(document.getElementById("delayChart"), {type:"bar", data:{labels:projectNames, datasets:[{label:"Delayed Items", data:delayValues, backgroundColor:"#FF3B5C", borderRadius:8}]}, options:{indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}});
+document.querySelectorAll('.section-content').forEach(c=>{ if(!c.classList.contains('active')){ c.style.display='none'; } });
+document.querySelectorAll('.section-header').forEach(h=>{
+  h.addEventListener('click', ()=>{ const c=h.nextElementSibling; if(!c) return; const open=c.style.display!=='none'; c.style.display=open?'none':'block'; c.classList.toggle('active', !open); h.classList.toggle('active', !open); const ic=h.querySelector('.toggle-icon'); if(ic) ic.textContent=!open?'▼':'►'; });
+});
 </script>
 
 </main>
 {% include "partials/footer.html" %}
 </body>
-
 </html>

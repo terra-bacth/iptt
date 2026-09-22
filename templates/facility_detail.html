@@ -1,415 +1,58 @@
-
 {% extends "base.html" %}
-
 {% block content %}
-
-<style>
-
-
-body{
-    background:#f5f7fa;
-}
-
-
-
-.breadcrumb{
-    margin-bottom:15px;
-    font-size:14px;
-}
-
-.breadcrumb a{
-    color: #16509f;
-    text-decoration:none;
-}
-
-.page-title{
-    margin-bottom:20px;
-}
-
-.section{
-    background:white;
-    border-radius:10px;
-    padding:18px;
-    margin-bottom:20px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
-.kpi-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:16px;
-    margin-bottom:20px;
-}
-
-.kpi-card{
-    background:white;
-    padding:18px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
-.kpi-title{
-    font-size:13px;
-    color: #4b5b70;
-}
-
-.kpi-value{
-    font-size:28px;
-    font-weight:bold;
-    margin-top:6px;
-}
-
-.blue{
-    border-left:5px solid #0078d4;
-}
-
-.green{
-    border-left:5px solid #107c41;
-}
-
-.orange{
-    border-left:5px solid #ff8c00;
-}
-
-.red{
-    border-left:5px solid #d13438;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th{
-    background:#f0f2f5;
-    text-align:left;
-    padding:10px;
-    border-bottom:1px solid #ddd;
-}
-
-td{
-    padding:10px;
-    border-bottom:1px solid #eee;
-}
-
-.search-box{
-    margin-bottom:15px;
-}
-
-.search-box input{
-    width:350px;
-    padding:8px;
-}
-
-.badge-completed{
-    background:#e6f4ea;
-    color: #0f6b45;
-    padding:4px 8px;
-    border-radius:4px;
-    font-weight:600;
-}
-
-.badge-wip{
-    background:#fff4ce;
-    color:#8a5d00;
-    padding:4px 8px;
-    border-radius:4px;
-    font-weight:600;
-}
-
-.btn-open{
-    text-decoration:none;
-    background:#0078d4;
-    color:white;
-    padding:6px 10px;
-    border-radius:5px;
-    font-size:12px;
-}
-
-.btn-open:hover{
-    background:#005ea6;
-}
-
-.summary-text{
-    color: #4b5b70;
-    margin-top:5px;
-}
-
-.btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-
-    padding:9px 14px;
-
-    background:#2563eb;
-    color:white;
-
-    border-radius:8px;
-    text-decoration:none;
-
-    font-size:13px;
-    font-weight:600;
-
-    transition:0.2s;
-    border:none;
-    cursor:pointer;
-}
-
-.btn:hover{
-    background:#1d4ed8;
-    transform:translateY(-1px);
-}
-
-.btn-green{
-    background: #146c43;
-}
-
-.btn-green:hover{
-    background:#15803d;
-}
-</style>
-
-<!-- ===================================== -->
-<!-- TOP NAV -->
-<!-- ===================================== -->
-
 {% include "partials/nav.html" %}
 
-<!-- ===================================== -->
-<!-- BREADCRUMB -->
-<!-- ===================================== -->
-
 <div class="breadcrumb">
-
-    <a href="/home">Home</a>
-
-    >
-
-    <a href="/circle-dashboard">
-        Circle Dashboard
-    </a>
-
-    >
-
-    <span>{{ facility_name }}</span>
-
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/circle-dashboard">Circle Dashboard</a> <span>›</span>
+    <span style="padding:4px 10px; border-radius:999px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.10)">{{ facility_name }}</span>
 </div>
 
-<!-- ===================================== -->
-<!-- PAGE TITLE -->
-<!-- ===================================== -->
-
-<div class="page-title">
-
-    <h2>
-        🏢 Facility Detail
-    </h2>
-
-    <div class="summary-text">
-
-        Facility:
-        <strong>{{ facility_name }}</strong>
-
-    </div>
-
+<div style="margin-bottom:20px; padding:24px; border-radius:18px; border:1px solid rgba(255,255,255,0.10); background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06)); backdrop-filter:blur(20px); box-shadow:0 24px 64px rgba(0,0,0,0.32); color:white">
+  <h2 style="margin:0; font-size:26px; letter-spacing:-0.03em; color:white">🏢 Facility Detail</h2>
+  <div style="margin-top:6px; color:rgba(230,234,242,0.58)">Facility: <strong style="color:white">{{ facility_name }}</strong></div>
 </div>
-
-<!-- ===================================== -->
-<!-- KPI CALCULATIONS -->
-<!-- ===================================== -->
 
 {% set total_nodes = node_data|length %}
 {% set completed_nodes = node_data | selectattr("status","equalto","Completed") | list | length %}
 {% set wip_nodes = total_nodes - completed_nodes %}
-
-{% if total_nodes > 0 %}
-    {% set avg_progress = (
-        node_data | sum(attribute='progress')
-    ) / total_nodes %}
-{% else %}
-    {% set avg_progress = 0 %}
-{% endif %}
-
-<!-- ===================================== -->
-<!-- KPI SECTION -->
-<!-- ===================================== -->
+{% if total_nodes > 0 %}{% set avg_progress = (node_data | sum(attribute='progress')) / total_nodes %}{% else %}{% set avg_progress = 0 %}{% endif %}
 
 <div class="kpi-grid">
-
-    <div class="kpi-card blue">
-        <div class="kpi-title">
-            Total Nodes
-        </div>
-        <div class="kpi-value">
-            {{ total_nodes }}
-        </div>
-    </div>
-
-    <div class="kpi-card green">
-        <div class="kpi-title">
-            Completed Nodes
-        </div>
-        <div class="kpi-value">
-            {{ completed_nodes }}
-        </div>
-    </div>
-
-    <div class="kpi-card orange">
-        <div class="kpi-title">
-            WIP Nodes
-        </div>
-        <div class="kpi-value">
-            {{ wip_nodes }}
-        </div>
-    </div>
-
-    <div class="kpi-card red">
-        <div class="kpi-title">
-            Average Progress
-        </div>
-        <div class="kpi-value">
-            {{ avg_progress|round(1) }}%
-        </div>
-    </div>
-
+    <div class="kpi-card"><div class="kpi-title">Total Nodes</div><div class="kpi-value">{{ total_nodes }}</div></div>
+    <div class="kpi-card"><div class="kpi-title">Completed Nodes</div><div class="kpi-value" style="color:#0E7A4C">{{ completed_nodes }}</div><div class="progress-wrapper"><div class="progress-bar" style="width:{{ (completed_nodes / total_nodes * 100) | round(0) if total_nodes else 0 }}%; background:linear-gradient(90deg,#0EB368,#06B6D4)"></div></div></div>
+    <div class="kpi-card"><div class="kpi-title">WIP Nodes</div><div class="kpi-value" style="color:#9A5A00">{{ wip_nodes }}</div></div>
+    <div class="kpi-card"><div class="kpi-title">Average Progress</div><div class="kpi-value">{{ avg_progress|round(1) }}%</div><div class="progress-wrapper"><div class="progress-bar" style="width:{{ avg_progress }}%"></div></div></div>
 </div>
 
-<!-- ===================================== -->
-<!-- NODE TABLE -->
-<!-- ===================================== -->
-
-<div class="section">
-
-    <h3>
-        📡 Nodes in Facility
-    </h3>
-
-    <div class="search-box">
-
-        <input
-            type="text"
-            id="nodeSearch"
-            placeholder="Search Node / Project / Circle"
-            onkeyup="filterNodeTable()">
-
-    </div>
-
+<div class="section-card">
+    <div class="section-title"><h3>📡 Nodes in Facility</h3><span style="font-size:11px; color:#64748B; font-family:'JetBrains Mono'">{{ total_nodes }} nodes</span></div>
+    <div style="margin-bottom:14px"><input type="text" id="nodeSearch" placeholder="Search Node / Project / Circle" onkeyup="filterNodeTable()" style="width:100%; max-width:340px; border-radius:999px; border:1px solid #CBD5E1; padding:10px 14px"></div>
     <table id="nodeTable">
-
-        <tr>
-
-            <th>Node ID</th>
-
-            <th>Project</th>
-
-            <th>Circle</th>
-
-            <th>Progress</th>
-
-            <th>Status</th>
-
-            <th>Execution</th>
-
-        </tr>
-
+        <tr><th>Node ID</th><th>Project</th><th>Circle</th><th>Progress</th><th>Status</th><th>Execution</th></tr>
         {% for row in node_data %}
-
         <tr>
-
-            <td>
-                {{ row.node_id }}
-            </td>
-
-            <td>
-                {{ row.project_name }}
-            </td>
-
-            <td>
-                {{ row.circle }}
-            </td>
-
-            <td>
-                {{ row.progress }}%
-            </td>
-
-            <td>
-
-                {% if row.status == "Completed" %}
-
-                    <span class="badge-completed">
-                        Completed
-                    </span>
-
-                {% else %}
-
-                    <span class="badge-wip">
-                        WIP
-                    </span>
-
-                {% endif %}
-
-            </td>
-
-            <td>
-                <a class="btn btn-green"
-                      href="/scope/{{ row.scope_id }}/execution">
-                      ▶ Open Execution
-                </a>
-            </td>
-                
+            <td><b>{{ row.node_id }}</b></td>
+            <td>{{ row.project_name }}</td>
+            <td>{{ row.circle }}</td>
+            <td><div style="display:flex; align-items:center; gap:8px"><div style="width:48px; height:6px; background:#E2E8F0; border-radius:999px; overflow:hidden"><i style="display:block; height:100%; width:{{ row.progress }}%; background:linear-gradient(90deg,#5B7FFF,#8B5CF6)"></i></div>{{ row.progress }}%</div></td>
+            <td>{% if row.status == "Completed" %}<span class="status-badge status-green">Completed</span>{% else %}<span class="status-badge status-yellow">WIP</span>{% endif %}</td>
+            <td><a class="btn btn-green" href="/scope/{{ row.scope_id }}/execution" style="padding:7px 12px; min-height:32px; font-size:12px">▶ Open Execution</a></td>
         </tr>
-
         {% endfor %}
-
     </table>
-
 </div>
 
 <script>
-
 function filterNodeTable(){
-
-    let input =
-        document.getElementById(
-            "nodeSearch"
-        );
-
-    let filter =
-        input.value.toUpperCase();
-
-    let table =
-        document.getElementById(
-            "nodeTable"
-        );
-
-    let tr =
-        table.getElementsByTagName(
-            "tr"
-        );
-
+    let input = document.getElementById("nodeSearch");
+    let filter = input.value.toUpperCase();
+    let table = document.getElementById("nodeTable");
+    let tr = table.getElementsByTagName("tr");
     for(let i=1;i<tr.length;i++){
-
-        let txt =
-            tr[i].textContent ||
-            tr[i].innerText;
-
-        if(
-            txt.toUpperCase()
-            .indexOf(filter) > -1
-        ){
-
-            tr[i].style.display = "";
-
-        }else{
-
-            tr[i].style.display = "none";
-
-        }
+        let txt = tr[i].textContent || tr[i].innerText;
+        tr[i].style.display = txt.toUpperCase().indexOf(filter) > -1 ? "" : "none";
     }
 }
-
 </script>
-
 {% endblock %}

@@ -1,622 +1,118 @@
-
 {% extends "base.html" %}
-
 {% block content %}
-
-<style>
-
-
-body{
-    background:#f5f7fa;
-}
-
-
-
-.breadcrumb{
-    margin-bottom:15px;
-    font-size:14px;
-}
-
-.breadcrumb a{
-    color: #16509f;
-    text-decoration:none;
-}
-
-.page-title{
-    margin-bottom:20px;
-}
-
-.kpi-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:16px;
-    margin-bottom:20px;
-}
-
-.kpi-card{
-    background:white;
-    padding:18px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
-.kpi-title{
-    font-size:13px;
-    color: #4b5b70;
-}
-
-.kpi-value{
-    font-size:28px;
-    font-weight:bold;
-    margin-top:6px;
-}
-
-.green{
-    border-left:5px solid #107c41;
-}
-
-.orange{
-    border-left:5px solid #ff8c00;
-}
-
-.red{
-    border-left:5px solid #d13438;
-}
-
-.blue{
-    border-left:5px solid #0078d4;
-}
-
-.section{
-    background:white;
-    border-radius:10px;
-    padding:18px;
-    margin-bottom:20px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
-.section h3{
-    margin-top:0;
-}
-
-.risk-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:15px;
-}
-
-.risk-box{
-    text-align:center;
-    padding:18px;
-    border-radius:8px;
-    color:white;
-}
-
-.risk-high{
-    background:#d13438;
-}
-
-.risk-medium{
-    background:#ff8c00;
-}
-
-.risk-low{
-    background:#107c41;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th{
-    background:#f0f2f5;
-    text-align:left;
-    padding:10px;
-    border-bottom:1px solid #ddd;
-}
-
-td{
-    padding:10px;
-    border-bottom:1px solid #eee;
-}
-
-details{
-    margin-top:10px;
-}
-
-summary{
-    cursor:pointer;
-    font-weight:bold;
-    padding:10px;
-    background:#f7f7f7;
-    border-radius:6px;
-}
-
-.badge-high{
-    background:#fde7e9;
-    color: #a4262c;
-    padding:4px 8px;
-    border-radius:4px;
-}
-
-.badge-medium{
-    background:#fff4ce;
-    color:#8a5d00;
-    padding:4px 8px;
-    border-radius:4px;
-}
-
-.badge-low{
-    background:#e6f4ea;
-    color: #0f6b45;
-    padding:4px 8px;
-    border-radius:4px;
-}
-
-.search-box{
-    margin-bottom:15px;
-}
-
-.search-box input{
-    width:300px;
-    padding:8px;
-}
-
-ul.insights{
-    line-height:2;
-}
-
-</style>
-
 {% include "partials/nav.html" %}
 
 <div class="breadcrumb">
-
-<a href="/home">Home</a> >
-
-<a href="/programmes">Programmes</a> >
-
-<span>Forecast Dashboard</span>
-
+  <a href="/home">Home</a> <span>›</span>
+  <a href="/programmes">Programmes</a> <span>›</span>
+  <span style="padding:4px 10px; border-radius:999px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.10)">Forecast Dashboard</span>
 </div>
 
-<div class="page-title">
-
-<h2>🔮 Forecast Dashboard</h2>
-
-<div>
-    Project:
-    <strong>{{ project_name }}</strong>
-</div>
-
+<div style="display:flex; justify-content:space-between; align-items:end; flex-wrap:wrap; gap:16px; margin-bottom:20px; padding:24px; border-radius:18px; border:1px solid rgba(255,255,255,0.10); background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06)); backdrop-filter:blur(20px); box-shadow:0 24px 64px rgba(0,0,0,0.32)">
+  <div>
+    <div style="font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:700; color:#A5B8FF; margin-bottom:8px">Predictive Intelligence</div>
+    <h2 style="margin:0; font-size:28px; letter-spacing:-0.03em; color:white">🔮 Forecast <span style="font-family:'Instrument Serif'; font-style:italic; color:#D8B4FE; font-weight:400">Dashboard</span></h2>
+    <div style="margin-top:8px; color:rgba(230,234,242,0.58)">Project: <strong style="color:white">{{ project_name }}</strong> • Cinematic forecast</div>
+  </div>
+  <span class="status-badge status-green" style="background:rgba(255,255,255,0.10); color:white; border-color:rgba(255,255,255,0.14)">● {{ total_nodes }} Nodes Forecasted</span>
 </div>
 
 <div class="kpi-grid">
-
-<div class="kpi-card blue">
-    <div class="kpi-title">Forecast Project Go-Live</div>
-    <div class="kpi-value">
-        {{ project_forecast_date }}
-    </div>
+  <div class="kpi-card"><div class="kpi-label">Forecast Project Go-Live</div><div class="kpi-value" style="font-size:20px">{{ project_forecast_date }}</div></div>
+  <div class="kpi-card"><div class="kpi-label">Total Nodes</div><div class="kpi-value">{{ total_nodes }}</div><div class="progress-wrapper"><div class="progress-bar" style="width:100%"></div></div></div>
+  <div class="kpi-card" style="border-left:4px solid #FF3B5C"><div class="kpi-label">Critical Nodes</div><div class="kpi-value" style="color:#C2183D">{{ critical_nodes }}</div></div>
+  <div class="kpi-card"><div class="kpi-label">Average Delay</div><div class="kpi-value">{{ average_delay }} Days</div></div>
+  <div class="kpi-card"><div class="kpi-label">Worst Delay</div><div class="kpi-value">{{ worst_delay }} Days</div></div>
+  <div class="kpi-card"><div class="kpi-label">Overall Progress</div><div class="kpi-value">{{ overall_progress }}%</div><div class="progress-wrapper"><div class="progress-bar" style="width:{{ overall_progress }}%"></div></div></div>
+  <div class="kpi-card"><div class="kpi-label">Forecast Confidence</div><div class="kpi-value">{{ avg_confidence }}%</div><div class="progress-wrapper"><div class="progress-bar" style="width:{{ avg_confidence }}%; background:linear-gradient(90deg,#0EB368,#06B6D4)"></div></div></div>
 </div>
 
-<div class="kpi-card green">
-    <div class="kpi-title">Total Nodes</div>
-    <div class="kpi-value">
-        {{ total_nodes }}
-    </div>
+<div class="section-card">
+  <div class="section-title"><h3>🚦 Risk Distribution</h3></div>
+  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px">
+    <div style="text-align:center; padding:18px; border-radius:14px; background:linear-gradient(135deg,#FF3B5C,#FF8A2B); color:white; box-shadow:0 8px 24px rgba(255,59,92,0.24)"><h2 style="margin:0; font-size:32px">{{ high_risk }}</h2><div style="margin-top:4px; font-weight:600; letter-spacing:0.04em">High Risk</div></div>
+    <div style="text-align:center; padding:18px; border-radius:14px; background:linear-gradient(135deg,#FF8A2B,#F59E0B); color:white; box-shadow:0 8px 24px rgba(255,138,43,0.24)"><h2 style="margin:0; font-size:32px">{{ medium_risk }}</h2><div style="margin-top:4px; font-weight:600">Medium Risk</div></div>
+    <div style="text-align:center; padding:18px; border-radius:14px; background:linear-gradient(135deg,#0EB368,#06B6D4); color:white; box-shadow:0 8px 24px rgba(14,179,104,0.24)"><h2 style="margin:0; font-size:32px">{{ low_risk }}</h2><div style="margin-top:4px; font-weight:600">Low Risk</div></div>
+  </div>
 </div>
 
-<div class="kpi-card red">
-    <div class="kpi-title">Critical Nodes</div>
-    <div class="kpi-value">
-        {{ critical_nodes }}
-    </div>
+<div class="section-card">
+  <div class="section-title"><h3>📌 Executive Insights</h3></div>
+  <ul style="line-height:2; margin:0; padding-left:18px; color:#334155">
+    <li>Forecast Project Go-Live: <strong>{{ project_forecast_date }}</strong></li>
+    <li>Critical Nodes: <strong>{{ critical_nodes }}</strong></li>
+    <li>Average Delay: <strong>{{ average_delay }} Days</strong></li>
+    <li>Worst Delay: <strong>{{ worst_delay }} Days</strong></li>
+    <li>Overall Progress: <strong>{{ overall_progress }}%</strong></li>
+  </ul>
 </div>
 
-<div class="kpi-card orange">
-    <div class="kpi-title">Average Delay</div>
-    <div class="kpi-value">
-        {{ average_delay }} Days
-    </div>
-</div>
-
-<div class="kpi-card red">
-    <div class="kpi-title">Worst Delay</div>
-    <div class="kpi-value">
-        {{ worst_delay }} Days
-    </div>
-</div>
-
-<div class="kpi-card blue">
-    <div class="kpi-title">Overall Progress</div>
-    <div class="kpi-value">
-        {{ overall_progress }}%
-    </div>
-</div>
-
-<div class="kpi-card blue">
-    <div class="kpi-title">
-        Forecast Confidence
-    </div>
-
-    <div class="kpi-value">
-        {{ avg_confidence }}%
-    </div>
-</div>
-</div>
-
-<div class="section">
-
-<h3>🚦 Risk Distribution</h3>
-
-<div class="risk-grid">
-
-    <div class="risk-box risk-high">
-        <h2>{{ high_risk }}</h2>
-        High Risk
-    </div>
-
-    <div class="risk-box risk-medium">
-        <h2>{{ medium_risk }}</h2>
-        Medium Risk
-    </div>
-
-    <div class="risk-box risk-low">
-        <h2>{{ low_risk }}</h2>
-        Low Risk
-    </div>
-
-</div>
-
-</div>
-
-<div class="section">
-
-<h3>📌 Executive Insights</h3>
-
-<ul class="insights">
-
-    <li>
-        Forecast Project Go-Live:
-        <strong>{{ project_forecast_date }}</strong>
-    </li>
-
-    <li>
-        Critical Nodes:
-        <strong>{{ critical_nodes }}</strong>
-    </li>
-
-    <li>
-        Average Delay:
-        <strong>{{ average_delay }} Days</strong>
-    </li>
-
-    <li>
-        Worst Delay:
-        <strong>{{ worst_delay }} Days</strong>
-    </li>
-
-    <li>
-        Overall Progress:
-        <strong>{{ overall_progress }}%</strong>
-    </li>
-
-</ul>
-
-</div>
-
-<div class="section">
-
-<h3>🚨 Top 10 Delayed Nodes</h3>
-
-<table>
-
-    <tr>
-        <th>Node</th>
-        <th>Facility</th>
-        <th>Circle</th>
-        <th>Progress</th>
-        <th>Delay</th>
-        <th>Delay Drivers</th>
-        <th>Forecast Go-Live</th>
-        <th>Confidence</th>  
-        
-    </tr>
-
+<div class="section-card">
+  <div class="section-title"><h3>🚨 Top 10 Delayed Nodes</h3></div>
+  <table>
+    <tr><th>Node</th><th>Facility</th><th>Circle</th><th>Progress</th><th>Delay</th><th>Delay Drivers</th><th>Forecast Go-Live</th><th>Confidence</th></tr>
     {% for row in top_delayed_nodes %}
-
     <tr>
-
-        <td>{{ row.node_id }}</td>
-
+        <td><b>{{ row.node_id }}</b></td>
         <td>{{ row.facility_name }}</td>
-
         <td>{{ row.circle }}</td>
-
-        <td>{{ row.progress }}%</td>
-
-               
-        <td>{{ row.forecast_delay }}</td>
-
-        <td>
-        
-        {% if row.delay_drivers %}
-        
-            {% for d in row.delay_drivers[:3] %}
-                <div>
-                    {{ d.task_name }}
-                    ({{ d.remaining_days }}d)
-                </div>
-            {% endfor %}
-        
-            {% if row.delay_drivers|length > 3 %}
-        
-            <details>
-                <summary style="cursor:pointer;color: #16509f;">
-                    View All
-                </summary>
-        
-                {% for d in row.delay_drivers %}
-                    <div>
-                        {{ d.task_name }}
-                        ({{ d.remaining_days }}d)
-                    </div>
-                {% endfor %}
-
-            </details>
-
-            {% endif %}
-
-        {% endif %}
-
-        </td>
-        
+        <td><div style="display:flex; align-items:center; gap:6px"><div style="width:48px; height:6px; background:#E2E8F0; border-radius:999px; overflow:hidden"><i style="display:block; height:100%; width:{{ row.progress }}%; background:linear-gradient(90deg,#5B7FFF,#8B5CF6)"></i></div>{{ row.progress }}%</div></td>
+        <td><span class="status-badge status-red">{{ row.forecast_delay }}d</span></td>
+        <td>{% if row.delay_drivers %}{% for d in row.delay_drivers[:3] %}<div style="font-size:12px">{{ d.task_name }} ({{ d.remaining_days }}d)</div>{% endfor %}{% if row.delay_drivers|length > 3 %}<details><summary style="cursor:pointer;color:#4F6EF7; font-size:12px; font-weight:600">View All</summary>{% for d in row.delay_drivers %}<div style="font-size:12px">{{ d.task_name }} ({{ d.remaining_days }}d)</div>{% endfor %}</details>{% endif %}{% endif %}</td>
         <td>{{ row.predicted_go_live }}</td>
-        
-        <td>
-        
-        {% if row.confidence_band == "High" %}
-            <span class="badge-low">
-                {{ row.confidence }}%
-            </span>
-        
-        {% elif row.confidence_band == "Medium" %}
-            <span class="badge-medium">
-                {{ row.confidence }}%
-            </span>
-        
-        {% else %}
-            <span class="badge-high">
-                {{ row.confidence }}%
-            </span>
-        
-        {% endif %}
-        
-        </td> 
-
+        <td>{% if row.confidence_band == "High" %}<span class="status-badge status-green">{{ row.confidence }}%</span>{% elif row.confidence_band == "Medium" %}<span class="status-badge status-yellow">{{ row.confidence }}%</span>{% else %}<span class="status-badge status-red">{{ row.confidence }}%</span>{% endif %}</td>
     </tr>
-
     {% endfor %}
-
-</table>
-
+  </table>
 </div>
 
-<div class="section">
-
-<details>
-
-<summary>
-🌍 Circle Forecast Summary
-</summary>
-
-<br>
-
-<table>
-
-<tr>
-<th>Circle</th>
-<th>Nodes</th>
-<th>Average Delay</th>
-<th>Average Progress</th>
-<th>Forecast Go-Live</th>
-</tr>
-
-{% for circle,data in circle_summary.items() %}
-
-<tr>
-
-<td>{{ circle }}</td>
-
-<td>{{ data.nodes }}</td>
-
-<td>{{ data.avg_delay }}</td>
-
-<td>{{ data.avg_progress }}%</td>
-
-<td>{{ data.forecast_go_live }}</td>
-
-</tr>
-
-{% endfor %}
-
-</table>
-
-</details>
-
+<div class="section-card">
+  <details>
+    <summary style="cursor:pointer; font-weight:700; padding:10px; background:#F8FAFC; border-radius:10px; border:1px solid #E2E8F0">🌍 Circle Forecast Summary</summary>
+    <br>
+    <table>
+      <tr><th>Circle</th><th>Nodes</th><th>Average Delay</th><th>Average Progress</th><th>Forecast Go-Live</th></tr>
+      {% for circle,data in circle_summary.items() %}
+      <tr><td><b>{{ circle }}</b></td><td>{{ data.nodes }}</td><td>{{ data.avg_delay }}</td><td>{{ data.avg_progress }}%</td><td>{{ data.forecast_go_live }}</td></tr>
+      {% endfor %}
+    </table>
+  </details>
 </div>
 
-<div class="section">
-
-<details>
-
-<summary>
-📋 Complete Forecast Matrix
-({{ total_nodes }} Nodes)
-</summary>
-
-<br>
-
-<div class="search-box">
-
-<input
-type="text"
-id="nodeSearch"
-placeholder="Search Node / Facility / Circle"
-onkeyup="filterTable()">
-
-</div>
-
-<table id="forecastTable">
-
-<tr>
-
-<th>Node</th>
-
-<th>Facility</th>
-
-<th>Circle</th>
-
-<th>Progress</th>
-
-<th>Delay</th>
-
-<th>Delay Drivers</th>
-
-<th>Forecast Go-Live</th>
-
-<th>Confidence</th>
-
-<th>Risk</th>
-
-</tr>
-
-{% for row in forecast_data %}
-
-<tr>
-
-<td>{{ row.node_id }}</td>
-
-<td>{{ row.facility_name }}</td>
-
-<td>{{ row.circle }}</td>
-
-<td>{{ row.progress }}%</td>
-
-<td>{{ row.forecast_delay }}</td>
-
-<td>
-
-{% if row.delay_drivers %}
-
-    {% for d in row.delay_drivers[:3] %}
-        <div>
-            {{ d.task_name }}
-            ({{ d.remaining_days }}d)
-        </div>
-    {% endfor %}
-
-    {% if row.delay_drivers|length > 3 %}
-
-    <details>
-        <summary style="cursor:pointer;color: #16509f;">
-            View All
-        </summary>
-
-        {% for d in row.delay_drivers %}
-            <div>
-                {{ d.task_name }}
-                ({{ d.remaining_days }}d)
-            </div>
-        {% endfor %}
-
-    </details>
-
-    {% endif %}
-
-{% endif %}
-
-</td>
-
-<td>{{ row.predicted_go_live }}</td>
-
-<td>
-
-{% if row.confidence_band == "High" %}
-    <span class="badge-low">
-        {{ row.confidence }}%
-    </span>
-
-{% elif row.confidence_band == "Medium" %}
-    <span class="badge-medium">
-        {{ row.confidence }}%
-    </span>
-
-{% else %}
-    <span class="badge-high">
-        {{ row.confidence }}%
-    </span>
-
-{% endif %}
-
-</td>
-<td>
-
-{% if row.risk == "High" %} <span class="badge-high">High</span>
-{% elif row.risk == "Medium" %} <span class="badge-medium">Medium</span>
-{% else %} <span class="badge-low">Low</span>
-{% endif %}
-
-</td>
-
-
-</tr>
-
-{% endfor %}
-
-</table>
-
-</details>
-
+<div class="section-card">
+  <details>
+    <summary style="cursor:pointer; font-weight:700; padding:10px; background:#F8FAFC; border-radius:10px; border:1px solid #E2E8F0">📋 Complete Forecast Matrix ({{ total_nodes }} Nodes)</summary>
+    <br>
+    <div style="margin-bottom:12px"><input type="text" id="nodeSearch" placeholder="Search Node / Facility / Circle" onkeyup="filterTable()" style="width:100%; max-width:320px; border-radius:999px; border:1px solid #CBD5E1; padding:10px 14px"></div>
+    <table id="forecastTable">
+      <tr><th>Node</th><th>Facility</th><th>Circle</th><th>Progress</th><th>Delay</th><th>Delay Drivers</th><th>Forecast Go-Live</th><th>Confidence</th><th>Risk</th></tr>
+      {% for row in forecast_data %}
+      <tr>
+        <td><b>{{ row.node_id }}</b></td>
+        <td>{{ row.facility_name }}</td>
+        <td>{{ row.circle }}</td>
+        <td>{{ row.progress }}%</td>
+        <td><span class="status-badge status-red">{{ row.forecast_delay }}d</span></td>
+        <td>{% if row.delay_drivers %}{% for d in row.delay_drivers[:3] %}<div style="font-size:12px">{{ d.task_name }} ({{ d.remaining_days }}d)</div>{% endfor %}{% if row.delay_drivers|length > 3 %}<details><summary style="cursor:pointer;color:#4F6EF7; font-size:12px">View All</summary>{% for d in row.delay_drivers %}<div style="font-size:12px">{{ d.task_name }} ({{ d.remaining_days }}d)</div>{% endfor %}</details>{% endif %}{% endif %}</td>
+        <td>{{ row.predicted_go_live }}</td>
+        <td>{% if row.confidence_band == "High" %}<span class="status-badge status-green">{{ row.confidence }}%</span>{% elif row.confidence_band == "Medium" %}<span class="status-badge status-yellow">{{ row.confidence }}%</span>{% else %}<span class="status-badge status-red">{{ row.confidence }}%</span>{% endif %}</td>
+        <td>{% if row.risk == "High" %}<span class="status-badge status-red">High</span>{% elif row.risk == "Medium" %}<span class="status-badge status-yellow">Medium</span>{% else %}<span class="status-badge status-green">Low</span>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </details>
 </div>
 
 <script>
-
 function filterTable(){
-
-let input =
-document.getElementById("nodeSearch");
-
-let filter =
-input.value.toUpperCase();
-
-let table =
-document.getElementById("forecastTable");
-
-let tr =
-table.getElementsByTagName("tr");
-
-for(let i=1;i<tr.length;i++){
-
-let txt =
-tr[i].textContent || tr[i].innerText;
-
-if(txt.toUpperCase().indexOf(filter) > -1){
-
-tr[i].style.display = "";
-
-}else{
-
-tr[i].style.display = "none";
-
+  let input = document.getElementById("nodeSearch");
+  let filter = input.value.toUpperCase();
+  let table = document.getElementById("forecastTable");
+  let tr = table.getElementsByTagName("tr");
+  for(let i=1;i<tr.length;i++){
+    let txt = tr[i].textContent || tr[i].innerText;
+    tr[i].style.display = txt.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+  }
 }
-
-}
-
-}
-
 </script>
-
 {% endblock %}

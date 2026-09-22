@@ -7,6 +7,7 @@
    The brand is a link to /home on every screen, so the IPTT logo always takes
    the user back to the workspace.
 #}
+{# Cinematic nav — glass pill, floating, same links #}
 <div class="top-nav iptt-nav">
   <a class="iptt-brand" href="/home" title="IPTT home" aria-label="IPTT home">
     <span class="iptt-brand-mark" aria-hidden="true">I</span>
@@ -16,11 +17,12 @@
     <a href="/home">Home</a>
     <a href="/programmes">Programmes</a>
     <a href="/dashboard">Governance</a>
+    <a href="/circle-dashboard">Circle Intel</a>
     {% if user is defined and user and user.role == "admin" %}
     <a href="/users">Users</a>
     <a href="/audit-logs">Audit Logs</a>
     {% endif %}
-    <a href="/profile">Security settings</a>
+    <a href="/profile">Security</a>
     <a href="/logout">Sign out</a>
   </div>
 </div>

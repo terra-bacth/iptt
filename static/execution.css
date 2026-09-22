@@ -1,198 +1,40 @@
-body {
-  font-family: "Segoe UI", Arial, sans-serif;
-  background-color: #f4f6f8;
-  padding: 20px;
+/* Execution — cinematic override, keeps hooks */
+.scope-card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96));
+  border:1px solid rgba(15,23,42,0.08);
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:18px;
+  box-shadow:0 8px 32px rgba(2,6,23,0.08);
+  transition:transform .28s cubic-bezier(.22,.61,.36,1), box-shadow .28s ease;
 }
-
-h2 {
-  color: #2c3e50;
+.scope-card:hover{transform:translateY(-2px); box-shadow:0 16px 40px rgba(2,6,23,0.12)}
+.scope-header{
+  display:flex; justify-content:space-between; align-items:center;
+  font-weight:700; color:#0F172A; margin-bottom:10px; font-size:14px; letter-spacing:-0.01em;
 }
-
-/* ===== Top Toolbar ===== */
-.top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #ffffff;
-  padding: 12px 16px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  margin-bottom: 16px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.controls-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-
-.quick-btn {
-    margin-top: 4px;
-    padding: 4px 8px;
-    font-size: 11px;
-    border: none;
-    border-radius: 3px;
-    background-color: #146c43;
-    color: white;
-    cursor: pointer;
-}
-
-.quick-btn:hover {
-    background-color: #218838;
-}
-
-.controls-left button {
-  padding: 6px 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  background: #f8f9fa;
-  cursor: pointer;
-}
-
-.controls-left button:hover {
-  background: #e9ecef;
-}
-
-.controls-center {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
-
-.controls-right {
-  display: flex;
-  align-items: center;
-}
-
-/* ===== Search ===== */
-.search-box {
-  padding: 6px 10px;
-  width: 260px;
-  font-size: 14px;
-}
-
-/* ===== Save Button ===== */
-.save-btn {
-  background: #27ae60;
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  font-size: 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.save-btn:hover {
-  background: #229954;
-}
-
-/* ===== Scope Card ===== */
-.scope-card {
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.scope-header {
-  font-weight: bold;
-  color: #34495e;
-  margin-bottom: 8px;
-}
-
-/* ===== Table ===== */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-th {
-  background: #2c3e50;
-  color: white;
-  padding: 6px;
-}
-
-td {
-  padding: 6px;
-  border-bottom: 1px solid #ddd;
-}
-
-/* ===== Status Coloring ===== */
-.status-completed {
-  background-color: #e8f8f5;   /* Green */
-}
-
-.status-progress {
-  background-color: #fff9e6;   /* Amber */
-}
-
-.status-delayed {
-  background-color: #fdecea;   /* Red */
-}
-/* ===== Progress Bar ===== */
-.progress-container {
-  margin: 6px 0 12px 0;
-}
-
-.progress-bar-bg {
-  background: #e4ebf3;
-  border-radius: 6px;
-  height: 10px;
-  overflow: hidden;
-}
-
-.progress-bar-fill {
-  height: 100%;
-  background: #27ae60;
-  transition: width 0.4s ease;
-}
-
-.progress-text {
-  font-size: 12px;
-  color: #555;
-  margin-top: 4px;
-}
-/* ===== Node RAG Badge ===== */
-.rag-badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #fff;
-  margin-left: 12px;
-}
-
-.rag-green {
-  background-color: #27ae60;
-}
-
-.rag-amber {
-  background-color: #f39c12;
-}
-
-.rag-red {
-  background-color: #e74c3c;
-}
-
-.rag-grey {
-  background-color: #7f8c8d;
-}
-
-/* Align badge to the right of header */
-.scope-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.next-task {
-    border-left: 5px solid #0078d4;
-    background-color: #e6f2ff;
-}
+table{width:100%; border-collapse:collapse; font-size:13.5px}
+th{background:#0F172A; color:white; padding:10px 12px; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; font-weight:700}
+td{padding:10px 12px; border-bottom:1px solid #F1F5F9; color:#0F172A}
+.status-completed{background-color:#F0FDF4}
+.status-progress{background-color:#FFF7ED}
+.status-delayed{background-color:#FFF0F3}
+.progress-container{margin:8px 0 12px 0}
+.progress-bar-bg{background:#E2E8F0; border-radius:999px; height:8px; overflow:hidden}
+.progress-bar-fill{height:100%; background:linear-gradient(90deg,#5B7FFF,#8B5CF6); transition:width .4s ease; border-radius:999px}
+.progress-text{font-size:11px; color:#64748B; margin-top:6px; font-family:"JetBrains Mono", monospace}
+.rag-badge{padding:5px 10px; border-radius:999px; font-size:11px; font-weight:700; color:#fff; margin-left:12px; letter-spacing:0.02em}
+.rag-green{background:linear-gradient(135deg,#0EB368,#06B6D4)}
+.rag-amber{background:linear-gradient(135deg,#F59E0B,#FF8A2B)}
+.rag-red{background:linear-gradient(135deg,#FF3B5C,#FF8A2B)}
+.rag-grey{background:#64748B}
+.next-task{border-left:4px solid #5B7FFF; background:#EEF2FF; border-radius:12px}
+.top-bar{display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.96); padding:12px 16px; border-radius:999px; border:1px solid rgba(15,23,42,0.08); box-shadow:0 8px 24px rgba(2,6,23,0.08); margin-bottom:16px; position:sticky; top:72px; z-index:20; backdrop-filter:blur(16px)}
+.controls-left{display:flex; align-items:center; gap:8px}
+.controls-left button{padding:8px 12px; border-radius:999px; border:1px solid #E2E8F0; background:#F8FAFC; cursor:pointer; font-size:12px; font-weight:600; transition:all .2s ease}
+.controls-left button:hover{background:#EEF2FF; border-color:#C7D2FE; color:#4F6EF7}
+.search-box{padding:8px 12px; width:260px; font-size:13px; border-radius:999px; border:1px solid #CBD5E1}
+.save-btn{background:linear-gradient(135deg,#0EB368,#06B6D4); color:white; border:0; padding:10px 18px; font-size:13px; border-radius:999px; cursor:pointer; font-weight:650; box-shadow:0 8px 20px rgba(14,179,104,0.28)}
+.save-btn:hover{filter:brightness(1.05); transform:translateY(-1px)}
+.quick-btn{margin-top:4px; padding:5px 10px; font-size:11px; border:0; border-radius:999px; background:#0F172A; color:white; cursor:pointer; font-weight:600}
+.quick-btn:hover{background:#1E293B}

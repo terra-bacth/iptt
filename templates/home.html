@@ -1,504 +1,186 @@
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
 <title>IPTT Home</title>
-
-
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/static/theme.css?v=9">
-<script src="/static/ui.js?v=8" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/theme.css?v=11">
+<script src="/static/ui.js?v=11" defer></script>
 </head>
-
 <body class="iptt-ui iptt-home">
 <a class="iptt-skip" href="#iptt-main">Skip to main content</a>
 <main id="iptt-main" tabindex="-1">
 
-<!-- =========================================
-TOP NAV
-========================================= -->
-
 {% include "partials/nav.html" %}
 
-<!-- =========================================
-WELCOME
-========================================= -->
-
 <div class="welcome-banner">
-    <p class="iptt-eyebrow">YOUR PROJECT WORKSPACE</p>
-
-    <h1 class="welcome-title">
-
-        Welcome back, {{ user.username }}
-
-    </h1>
-
-    <div class="welcome-subtitle">
-
-        A clear view of your programmes, delivery progress and next steps.
-
-    </div>
-
+    <p class="iptt-eyebrow">Your Project Workspace</p>
+    <h1 class="welcome-title">Welcome back, <span>{{ user.username }}</span></h1>
+    <div class="welcome-subtitle">A clear view of your programmes, delivery progress and next steps — now cinematic.</div>
 </div>
 
 <div class="container iptt-home-grid">
 
-    <!-- =========================================
-    START NEW
-    ========================================= -->
-
     {% if user.role != "viewer" %}
-
     <section class="section-card iptt-create">
-
         <div class="section-title">
-
             <h2>Start something new</h2>
-
+            <span class="status-badge status-green">● Workspace Ready</span>
         </div>
-
         <div class="start-actions">
-
-            <a class="btn" href="/programmes">
-
-                Create Programme
-
-            </a>
-
-            <form action="/projects" method="get">
-
-                <label class="iptt-field-label" for="home-programme">Select programme</label>
-                <select id="home-programme" name="programme_id">
-
-                    {% for prog in programmes %}
-
-                    <option value="{{ prog.id }}">
-
-                        {{ prog.name }}
-
-                    </option>
-
-                    {% endfor %}
-
-                </select>
-
-                <button class="btn btn-green" type="submit">
-
-                    Create Project
-
-                </button>
-
+            <a class="btn" href="/programmes">+ Create Programme</a>
+            <form action="/projects" method="get" style="flex:1; display:flex; gap:10px; align-items:end; flex-wrap:wrap; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:999px; padding:8px 8px 8px 16px">
+                <div style="flex:1; min-width:160px">
+                    <label class="iptt-field-label" for="home-programme" style="margin-bottom:4px">Programme</label>
+                    <select id="home-programme" name="programme_id" style="width:100%; border:0; background:transparent; padding:0; min-height:28px; font-weight:600">
+                        {% for prog in programmes %}
+                        <option value="{{ prog.id }}">{{ prog.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button class="btn btn-green" type="submit">Create Project</button>
             </form>
-
         </div>
-
     </section>
-
     {% endif %}
-
-    <!-- =========================================
-    QUICK REPORTS
-    ========================================= -->
 
     <section class="section-card iptt-reports">
-
         <div class="section-title">
-
             <h2>Explore your reports</h2>
-
+            <span style="font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#64748B; font-weight:600; font-family:'JetBrains Mono', monospace">Live Synced</span>
         </div>
-
         <div class="action-row">
-
-            <a class="btn" href="/dashboard">
-
-                Governance Dashboard
-
-            </a>
-
-            <a class="btn btn-dark" href="/programmes">
-
-                Programme View
-
-            </a>
-            
-            <a class="btn btn-green" href="/circle-dashboard">
-            
-                Circle Intelligence Dashboard
-                
-            </a>
-
+            <a class="btn" href="/dashboard">📊 Governance</a>
+            <a class="btn btn-dark" href="/programmes">📦 Programme View</a>
+            <a class="btn btn-green" href="/circle-dashboard">🌍 Circle Intelligence</a>
         </div>
-
     </section>
-
-    <!-- =========================================
-    ONGOING PROJECTS
-    ========================================= -->
 
     <section class="section-card iptt-ongoing">
-
         <div class="section-title">
-
             <h2>Ongoing projects</h2>
-
+            <span class="status-badge status-green">● {{ programme_projects|length if programme_projects else 0 }} Programmes</span>
         </div>
-
         {% if programme_projects %}
-
         {% for programme, projects in programme_projects.items() %}
-
-        <div class="programme-card">
-
-            <!-- PROGRAMME HEADER -->
-
+        <div class="programme-card" style="margin-bottom:18px">
             <div class="programme-header">
-
                 <div>
-
-                    <div class="programme-name">
-
-                        {{ programme }}
-
-                    </div>
-
-                    <div class="programme-meta">
-
-                        {{ projects|length }} Active Projects
-
-                    </div>
-
+                    <div class="programme-name">{{ programme }}</div>
+                    <div class="programme-meta">{{ projects|length }} Active Projects • Cinematic view</div>
                 </div>
-
                 <div>
-
-                    <a class="btn"
-                       href="/programme/{{ projects[0].programme_id }}/executive-dashboard">
-
-                        Programme Dashboard
-
-                    </a>
-
+                    <a class="btn" href="/programme/{{ projects[0].programme_id }}/executive-dashboard">Programme Dashboard →</a>
                 </div>
-
             </div>
-
-            <!-- TABLE -->
-
             <table class="proj-table">
-
                 <tr>
-
                     <th style="width:38%;">Project</th>
-
                     <th style="width:20%;">PM</th>
-
                     <th style="width:20%;">Status</th>
-
                     <th style="width:22%;">Actions</th>
-
                 </tr>
-
                 {% for p in projects[:5] %}
-
                 <tr>
-
+                    <td>{% if p.at_risk %}🔥 {% endif %}<b>{{ p.project_name }}</b></td>
+                    <td>{{ p.pm }}</td>
                     <td>
-
                         {% if p.at_risk %}
-                            🔥
-                        {% endif %}
-
-                        {{ p.project_name }}
-
-                    </td>
-
-                    <td>
-
-                        {{ p.pm }}
-
-                    </td>
-
-                    <td>
-
-                        {% if p.at_risk %}
-
-                        <span class="status-badge status-red">
-
-                            🔴 At Risk
-
-                        </span>
-
+                        <span class="status-badge status-red">At Risk</span>
                         {% else %}
-
-                        <span class="status-badge status-green">
-
-                            🟢 On Track
-
-                        </span>
-
+                        <span class="status-badge status-green">On Track</span>
                         {% endif %}
-
                     </td>
-
                     <td>
-
                         <div class="actions">
-
                             {% if user.role != "viewer" %}
-
-                            <a class="btn btn-dark"
-                               href="/project/{{ p.project_id }}/execution">
-
-                                Execution
-
-                            </a>
-
+                            <a class="btn btn-dark" href="/project/{{ p.project_id }}/execution" style="padding:8px 12px; min-height:32px; font-size:12px">Execution</a>
                             {% endif %}
-
-                            <a class="btn"
-                               href="/project/{{ p.project_id }}/executive-dashboard">
-
-                                Dashboard
-
-                            </a>
-
+                            <a class="btn" href="/project/{{ p.project_id }}/executive-dashboard" style="padding:8px 12px; min-height:32px; font-size:12px">Dashboard →</a>
                         </div>
-
                     </td>
-
                 </tr>
-
                 {% endfor %}
-
             </table>
-
             {% if projects|length > 5 %}
-
-            <button class="show-more-btn"
-                    aria-expanded="false" aria-controls="more-{{ loop.index }}"
-                    onclick="toggle('{{ loop.index }}'); this.setAttribute('aria-expanded', document.getElementById('more-{{ loop.index }}').style.display !== 'none')">
-
+            <button class="show-more-btn" aria-expanded="false" aria-controls="more-{{ loop.index }}" onclick="toggle('{{ loop.index }}'); this.setAttribute('aria-expanded', document.getElementById('more-{{ loop.index }}').style.display !== 'none')">
                 Show More ▼
-
             </button>
-
-            <div id="more-{{ loop.index }}"
-                 style="display:none;">
-
+            <div id="more-{{ loop.index }}" style="display:none;">
                 <table class="proj-table">
-
                     {% for p in projects[5:] %}
-
                     <tr>
-
-                        <td style="width:38%;">
-
-                            {{ p.project_name }}
-
-                        </td>
-
-                        <td style="width:20%;">
-
-                            {{ p.pm }}
-
-                        </td>
-
-                        <td style="width:20%;">
-
-                            --
-
-                        </td>
-
+                        <td style="width:38%;">{{ p.project_name }}</td>
+                        <td style="width:20%;">{{ p.pm }}</td>
+                        <td style="width:20%;">—</td>
                         <td style="width:22%;"></td>
-
                     </tr>
-
                     {% endfor %}
-
                 </table>
-
             </div>
-
             {% endif %}
-
         </div>
-
         {% endfor %}
-
         {% else %}
-
-        <div class="empty-state">
-
-            No ongoing projects available.
-
-        </div>
-
+        <div class="empty-state">No ongoing projects available.</div>
         {% endif %}
-
     </section>
-
-    <!-- =========================================
-    SETUP PROJECTS
-    ========================================= -->
 
     {% if user.role != "viewer" %}
-
     <section class="section-card iptt-setup">
-
         <div class="section-title">
-
             <h2>Projects in setup</h2>
-
+            <span class="status-badge status-yellow">Setup</span>
         </div>
-
         {% if setup_projects %}
-
         <table class="proj-table">
-
-            <tr>
-
-                <th>Project</th>
-
-                <th>PM</th>
-
-                <th>Status</th>
-
-                <th>Action</th>
-
-            </tr>
-
+            <tr><th>Project</th><th>PM</th><th>Status</th><th>Action</th></tr>
             {% for p in setup_projects %}
-
             <tr>
-
-                <td>{{ p.project_name }}</td>
-
+                <td><b>{{ p.project_name }}</b></td>
                 <td>{{ p.pm }}</td>
-
-                <td>
-
-                    <span class="status-badge status-yellow">
-
-                        🟠 Setup In Progress
-
-                    </span>
-
-                </td>
-
-                <td>
-
-                    <a class="btn btn-dark"
-                       href="/projects/{{ p.programme_id }}">
-
-                        🛠 Open Setup
-
-                    </a>
-
-                </td>
-
+                <td><span class="status-badge status-yellow">Setup In Progress</span></td>
+                <td><a class="btn btn-dark" href="/projects/{{ p.programme_id }}" style="padding:8px 12px; min-height:32px; font-size:12px">🛠 Open Setup</a></td>
             </tr>
-
             {% endfor %}
-
         </table>
-
         {% else %}
-
-        <div class="empty-state">
-
-            No setup projects pending.
-
-        </div>
-
+        <div class="empty-state">No setup projects pending.</div>
         {% endif %}
-
     </section>
-
     {% endif %}
 
-    <!-- =========================================
-    COMPLETED PROJECTS
-    ========================================= -->
-
     <section class="section-card iptt-completed">
-
         <div class="section-title">
-
             <h2>Completed projects</h2>
-
+            <span class="status-badge status-green">Done</span>
         </div>
-
         {% if completed_projects %}
-
         <table class="proj-table">
-
-            <tr>
-
-                <th>Project</th>
-
-                <th>PM</th>
-
-                <th>Action</th>
-
-            </tr>
-
+            <tr><th>Project</th><th>PM</th><th>Action</th></tr>
             {% for p in completed_projects %}
-
             <tr>
-
-                <td>{{ p.project_name }}</td>
-
+                <td><b>{{ p.project_name }}</b></td>
                 <td>{{ p.pm }}</td>
-
-                <td>
-
-                    <a class="btn"
-                       href="/project/{{ p.project_id }}/executive-dashboard">
-
-                        Executive Dashboard
-
-                    </a>
-
-                </td>
-
+                <td><a class="btn" href="/project/{{ p.project_id }}/executive-dashboard" style="padding:8px 12px; min-height:32px; font-size:12px">Executive Dashboard →</a></td>
             </tr>
-
             {% endfor %}
-
         </table>
-
         {% else %}
-
-        <div class="empty-state">
-
-            No completed projects available.
-
-        </div>
-
+        <div class="empty-state">No completed projects available.</div>
         {% endif %}
-
     </section>
 
 </div>
 
 <script>
-
 function toggle(id){
-
     let x = document.getElementById("more-" + id);
-
-    x.style.display =
-        x.style.display === "none"
-        ? "block"
-        : "none";
+    x.style.display = x.style.display === "none" ? "block" : "none";
 }
-
 </script>
 
 </main>
