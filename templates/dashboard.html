@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}IPTT | Governance Dashboard{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Enterprise Portfolio</p>
+            <h1 class="iptt-hero-title">Governance <span class="italic">Dashboard</span></h1>
+            <div class="iptt-hero-subtitle">Portfolio-level tracking, baseline completion metrics, and programme governance health.</div>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="status-badge status-green">● {{ data|length }} Programmes</span>
+            <span class="status-badge status-green">● Live Synced</span>
+        </div>
+    </div>
+</div>
+
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-label">Total Programmes</div>
+        <div class="kpi-value">{{ data|length }}</div>
+        <div class="progress-wrapper"><div class="progress-bar" style="width: {% if data|length > 0 %}100%{% else %}0%{% endif %};"></div></div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">Total Projects</div>
+        <div class="kpi-value">{{ data | sum(attribute='total') }}</div>
+        <div class="progress-wrapper"><div class="progress-bar" style="width: {% if (data | sum(attribute='total')) > 0 %}100%{% else %}0%{% endif %};"></div></div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">Planned Projects</div>
+        <div class="kpi-value">{{ data | sum(attribute='planned') }}</div>
+        <div class="progress-wrapper"><div class="progress-bar" style="width: {% set t = data | sum(attribute='total') %}{% if t > 0 %}{{ (((data | sum(attribute='planned')) / t * 100) | round(0)) | int }}%{% else %}0%{% endif %}; background: var(--success);"></div></div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">Average Planning %</div>
+        <div class="kpi-value">
+            {% if data|length > 0 %}
+                {{ ((data | sum(attribute='percent') / data|length) | round(0)) | int }}%
+            {% else %}
+                0%
+            {% endif %}
+        </div>
+        <div class="progress-wrapper"><div class="progress-bar" style="width: {% if data|length > 0 %}{{ ((data | sum(attribute='percent') / data|length) | round(0)) | int }}%{% else %}0%{% endif %};"></div></div>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>📦 Programme Governance Summary</h2>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="text" placeholder="Filter programmes..." data-table-target="governanceTable" style="max-width: 220px; font-size: 12px; min-height: 30px; padding: 4px 10px;">
+            <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-family: 'JetBrains Mono', monospace;">{{ data|length }} tracked</span>
+        </div>
+    </div>
+
+    <div class="iptt-table-scroll">
+        <table id="governanceTable" class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Programme</th>
+                    <th>Total Projects</th>
+                    <th>Planned</th>
+                    <th style="min-width: 240px;">Planning Completion</th>
+                    <th>Health Status</th>
+                    <th style="text-align: right;">Executive View</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr>
+                    <td><strong>{{ row.programme }}</strong></td>
+                    <td>{{ row.total }}</td>
+                    <td>{{ row.planned }}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="progress-container" style="flex: 1; margin: 0;">
+                                <div class="progress-bar" style="width: {{ row.percent }}%;"></div>
+                            </div>
+                            <span style="font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--text); min-width: 36px;">{{ row.percent }}%</span>
+                        </div>
+                    </td>
+                    <td>
+                        {% if row.percent >= 80 %}
+                            <span class="status-badge status-green">Excellent</span>
+                        {% elif row.percent >= 50 %}
+                            <span class="status-badge status-yellow">Moderate</span>
+                        {% else %}
+                            <span class="status-badge status-red">Needs Attention</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: right;">
+                        <a class="btn btn-primary" href="/programme/{{ row.programme_id }}/executive-dashboard" style="padding: 5px 12px; font-size: 11.5px;">📈 Open Dashboard →</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 24px; color: var(--muted);">No programmes found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

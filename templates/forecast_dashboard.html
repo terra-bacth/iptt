@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% block title %}Forecast | {{ project_name }}{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+  <a href="/home">Home</a> <span>›</span>
+  <a href="/programmes">Programmes</a> <span>›</span>
+  <span class="status-badge role-badge">Predictive Intelligence</span>
+</div>
+
+<div class="iptt-hero-banner">
+  <div class="iptt-hero-content">
+    <div>
+      <p class="iptt-eyebrow">Predictive Analytics & Forecasting</p>
+      <h1 class="iptt-hero-title">🔮 Forecast <span class="italic">Dashboard</span></h1>
+      <div class="iptt-hero-subtitle">
+        Project: <strong style="color: var(--text);">{{ project_name }}</strong> &bull; Estimated Go-Live milestones, delay driver breakdowns, and confidence modeling.
+      </div>
+    </div>
+    <span class="status-badge status-green">● {{ total_nodes }} Nodes Forecasted</span>
+  </div>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-label">Forecast Go-Live</div>
+    <div class="kpi-value" style="font-size: 20px;">{{ project_forecast_date }}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Total Nodes</div>
+    <div class="kpi-value">{{ total_nodes }}</div>
+    <div class="progress-wrapper"><div class="progress-bar" style="width: {% if total_nodes > 0 %}100%{% else %}0%{% endif %};"></div></div>
+  </div>
+  <div class="kpi-card" style="border-left: 4px solid var(--danger);">
+    <div class="kpi-label">Critical Nodes</div>
+    <div class="kpi-value" style="color: var(--danger);">{{ critical_nodes }}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Average Delay</div>
+    <div class="kpi-value">{{ average_delay }} Days</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Worst Delay</div>
+    <div class="kpi-value" style="color: var(--danger);">{{ worst_delay }} Days</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Overall Progress</div>
+    <div class="kpi-value">{{ overall_progress }}%</div>
+    <div class="progress-wrapper"><div class="progress-bar" style="width: {{ overall_progress }}%;"></div></div>
+  </div>
+  <div class="kpi-card" style="border-left: 4px solid var(--success);">
+    <div class="kpi-label">Forecast Confidence</div>
+    <div class="kpi-value" style="color: var(--success);">{{ avg_confidence }}%</div>
+    <div class="progress-wrapper">
+      <div class="progress-bar" style="width: {{ avg_confidence }}%; background: var(--success);"></div>
+    </div>
+  </div>
+</div>
+
+<div class="section-card">
+  <div class="section-title">
+    <h2>🚦 Risk Distribution Profile</h2>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+    <div class="kpi-card" style="border-left: 4px solid var(--danger); background: var(--danger-soft); text-align: center;">
+      <div class="kpi-value" style="color: var(--danger); font-size: 32px;">{{ high_risk }}</div>
+      <div style="margin-top: 6px; font-weight: 700; color: var(--danger);">High Risk Nodes</div>
+    </div>
+    <div class="kpi-card" style="border-left: 4px solid var(--warning); background: var(--warning-soft); text-align: center;">
+      <div class="kpi-value" style="color: var(--warning); font-size: 32px;">{{ medium_risk }}</div>
+      <div style="margin-top: 6px; font-weight: 700; color: var(--warning);">Medium Risk Nodes</div>
+    </div>
+    <div class="kpi-card" style="border-left: 4px solid var(--success); background: var(--success-soft); text-align: center;">
+      <div class="kpi-value" style="color: var(--success); font-size: 32px;">{{ low_risk }}</div>
+      <div style="margin-top: 6px; font-weight: 700; color: var(--success);">Low Risk Nodes</div>
+    </div>
+  </div>
+</div>
+
+<div class="executive-summary">
+  <h3>📌 Executive Predictive Insights</h3>
+  <ul style="line-height: 1.8; margin: 0; padding-left: 20px; color: var(--text-2);">
+    <li>Projected Delivery Date: <strong>{{ project_forecast_date }}</strong></li>
+    <li>High-Impact Risk Nodes Identified: <strong>{{ critical_nodes }}</strong></li>
+    <li>Portfolio Mean Delay: <strong>{{ average_delay }} Days</strong> (Peak: <strong>{{ worst_delay }} Days</strong>)</li>
+    <li>Calculated Engineering Completion: <strong>{{ overall_progress }}%</strong> with <strong>{{ avg_confidence }}%</strong> Model Confidence</li>
+  </ul>
+</div>
+
+<div class="section-card">
+  <div class="section-title">
+    <h2>🚨 Top 10 Delayed Nodes</h2>
+    <span class="status-badge status-red">Attention Required</span>
+  </div>
+  <div class="iptt-table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Node</th>
+          <th>Facility</th>
+          <th>Circle</th>
+          <th style="min-width: 120px;">Progress</th>
+          <th>Delay</th>
+          <th>Primary Delay Drivers</th>
+          <th>Predicted Go-Live</th>
+          <th>Confidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in top_delayed_nodes %}
+        <tr>
+            <td><strong>{{ row.node_id }}</strong></td>
+            <td>{{ row.facility_name }}</td>
+            <td>{{ row.circle }}</td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <div class="progress-container" style="flex: 1; margin: 0; height: 6px;">
+                  <div class="progress-bar" style="width: {{ row.progress }}%;"></div>
+                </div>
+                <span style="font-size: 11px; font-family: 'JetBrains Mono';">{{ row.progress }}%</span>
+              </div>
+            </td>
+            <td><span class="status-badge status-red">{{ row.forecast_delay }}d</span></td>
+            <td>
+              {% if row.delay_drivers %}
+                {% for d in row.delay_drivers[:3] %}
+                <div style="font-size: 11.5px; color: var(--text-2);">• {{ d.task_name }} ({{ d.remaining_days }}d)</div>
+                {% endfor %}
+                {% if row.delay_drivers|length > 3 %}
+                <details style="margin-top: 4px;">
+                  <summary style="cursor: pointer; color: var(--primary); font-size: 11px; font-weight: 600;">View All ({{ row.delay_drivers|length }})</summary>
+                  {% for d in row.delay_drivers %}
+                  <div style="font-size: 11.5px; color: var(--text-2);">• {{ d.task_name }} ({{ d.remaining_days }}d)</div>
+                  {% endfor %}
+                </details>
+                {% endif %}
+              {% else %}
+              <span style="color: var(--muted);">-</span>
+              {% endif %}
+            </td>
+            <td>{{ row.predicted_go_live }}</td>
+            <td>
+              {% if row.confidence_band == "High" %}
+              <span class="status-badge status-green">{{ row.confidence }}%</span>
+              {% elif row.confidence_band == "Medium" %}
+              <span class="status-badge status-yellow">{{ row.confidence }}%</span>
+              {% else %}
+              <span class="status-badge status-red">{{ row.confidence }}%</span>
+              {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section-card" style="padding: 0; overflow: hidden;">
+  <div class="collapsible-header" onclick="toggleSection('circleForecastSec')">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span>🌍 Circle Forecast Summary</span>
+    </div>
+    <div class="collapsible-icon" id="icon-circleForecastSec">+</div>
+  </div>
+  <div class="collapsible-content" id="circleForecastSec">
+    <div>
+      <div class="iptt-table-scroll">
+        <table>
+          <thead>
+            <tr><th>Circle</th><th>Nodes</th><th>Average Delay</th><th>Average Progress</th><th>Forecast Go-Live</th></tr>
+          </thead>
+          <tbody>
+            {% for circle, data in circle_summary.items() %}
+            <tr>
+              <td><strong>{{ circle }}</strong></td>
+              <td>{{ data.nodes }}</td>
+              <td>{{ data.avg_delay }} Days</td>
+              <td>{{ data.avg_progress }}%</td>
+              <td>{{ data.forecast_go_live }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-card" style="padding: 0; overflow: hidden;">
+  <div class="collapsible-header active" onclick="toggleSection('matrixForecastSec')">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span>📋 Complete Forecast Matrix</span>
+      <span class="status-badge role-badge" style="font-size: 10px;">{{ total_nodes }} Nodes</span>
+    </div>
+    <div class="collapsible-icon" id="icon-matrixForecastSec">−</div>
+  </div>
+  <div class="collapsible-content active" id="matrixForecastSec">
+    <div>
+      <div style="margin-bottom: 14px;">
+        <input type="text" id="nodeSearch" placeholder="Search Node / Facility / Circle..." data-table-target="forecastTable" style="width: 100%; max-width: 320px;">
+      </div>
+      <div class="iptt-table-scroll">
+        <table id="forecastTable">
+          <thead>
+            <tr>
+              <th>Node</th>
+              <th>Facility</th>
+              <th>Circle</th>
+              <th>Progress</th>
+              <th>Delay</th>
+              <th>Delay Drivers</th>
+              <th>Forecast Go-Live</th>
+              <th>Confidence</th>
+              <th>Risk</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in forecast_data %}
+            <tr>
+              <td><strong>{{ row.node_id }}</strong></td>
+              <td>{{ row.facility_name }}</td>
+              <td>{{ row.circle }}</td>
+              <td>{{ row.progress }}%</td>
+              <td><span class="status-badge status-red">{{ row.forecast_delay }}d</span></td>
+              <td>
+                {% if row.delay_drivers %}
+                  {% for d in row.delay_drivers[:2] %}
+                  <div style="font-size: 11px;">{{ d.task_name }} ({{ d.remaining_days }}d)</div>
+                  {% endfor %}
+                {% else %}
+                <span style="color: var(--muted);">-</span>
+                {% endif %}
+              </td>
+              <td>{{ row.predicted_go_live }}</td>
+              <td>
+                {% if row.confidence_band == "High" %}
+                <span class="status-badge status-green">{{ row.confidence }}%</span>
+                {% elif row.confidence_band == "Medium" %}
+                <span class="status-badge status-yellow">{{ row.confidence }}%</span>
+                {% else %}
+                <span class="status-badge status-red">{{ row.confidence }}%</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if row.risk == "High" %}
+                <span class="status-badge status-red">High</span>
+                {% elif row.risk == "Medium" %}
+                <span class="status-badge status-yellow">Medium</span>
+                {% else %}
+                <span class="status-badge status-green">Low</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

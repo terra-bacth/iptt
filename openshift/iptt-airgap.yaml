@@ -1,0 +1,150 @@
+# =====================================================================
+# IPTT - OpenShift manifest for AIRGAPPED / disconnected clusters
+# (image built externally and pulled from JFrog Artifactory)
+#
+# Usage:
+#   oc new-project iptt
+#
+#   # 1) Pull credentials for JFrog (one time per project)
+#   oc create secret docker-registry jfrog-pull-secret \
+#       --docker-server=artifactory.example.com \
+#       --docker-username=<user> \
+#       --docker-password=<api-key-or-password> \
+#       --docker-email=unused@example.com
+#   oc secrets link default jfrog-pull-secret --for=pull
+#
+#   # 2) Session encryption key
+#   oc create secret generic iptt-secret \
+#       --from-literal=SESSION_SECRET="$(openssl rand -hex 32)"
+#
+#   # 3) EDIT the image: reference below to your real JFrog path/tag,
+#   #    then deploy
+#   oc apply -f openshift/iptt-airgap.yaml
+#   oc rollout status deploy/iptt
+#
+#   # 4) First time only: create tables + seed default users
+#   oc exec deploy/iptt -- python seed_admin.py
+#
+#   oc get route iptt
+# =====================================================================
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: iptt-data
+  labels:
+    app: iptt
+spec:
+  accessModes:
+    - ReadWriteOnce          # SQLite = single writer. Keep replicas: 1.
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iptt
+  labels:
+    app: iptt
+spec:
+  replicas: 1                  # SQLite limitation — do not scale beyond 1
+  strategy:
+    type: Recreate             # avoids two pods mounting the RWO PVC at once
+  selector:
+    matchLabels:
+      app: iptt
+  template:
+    metadata:
+      labels:
+        app: iptt
+    spec:
+      imagePullSecrets:
+        - name: jfrog-pull-secret          # created in step 1 above
+      containers:
+        - name: iptt
+          # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+          # REPLACE with your real JFrog image reference, e.g.
+          #   artifactory.example.com/docker-local/iptt:1.0.0
+          # or (subdomain method)
+          #   docker-local.artifactory.example.com/iptt:1.0.0
+          # For reproducible deploys you can pin by digest instead:
+          #   artifactory.example.com/docker-local/iptt@sha256:<digest>
+          # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+          image: artifactory.example.com/docker-local/iptt:1.0.0
+          imagePullPolicy: IfNotPresent    # use Always if you reuse :latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            # "::" is already the image default - required on IPv6 clusters
+            - name: HOST
+              value: "::"
+            - name: DATABASE_URL
+              value: sqlite:////app/data/iptt.db
+            - name: SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: iptt-secret
+                  key: SESSION_SECRET
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+              scheme: HTTP                 # kubelet probes the pod IP (IPv6-safe)
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 20
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: iptt-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iptt
+  labels:
+    app: iptt
+spec:
+  # No ipFamilies set: in a single-stack IPv6 cluster the cluster assigns
+  # the family automatically. Do not hardcode IPv4 anywhere.
+  selector:
+    app: iptt
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: iptt
+  labels:
+    app: iptt
+spec:
+  to:
+    kind: Service
+    name: iptt
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

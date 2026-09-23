@@ -1,0 +1,480 @@
+{% extends "base.html" %}
+{% block title %}{{ project.name }} | Executive Dashboard{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/programmes">Programmes</a> <span>›</span>
+    <span class="status-badge role-badge">Project Executive</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Project Executive Intelligence</p>
+            <h1 class="iptt-hero-title">{{ project.name }} <span class="italic">Executive Dashboard</span></h1>
+            <div class="iptt-hero-subtitle">
+                Total Nodes: <strong style="color: var(--text);">{{ matrix.grand_total }}</strong> &bull; End-to-end stage tracking, leadership actions, and critical bottleneck telemetry.
+            </div>
+        </div>
+        <div class="no-print" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <a href="/project/{{ project.id }}/executive-dashboard/pdf" target="_blank" class="btn btn-primary">🖨 Export PDF</a>
+            <button onclick="location.reload()" class="btn">🔄 Refresh</button>
+        </div>
+    </div>
+</div>
+
+<div class="executive-summary">
+    <h3>📌 Executive Brief</h3>
+    <p class="iptt-summary-text">{{ report.executive_summary | trim }}</p>
+    <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+        <span class="status-badge status-green">● {{ report.kpis.health }}% Health</span>
+        <span class="status-badge status-yellow">● {{ report.delayed_count }} Delayed Tasks</span>
+        <span class="status-badge status-red">● Bottleneck: {{ report.bottleneck }}</span>
+    </div>
+</div>
+
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-title">Total Nodes</div>
+        <div class="kpi-value">{{ report.total_nodes }}</div>
+        <div class="progress-wrapper"><div class="progress-bar" style="width: {% if report.total_nodes > 0 %}100%{% else %}0%{% endif %};"></div></div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-title">Progress</div>
+        <div class="kpi-value">{{ report.kpis.progress }}%</div>
+        <div class="progress-wrapper"><div class="progress-bar" style="width: {{ report.kpis.progress }}%;"></div></div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-title">Health</div>
+        <div class="kpi-value">{{ report.kpis.health }}%</div>
+        <div class="progress-wrapper">
+            <div class="progress-bar" style="width: {{ report.kpis.health }}%; {% if report.kpis.health >= 80 %}background: var(--success);{% elif report.kpis.health >= 50 %}background: var(--warning);{% else %}background: var(--danger);{% endif %}"></div>
+        </div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-title">Execution Status</div>
+        <div class="kpi-value" style="font-size: 20px;">{{ report.kpis.status }}</div>
+    </div>
+    <div class="kpi-card" style="border-left: 4px solid var(--danger);">
+        <div class="kpi-title">Delayed Items</div>
+        <div class="kpi-value" style="color: var(--danger);">{{ report.delayed_count }}</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-title">Top Bottleneck</div>
+        <div class="kpi-value" style="font-size: 16px; word-break: break-word;">{{ report.bottleneck }}</div>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>📊 Overall Deployment Stage Matrix</h2>
+        <span style="font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace;">{{ matrix.grand_total }} Nodes Across Circles</span>
+    </div>
+    <div class="iptt-table-scroll">
+        <table class="report-table matrix-table">
+            <thead>
+                <tr>
+                    <th style="min-width: 220px;">Deployment Stage</th>
+                    {% for circle in matrix.circles %}
+                    <th style="text-align: center; min-width: 70px;">
+                        <a href="/project/{{ project.id }}/circle/{{ circle }}" style="color: var(--primary); font-weight: 700;">{{ circle }}</a>
+                    </th>
+                    {% endfor %}
+                    <th style="text-align: center;">Total</th>
+                    <th style="min-width: 140px;">Completion %</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in matrix.rows %}
+                <tr {% if row.stage == "Total" %}style="font-weight: 700; background: var(--surface-2); border-top: 2px solid var(--border);"{% endif %}>
+                    <td><strong>{{ row.stage }}</strong></td>
+                    {% for circle in matrix.circles %}
+                    <td style="text-align: center;">{% if row[circle] > 0 %}{{ row[circle] }}{% else %}<span style="color: var(--muted-2);">-</span>{% endif %}</td>
+                    {% endfor %}
+                    <td style="text-align: center; font-weight: 700;">{{ row.Total }}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="progress-container" style="flex: 1; margin: 0; height: 6px;">
+                                <div class="progress-bar" style="width: {{ report.stage_completion_percent.get(row.stage, 0) }}%;"></div>
+                            </div>
+                            <span style="font-size: 11px; font-family: 'JetBrains Mono', monospace; font-weight: 600; min-width: 32px;">{{ report.stage_completion_percent.get(row.stage, 0) }}%</span>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr style="font-weight: 700; background: var(--success-soft);">
+                    <td>Circle Completion %</td>
+                    {% for circle in matrix.circles %}
+                    <td style="text-align: center;">{{ report.circle_completion.get(circle, 0) }}%</td>
+                    {% endfor %}
+                    <td style="text-align: center; color: var(--success);">{{ report.overall_completion }}%</td>
+                    <td>—</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="section-card" style="padding: 0; overflow: hidden;">
+    <div class="collapsible-header active" onclick="toggleSection('topRiskNodes')">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span>🚨 Top Risk Nodes</span>
+            <span class="status-badge status-red" style="font-size: 10px;">{{ report.top_risk_nodes|length }} Critical</span>
+        </div>
+        <div class="collapsible-icon" id="icon-topRiskNodes">−</div>
+    </div>
+    <div class="collapsible-content active" id="topRiskNodes">
+        <div>
+            <div class="iptt-table-scroll">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Circle</th>
+                            <th>Node</th>
+                            <th>Facility</th>
+                            <th>Critical Task</th>
+                            <th>Max Delay</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if report.top_risk_nodes|length == 0 %}
+                        <tr><td colspan="6" style="text-align: center; padding: 24px; color: var(--muted);">✅ No critical risk nodes found</td></tr>
+                        {% endif %}
+                        {% for item in report.top_risk_nodes %}
+                        <tr {% if item.max_delay > 15 %}style="border-left: 3px solid var(--danger); background: var(--danger-soft);"{% elif item.max_delay > 7 %}style="border-left: 3px solid var(--warning); background: var(--warning-soft);"{% endif %}>
+                            <td><strong>{{ item.circle }}</strong></td>
+                            <td>{{ item.node }}</td>
+                            <td>{{ item.facility }}</td>
+                            <td>{{ item.task }}</td>
+                            <td>
+                                {% if item.max_delay > 15 %}
+                                <span class="status-badge status-red">{{ item.max_delay }} days</span>
+                                {% elif item.max_delay > 7 %}
+                                <span class="status-badge status-yellow">{{ item.max_delay }} days</span>
+                                {% else %}
+                                <span class="status-badge status-green">{{ item.max_delay }} days</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ item.status }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>🎯 Leadership Action Summary</h2>
+        <span style="font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono';">{{ report.leadership_summary.total }} Total Actions</span>
+    </div>
+    <div class="kpi-grid" style="margin-bottom: 20px;">
+        <div class="kpi-card"><div class="kpi-title">Total Actions</div><div class="kpi-value">{{ report.leadership_summary.total }}</div></div>
+        <div class="kpi-card" style="border-left: 4px solid var(--danger);"><div class="kpi-title">Open</div><div class="kpi-value" style="color: var(--danger);">{{ report.leadership_summary.open }}</div></div>
+        <div class="kpi-card" style="border-left: 4px solid var(--warning);"><div class="kpi-title">In Progress</div><div class="kpi-value" style="color: var(--warning);">{{ report.leadership_summary.in_progress }}</div></div>
+        <div class="kpi-card" style="border-left: 4px solid var(--success);"><div class="kpi-title">Closed</div><div class="kpi-value" style="color: var(--success);">{{ report.leadership_summary.closed }}</div></div>
+        <div class="kpi-card" style="border-left: 4px solid var(--primary);"><div class="kpi-title">Overdue</div><div class="kpi-value" style="color: var(--primary);">{{ report.leadership_summary.overdue }}</div></div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px;">
+        <div class="section-card" style="padding: 16px; margin: 0; background: var(--surface-2);">
+            <h4 style="margin: 0 0 12px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);">Priority Mix</h4>
+            <div style="max-height: 220px; display: flex; justify-content: center;">
+                <canvas id="leadershipPriorityChart" style="max-height: 200px;"></canvas>
+            </div>
+        </div>
+        <div class="section-card" style="padding: 16px; margin: 0; background: var(--surface-2);">
+            <h4 style="margin: 0 0 12px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);">Status Mix</h4>
+            <div style="max-height: 220px; display: flex; justify-content: center;">
+                <canvas id="leadershipStatusChart" style="max-height: 200px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section-card" style="padding: 0; overflow: hidden;">
+    <div class="collapsible-header active" onclick="toggleSection('leadershipActions')">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span>🎯 Leadership Action Tracker</span>
+            <span class="status-badge status-green" style="font-size: 10px;">{{ report.leadership_actions|length }} Logged</span>
+        </div>
+        <div class="collapsible-icon" id="icon-leadershipActions">−</div>
+    </div>
+    <div class="collapsible-content active" id="leadershipActions">
+        <div>
+            <div style="margin-bottom: 16px; padding: 16px; background: var(--surface-2); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <form method="POST" action="/leadership-actions/create">
+                    <input type="hidden" name="project_id" value="{{ project.id }}">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-bottom: 12px;">
+                        <input type="text" name="action" placeholder="Action Item description" required>
+                        <input type="text" name="owner" placeholder="Action Owner" required>
+                        <select name="priority"><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option></select>
+                        <select name="status"><option value="Open">Open</option><option value="In Progress">In Progress</option><option value="Closed">Closed</option></select>
+                        <input type="date" name="target_date">
+                    </div>
+                    <button type="submit" class="btn btn-primary">➕ Log Leadership Action</button>
+                </form>
+            </div>
+
+            <div class="iptt-table-scroll">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Priority</th>
+                            <th>Action</th>
+                            <th>Owner</th>
+                            <th>Status / Remarks</th>
+                            <th>Target Date</th>
+                            <th>Overdue</th>
+                            <th style="text-align: right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if report.leadership_actions|length == 0 %}
+                        <tr><td colspan="7" style="text-align: center; padding: 24px; color: var(--muted);">✅ No leadership actions currently recorded</td></tr>
+                        {% endif %}
+                        {% for item in report.leadership_actions %}
+                        <tr {% if item.status == "Closed" %}style="opacity: 0.75;"{% elif item.overdue_days >= 15 %}style="border-left: 3px solid var(--danger); background: var(--danger-soft);"{% elif item.overdue_days >= 7 %}style="border-left: 3px solid var(--warning); background: var(--warning-soft);"{% endif %}>
+                            <td>
+                                {% if item.priority == "High" %}
+                                <span class="status-badge status-red">High</span>
+                                {% elif item.priority == "Medium" %}
+                                <span class="status-badge status-yellow">Medium</span>
+                                {% else %}
+                                <span class="status-badge status-green">Low</span>
+                                {% endif %}
+                            </td>
+                            <td><strong>{{ item.action }}</strong></td>
+                            <td>{{ item.owner }}</td>
+                            <td>
+                                <form method="POST" action="/leadership-actions/update/{{ item.id }}" style="display: flex; flex-direction: column; gap: 6px;">
+                                    <input type="hidden" name="project_id" value="{{ project.id }}">
+                                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                        <select name="status" style="min-height: 28px; padding: 2px 6px; font-size: 11.5px;">
+                                            <option value="Open" {% if item.status == "Open" %}selected{% endif %}>Open</option>
+                                            <option value="In Progress" {% if item.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                                            <option value="Closed" {% if item.status == "Closed" %}selected{% endif %}>Closed</option>
+                                        </select>
+                                        <select name="priority" style="min-height: 28px; padding: 2px 6px; font-size: 11.5px;">
+                                            <option value="High" {% if item.priority == "High" %}selected{% endif %}>High</option>
+                                            <option value="Medium" {% if item.priority == "Medium" %}selected{% endif %}>Medium</option>
+                                            <option value="Low" {% if item.priority == "Low" %}selected{% endif %}>Low</option>
+                                        </select>
+                                    </div>
+                                    <input type="text" name="remarks" value="{{ item.remarks }}" placeholder="Add remark..." style="min-height: 28px; padding: 2px 6px; font-size: 11.5px;">
+                                    <button type="submit" class="btn btn-green" style="padding: 2px 8px; min-height: 24px; font-size: 11px; align-self: flex-start;">💾 Save</button>
+                                </form>
+                            </td>
+                            <td>{{ item.target_date }}</td>
+                            <td>
+                                {% if item.overdue_days >= 15 %}
+                                <span class="status-badge status-red">{{ item.overdue_days }}d overdue</span>
+                                {% elif item.overdue_days >= 7 %}
+                                <span class="status-badge status-yellow">{{ item.overdue_days }}d overdue</span>
+                                {% elif item.overdue_days > 0 %}
+                                <span class="status-badge" style="background: var(--primary-soft); color: var(--primary);">{{ item.overdue_days }}d</span>
+                                {% else %}
+                                <span class="status-badge status-green">On Schedule</span>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: right;">
+                                <form method="POST" action="/leadership-actions/delete/{{ item.id }}" onsubmit="return confirm('Delete this action?')">
+                                    <input type="hidden" name="project_id" value="{{ project.id }}">
+                                    <button type="submit" class="delete" style="padding: 4px 10px; font-size: 11px;">🗑 Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section-card" style="padding: 0; overflow: hidden;">
+    <div class="collapsible-header" onclick="toggleSection('circleHeatmap')">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span>🌍 Circle Maturity Summary</span>
+            <span class="status-badge role-badge" style="font-size: 10px;">{{ report.circle_report|length }} Circles</span>
+        </div>
+        <div class="collapsible-icon" id="icon-circleHeatmap">+</div>
+    </div>
+    <div class="collapsible-content" id="circleHeatmap">
+        <div>
+            <div class="iptt-table-scroll">
+                <table class="report-table">
+                    <thead>
+                        <tr><th>Circle</th><th>Nodes</th><th>Progress</th><th>Health</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for item in report.circle_report %}
+                        <tr>
+                            <td><strong>{{ item.circle }}</strong></td>
+                            <td>{{ item.nodes }}</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div class="progress-container" style="flex: 1; margin: 0; height: 5px;">
+                                        <div class="progress-bar" style="width: {{ item.progress }}%;"></div>
+                                    </div>
+                                    <span style="font-size: 11px; font-family: 'JetBrains Mono';">{{ item.progress }}%</span>
+                                </div>
+                            </td>
+                            <td>{{ item.health }}%</td>
+                            <td>
+                                {% if item.status == "Healthy" %}
+                                <span class="status-badge status-green">Healthy</span>
+                                {% elif item.status == "Attention" %}
+                                <span class="status-badge status-yellow">Attention</span>
+                                {% else %}
+                                <span class="status-badge status-red">Critical</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section-card" style="padding: 0; overflow: hidden;">
+    <div class="collapsible-header" onclick="toggleSection('delayedItems')">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span>📋 Delayed Execution Items</span>
+            <span class="status-badge status-yellow" style="font-size: 10px;">{{ report.delayed_items|length }} Tasks</span>
+        </div>
+        <div class="collapsible-icon" id="icon-delayedItems">+</div>
+    </div>
+    <div class="collapsible-content" id="delayedItems">
+        <div>
+            <div class="iptt-table-scroll">
+                <table class="report-table">
+                    <thead>
+                        <tr><th>Circle</th><th>Node</th><th>Scope</th><th>Task</th><th>Delay</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        {% if report.delayed_items|length == 0 %}
+                        <tr><td colspan="6" style="text-align: center; padding: 24px; color: var(--muted);">✅ No delayed execution items recorded</td></tr>
+                        {% endif %}
+                        {% for item in report.delayed_items %}
+                        <tr>
+                            <td><strong>{{ item.circle }}</strong></td>
+                            <td>{{ item.node }}</td>
+                            <td>{{ item.scope }}</td>
+                            <td>{{ item.task }}</td>
+                            <td>
+                                {% if item.delay > 15 %}
+                                <span class="status-badge status-red">{{ item.delay }} days</span>
+                                {% elif item.delay > 5 %}
+                                <span class="status-badge status-yellow">{{ item.delay }} days</span>
+                                {% else %}
+                                <span class="status-badge status-green">{{ item.delay }} days</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ item.status }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if report.stage_aging %}
+<div class="section-card" style="padding: 0; overflow: hidden;">
+    <div class="collapsible-header active" onclick="toggleSection('stageAging')">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span>⏳ Stage Aging Telemetry</span>
+            <span class="status-badge status-red" style="font-size: 10px;">Aging Review</span>
+        </div>
+        <div class="collapsible-icon" id="icon-stageAging">−</div>
+    </div>
+    <div class="collapsible-content active" id="stageAging">
+        <div>
+            <div class="iptt-table-scroll">
+                <table class="report-table">
+                    <thead>
+                        <tr><th>Stage</th><th>Nodes</th><th>Average Delay</th><th>Maximum Delay</th><th>Risk Band</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for item in report.stage_aging %}
+                        <tr {% if item.risk == "Critical" %}style="border-left: 3px solid var(--danger); background: var(--danger-soft);"{% elif item.risk == "Attention" %}style="border-left: 3px solid var(--warning); background: var(--warning-soft);"{% endif %}>
+                            <td><strong>{{ item.stage }}</strong></td>
+                            <td>{{ item.nodes }}</td>
+                            <td>{{ item.avg_delay }} days</td>
+                            <td>{{ item.max_delay }} days</td>
+                            <td>
+                                {% if item.risk == "Healthy" %}
+                                <span class="status-badge status-green">Healthy</span>
+                                {% elif item.risk == "Attention" %}
+                                <span class="status-badge status-yellow">Attention</span>
+                                {% else %}
+                                <span class="status-badge status-red">Critical</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+if (typeof Chart !== 'undefined') {
+  var pCanvas = document.getElementById("leadershipPriorityChart");
+  if (pCanvas) {
+    new Chart(pCanvas, {
+      type: "doughnut",
+      data: {
+        labels: ["High", "Medium", "Low"],
+        datasets: [{
+          data: [{{ report.leadership_priority.High }}, {{ report.leadership_priority.Medium }}, {{ report.leadership_priority.Low }}],
+          backgroundColor: ["#F43F5E", "#F59E0B", "#10B981"],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, font: { family: 'Inter', size: 11 } } }
+        }
+      }
+    });
+  }
+
+  var sCanvas = document.getElementById("leadershipStatusChart");
+  if (sCanvas) {
+    new Chart(sCanvas, {
+      type: "bar",
+      data: {
+        labels: ["Open", "In Progress", "Closed"],
+        datasets: [{
+          data: [{{ report.leadership_status.Open }}, {{ report.leadership_status["In Progress"] }}, {{ report.leadership_status.Closed }}],
+          backgroundColor: ["#F43F5E", "#F59E0B", "#10B981"],
+          borderRadius: 6
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.06)' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+}
+</script>
+{% endblock %}

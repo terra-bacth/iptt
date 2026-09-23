@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block title %}{{ project_name }} | Execution Workspace{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/programmes">Programmes</a> <span>›</span>
+    <a href="/projects/{{ project_id }}">Project</a> <span>›</span>
+    <span class="status-badge role-badge">Execution Workspace</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Programme: {{ programme_name }}</p>
+            <h1 class="iptt-hero-title">📂 {{ project_name }} <span class="italic">Execution Workspace</span></h1>
+            <div class="iptt-hero-subtitle">Select a regional circle and target node to inspect, execute, or upload task progress runbooks.</div>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button id="downloadBtn" onclick="handleDownload()" class="btn btn-primary">📥 Download Project Plan</button>
+            <div style="display: inline-flex; align-items: center; gap: 6px;">
+                <input type="file" id="circleUploadFile" style="font-size: 11.5px; max-width: 200px;">
+                <button id="uploadBtn" onclick="handleUpload()" class="btn">📤 Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section-card" style="padding: 12px 18px; margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; gap: 8px;">
+            <button id="btnCircleView" onclick="showCircleView()" class="btn btn-primary" style="font-size: 12px;">📊 Regional Circle View</button>
+            <button id="btnNodeView" onclick="showNodeView()" class="btn" style="font-size: 12px;">📋 Detailed Node View</button>
+        </div>
+        <div id="circleActiveNotice" style="font-size: 12px; color: var(--muted);">
+            Showing all circles &bull; Click any circle card to filter its nodes
+        </div>
+    </div>
+</div>
+
+<!-- DEFAULT = CIRCLE VIEW -->
+<div id="circleSummary" class="circle-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;">
+{% for circle, nodes in circles.items() %}
+<div class="section-card" onclick="filterCircle('{{ circle }}')" style="cursor: pointer; margin: 0; text-align: center; border-top: 3px solid var(--primary);">
+    <div style="font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 8px;">📍 {{ circle }}</div>
+    <div style="display: flex; justify-content: space-around; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border);">
+        <div>
+            <div class="kpi-value" style="font-size: 20px;">{{ nodes | length }}</div>
+            <div style="font-size: 10px; color: var(--muted); text-transform: uppercase;">Nodes</div>
+        </div>
+        <div>
+            <div class="kpi-value" style="font-size: 20px;">{{ nodes | map(attribute='facility_name') | select | unique | list | length }}</div>
+            <div style="font-size: 10px; color: var(--muted); text-transform: uppercase;">Facilities</div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+
+<!-- NODE VIEW -->
+<div id="nodeView" class="circle-grid" style="display: none; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; margin-bottom: 24px;">
+{% for circle, nodes in circles.items() %}
+<div class="section-card" data-circle="{{ circle }}" style="margin: 0;">
+    <div class="section-title">
+        <h3 style="margin: 0;">📍 {{ circle }}</h3>
+        <span class="status-badge role-badge">{{ nodes|length }} Nodes</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+    {% for n in nodes %}
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-radius: var(--radius-sm); background: var(--surface-2); border: 1px solid var(--border);">
+        <div>
+            <a href="/scope/{{ n.scope_id }}/execution" style="font-weight: 700; color: var(--primary);">
+                {{ n.node_name }}
+            </a>
+            <div style="font-size: 11px; color: var(--muted);">{{ n.facility_name }}</div>
+        </div>
+
+        {% if n.status == 'Completed' %}
+        <span class="status-badge status-green">{{ n.status }}</span>
+        {% elif n.status == 'In Progress' %}
+        <span class="status-badge status-yellow">{{ n.status }}</span>
+        {% elif n.status == 'At Risk' %}
+        <span class="status-badge status-red">{{ n.status }}</span>
+        {% else %}
+        <span class="status-badge role-badge">{{ n.status }}</span>
+        {% endif %}
+    </div>
+    {% endfor %}
+    </div>
+</div>
+{% endfor %}
+</div>
+
+<script>
+const PROJECT_ID = {{ project_id }};
+let CURRENT_CIRCLE = null;
+
+function showCircleView() {
+    CURRENT_CIRCLE = null;
+    document.getElementById("circleSummary").style.display = "grid";
+    document.getElementById("nodeView").style.display = "none";
+    document.getElementById("btnCircleView").classList.add("btn-primary");
+    document.getElementById("btnNodeView").classList.remove("btn-primary");
+    document.getElementById("downloadBtn").innerText = "📥 Download Project Plan";
+    document.getElementById("uploadBtn").innerText = "📤 Upload Project Plan";
+    document.getElementById("circleActiveNotice").innerText = "Showing all circles • Click any circle card to filter its nodes";
+}
+
+function showNodeView() {
+    document.getElementById("circleSummary").style.display = "none";
+    document.getElementById("nodeView").style.display = "grid";
+    document.getElementById("btnNodeView").classList.add("btn-primary");
+    document.getElementById("btnCircleView").classList.remove("btn-primary");
+    resetFilter();
+}
+
+function filterCircle(circle) {
+    CURRENT_CIRCLE = circle;
+    showNodeView();
+    document.getElementById("downloadBtn").innerText = `📥 Download Plan (${circle})`;
+    document.getElementById("uploadBtn").innerText = `📤 Upload Plan (${circle})`;
+    document.getElementById("circleActiveNotice").innerText = `Filtered to circle: ${circle} (Click "Regional Circle View" to reset)`;
+
+    document.querySelectorAll("[data-circle]").forEach(card => {
+        card.style.display = (card.dataset.circle === circle) ? "" : "none";
+    });
+}
+
+function resetFilter() {
+    document.querySelectorAll("[data-circle]").forEach(card => {
+        card.style.display = "";
+    });
+}
+
+function handleDownload() {
+    if (CURRENT_CIRCLE) {
+        window.open(`/api/execution/circle/${CURRENT_CIRCLE}/download`);
+    } else {
+        window.open(`/api/execution/project/${PROJECT_ID}/download`);
+    }
+}
+
+function handleUpload() {
+    const input = document.getElementById("circleUploadFile");
+    if (!input.files.length) {
+        alert("⚠ Please select an Excel runbook file to upload");
+        return;
+    }
+
+    const file = input.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+
+    let url = CURRENT_CIRCLE
+        ? `/api/execution/circle/${CURRENT_CIRCLE}/upload`
+        : `/api/execution/project/${PROJECT_ID}/upload`;
+
+    fetch(url, {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message || "✅ Upload successful");
+        location.reload();
+    })
+    .catch(err => {
+        console.error(err);
+        alert("❌ Upload failed");
+    });
+}
+</script>
+<script src="/static/execution.js"></script>
+{% endblock %}

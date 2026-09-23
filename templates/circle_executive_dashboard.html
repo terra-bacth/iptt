@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block title %}Circle {{ report.circle }} | Executive Dashboard{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/project/{{ report.project_id }}/executive-dashboard">Project Dashboard</a> <span>›</span>
+    <span class="status-badge role-badge">Circle {{ report.circle }}</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Circle Executive Brief</p>
+            <h1 class="iptt-hero-title">Circle <span class="italic">{{ report.circle }}</span></h1>
+            <div class="iptt-hero-subtitle">
+                Project: <strong>{{ report.project_name }}</strong> &bull; Regional velocity metrics, stage distribution, and critical path delays.
+            </div>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="/project/{{ report.project_id }}/executive-dashboard" class="btn">← Back to Project</a>
+            <a href="/project/{{ report.project_id }}/circle/{{ report.circle }}/pdf" target="_blank" class="btn btn-primary">📄 Export PDF</a>
+        </div>
+    </div>
+</div>
+
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-label">Total Nodes</div>
+        <div class="kpi-value">{{ report.total_nodes }}</div>
+        <div class="progress-wrapper"><div class="progress-bar" style="width: {% if report.total_nodes > 0 %}100%{% else %}0%{% endif %};"></div></div>
+    </div>
+    <div class="kpi-card" style="border-left: 4px solid var(--success);">
+        <div class="kpi-label">Live Nodes</div>
+        <div class="kpi-value" style="color: var(--success);">{{ report.live_nodes }}</div>
+        <div class="progress-wrapper">
+            <div class="progress-bar" style="width: {{ report.completion }}%; background: var(--success);"></div>
+        </div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">Completion %</div>
+        <div class="kpi-value">{{ report.completion }}%</div>
+        <div class="progress-wrapper"><div class="progress-bar" style="width: {{ report.completion }}%;"></div></div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">Circle Health</div>
+        <div class="kpi-value">{{ report.health }}%</div>
+        <div class="progress-wrapper">
+            <div class="progress-bar" style="width: {{ report.health }}%; {% if report.health >= 80 %}background: var(--success);{% elif report.health >= 50 %}background: var(--warning);{% else %}background: var(--danger);{% endif %}"></div>
+        </div>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>🚀 Deployment Velocity Analytics</h2>
+        <span class="status-badge status-green">{{ report.velocity }}</span>
+    </div>
+    <div class="iptt-table-scroll">
+        <table>
+            <thead>
+                <tr><th>Metric</th><th>Telemetry Value</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Total Planned Nodes</strong></td><td>{{ report.total_nodes }}</td></tr>
+                <tr><td><strong>Live Operational Nodes</strong></td><td>{{ report.live_nodes }}</td></tr>
+                <tr><td><strong>Current Milestone Completion</strong></td><td>{{ report.completion }}%</td></tr>
+                <tr><td><strong>Average Task Delay</strong></td><td>{{ report.avg_delay }} Days</td></tr>
+                <tr><td><strong>Execution Velocity Index</strong></td><td><strong>{{ report.velocity }}</strong></td></tr>
+                <tr><td><strong>Go-Live Forecast Status</strong></td><td><span class="status-badge status-green">{{ report.forecast }}</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="executive-summary">
+    <h3>🧠 Regional Executive Summary</h3>
+    <p class="iptt-summary-text" style="white-space: pre-line;">{{ report.executive_summary | trim }}</p>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>📊 Stage Breakdown</h2>
+    </div>
+    <div class="iptt-table-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>Deployment Stage</th>
+                    <th>Total Nodes</th>
+                    <th style="min-width: 140px;">% Under Stage</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stage, count in report.stage_summary.items() %}
+                <tr>
+                    <td><strong>{{ stage }}</strong></td>
+                    <td>{{ count }}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="progress-container" style="flex: 1; margin: 0; height: 6px;">
+                                <div class="progress-bar" style="width: {{ report.stage_percent.get(stage, 0) }}%;"></div>
+                            </div>
+                            <span style="font-size: 11px; font-family: 'JetBrains Mono';">{{ report.stage_percent.get(stage, 0) }}%</span>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>🏢 Node Deployment Details</h2>
+        <input type="text" placeholder="Filter nodes..." data-table-target="nodeDetailsTable" style="max-width: 220px; font-size: 12px; min-height: 30px; padding: 4px 10px;">
+    </div>
+    <div class="iptt-table-scroll">
+        <table id="nodeDetailsTable">
+            <thead>
+                <tr>
+                    <th>Node</th>
+                    <th>Facility</th>
+                    <th>Current Stage</th>
+                    <th>Total Delay</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for n in report.node_details %}
+                <tr>
+                    <td>
+                        <a href="/scope/{{ n.scope_id }}/execution" style="color: var(--primary); font-weight: 700;">
+                            {{ n.node }}
+                        </a>
+                    </td>
+                    <td>{{ n.facility }}</td>
+                    <td><span class="status-badge role-badge">{{ n.stage }}</span></td>
+                    <td>
+                        {% if n.delay > 10 %}
+                        <span class="status-badge status-red">{{ n.delay }} Days</span>
+                        {% elif n.delay > 0 %}
+                        <span class="status-badge status-yellow">{{ n.delay }} Days</span>
+                        {% else %}
+                        <span class="status-badge status-green">0 Days</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="section-card" style="padding: 0; overflow: hidden;">
+    <div class="collapsible-header active" onclick="toggleSection('circleDelayedItems')">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span>🚨 Delayed Execution Items</span>
+            <span class="status-badge status-red" style="font-size: 10px;">{{ report.delayed_items|length }} Items</span>
+        </div>
+        <div class="collapsible-icon" id="icon-circleDelayedItems">−</div>
+    </div>
+    <div class="collapsible-content active" id="circleDelayedItems">
+        <div>
+            <div class="iptt-table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Node</th>
+                            <th>Facility</th>
+                            <th>Task</th>
+                            <th>Delay</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if report.delayed_items|length == 0 %}
+                        <tr><td colspan="5" style="text-align: center; padding: 24px; color: var(--muted);">✅ No delayed execution items recorded</td></tr>
+                        {% endif %}
+                        {% for d in report.delayed_items %}
+                        <tr {% if d.delay > 15 %}style="border-left: 3px solid var(--danger); background: var(--danger-soft);"{% endif %}>
+                            <td><strong>{{ d.node }}</strong></td>
+                            <td>{{ d.facility }}</td>
+                            <td>{{ d.task }}</td>
+                            <td><span class="status-badge status-red">{{ d.delay }} Days</span></td>
+                            <td>{{ d.remarks or "—" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

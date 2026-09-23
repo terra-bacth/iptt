@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Node Tasks | {{ scope.node_id }}{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/project/{{ scope.project_id }}/scopes">Scope List</a> <span>›</span>
+    <span class="status-badge role-badge">{{ scope.node_id }}</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Node Task Execution Runbook</p>
+            <h1 class="iptt-hero-title">Node <span class="italic">{{ scope.node_id }}</span></h1>
+            <div class="iptt-hero-subtitle">
+                Circle: <strong>{{ scope.circle }}</strong> &bull; Facility: <strong>{{ scope.facility_name }}</strong> &bull; Priority: <strong>P{{ scope.priority }}</strong> &bull; Servers: <strong>{{ scope.num_servers }}</strong>
+            </div>
+        </div>
+        <a href="/project/{{ scope.project_id }}/scopes" class="btn">⬅ Back to Scope List</a>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>📋 Task Execution Plan</h2>
+        <span class="status-badge role-badge">{{ task_exec_rows|length }} Tasks</span>
+    </div>
+    <div class="iptt-table-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Status</th>
+                    <th>Planned Finish</th>
+                    <th>Actual Finish</th>
+                    <th>Delay (Days)</th>
+                    <th>Critical Path</th>
+                    <th style="text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in task_exec_rows %}
+                <tr>
+                    <td><strong>{{ row.task.name }}</strong></td>
+                    <td>
+                        {% if row.execution.status == "Completed" %}
+                        <span class="status-badge status-green">Completed</span>
+                        {% elif row.execution.status == "In Progress" %}
+                        <span class="status-badge status-yellow">In Progress</span>
+                        {% else %}
+                        <span class="status-badge role-badge">{{ row.execution.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ row.task.planned_finish }}</td>
+                    <td>{{ row.execution.actual_finish or "—" }}</td>
+                    <td>
+                        {% if row.delay_status == "Delayed" %}
+                        <span class="status-badge status-red">{{ row.delay_days }}d</span>
+                        {% else %}
+                        <span class="status-badge status-green">0d</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if row.task.is_critical %}
+                        <span class="status-badge status-red">Critical</span>
+                        {% else %}
+                        <span style="color: var(--muted);">No</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: right;">
+                        {% if row.execution.status != "Completed" %}
+                        <a href="/scope/{{ scope.id }}/task-execution/complete/{{ row.execution.id }}" class="btn btn-green" style="padding: 4px 10px; font-size: 11.5px;">
+                            ✔ Complete
+                        </a>
+                        {% else %}
+                        <span class="status-badge status-green">✅ Done</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 24px; color: var(--muted);">No task execution rows found for this node.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

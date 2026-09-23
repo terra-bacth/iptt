@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% block title %}Projects | {{ programme_name }}{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/programmes">Programmes</a> <span>›</span>
+    <span class="status-badge role-badge">{{ programme_name }}</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Programme Project Portfolio</p>
+            <h1 class="iptt-hero-title">📦 <span class="italic">{{ programme_name }}</span></h1>
+            <div class="iptt-hero-subtitle">Manage project initiation, baseline runbooks, assign PMs, and execute day-0 workstreams.</div>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <a href="/programmes" class="btn">← All Programmes</a>
+            <span class="status-badge status-green">● {{ projects|length }} Projects</span>
+        </div>
+    </div>
+</div>
+
+<div class="section-card" id="create-project" style="margin-bottom: 24px;">
+    <div class="section-title">
+        <h2>➕ Create New Project Under {{ programme_name }}</h2>
+    </div>
+    <form method="post" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
+        <div style="flex: 2; min-width: 200px;">
+            <label style="display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; font-weight: 600;">Project Name</label>
+            <input type="text" name="name" placeholder="Enter descriptive project name..." required style="width: 100%;">
+        </div>
+        <div style="flex: 1; min-width: 140px;">
+            <label style="display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; font-weight: 600;">Priority Band</label>
+            <input type="text" name="priority" placeholder="P1 / P2 / P3" required style="width: 100%;">
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary" style="height: 38px;">➕ Create Project</button>
+        </div>
+    </form>
+</div>
+
+<div class="project-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px;">
+{% for p in projects %}
+<div class="project-card {% if project_status[p.id].setup_completed %}completed{% endif %}" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; margin-bottom: 0;">
+    <div style="padding: 20px 20px 14px;">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
+            <div>
+                <div style="font-size: 17px; font-weight: 700; letter-spacing: -0.02em; color: var(--text);">{{ p.name }}</div>
+                <div style="margin-top: 4px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                    {% if p.baseline_locked %}
+                    <span class="status-badge status-red" style="font-size: 10px;">🔒 Baseline Locked</span>
+                    <span style="font-size: 11px; color: var(--muted);">Version 2+</span>
+                    {% else %}
+                    <span class="status-badge status-yellow" style="font-size: 10px;">🔓 Baseline Open</span>
+                    <span style="font-size: 11px; color: var(--muted);">Version 1</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% if user.role == "admin" %}
+            <form method="post" action="/project/delete/{{ p.id }}" style="margin: 0;" onsubmit="return confirmProjectDelete('{{ p.name }}');">
+                <input type="hidden" name="programme_id" value="{{ programme_id }}">
+                <button type="submit" class="delete" title="Delete Project">🗑 Delete</button>
+            </form>
+            {% endif %}
+        </div>
+
+        <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+            {% if project_status[p.id].setup_completed %}
+            <span class="status-badge status-green">✅ Setup Completed</span>
+            {% else %}
+            <span class="status-badge role-badge">Status: {{ p.status }}</span>
+            {% endif %}
+            <span class="status-badge role-badge">Priority: {{ p.priority }}</span>
+            <span style="font-size: 11.5px; color: var(--muted); margin-left: auto;">
+                Progress: {% if project_status[p.id].setup_completed %}100%{% else %}{{ project_status[p.id].progress }}%{% endif %}
+            </span>
+        </div>
+
+        <div class="progress-container" style="margin-top: 10px; height: 5px;">
+            <div class="progress-bar" style="width: {{ project_status[p.id].progress }}%;"></div>
+        </div>
+
+        <div style="margin-top: 14px; font-size: 12px; padding: 10px 12px; background: var(--surface-2); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <div style="font-weight: 600; color: var(--muted); text-transform: uppercase; font-size: 10px; letter-spacing: 0.08em; margin-bottom: 4px;">Assigned Project Managers:</div>
+            {% if project_users_map[p.id] != "None" %}
+                {% for name in project_users_map[p.id].split(', ') %}
+                    <span style="display: inline-flex; align-items: center; gap: 6px; margin: 2px 4px 2px 0; background: var(--surface-card); color: var(--primary); padding: 2px 8px; border-radius: var(--radius-pill); border: 1px solid var(--border); font-size: 11.5px; font-weight: 600;">
+                        {{ name }}
+                        {% if user.role == "admin" %}
+                        <form method="post" action="/project/{{ p.id }}/unassign" style="display: inline; margin: 0;">
+                            <input type="hidden" name="programme_id" value="{{ programme_id }}">
+                            {% for u in users %}{% if u.username == name %}<input type="hidden" name="user_id" value="{{ u.id }}">{% endif %}{% endfor %}
+                            <button type="submit" style="border: 0; background: transparent; color: var(--danger); cursor: pointer; font-size: 12px; padding: 0;">✕</button>
+                        </form>
+                        {% endif %}
+                    </span>
+                {% endfor %}
+            {% else %}
+                <span style="color: var(--muted);">No PM assigned</span>
+            {% endif %}
+
+            {% if user.role == "admin" %}
+            <form method="post" action="/project/{{ p.id }}/assign" style="margin-top: 8px; display: flex; gap: 6px;">
+                <input type="hidden" name="programme_id" value="{{ programme_id }}">
+                <select name="user_id" style="flex: 1; min-height: 28px; padding: 2px 8px; font-size: 11.5px;">
+                    {% for u in users %}<option value="{{ u.id }}">{{ u.username }}</option>{% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary" style="padding: 2px 8px; min-height: 28px; font-size: 11px;">➕ Assign</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div style="padding: 0 16px 16px; display: flex; flex-direction: column; gap: 8px; flex: 1;">
+        {% set status = project_status[p.id] %}
+        
+        <div class="step-card {% if status.scope_done %}step-complete{% else %}step-pending{% endif %}" style="margin: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong>{{ "✅ Scope Setup Done" if status.scope_done else "⏳ Scope Setup Pending" }}</strong>
+                <a class="cta" href="/project/{{ p.id }}/scopes">📦 Open Scope →</a>
+            </div>
+        </div>
+
+        <div class="step-card {% if status.tasks_done %}step-complete{% else %}step-pending{% endif %}" style="margin: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+                <strong>{{ "✅ Task Setup Done" if status.tasks_done else "⏳ Task Setup Pending" }}</strong>
+                <div style="display: flex; gap: 8px;">
+                    <a class="cta" href="/tasks/{{ p.id }}">📋 Tasks →</a>
+                    <a class="cta" href="/static/task_template.xlsx">📄 Template</a>
+                </div>
+            </div>
+        </div>
+
+        {% if status.plan_done %}
+        <div class="step-card step-complete" style="margin: 0;">
+            <strong>✅ Baseline Plan Configured</strong>
+            <div style="font-size: 11.5px; color: var(--muted); margin-top: 2px;">Baseline Date: {{ p.project_start_date }}</div>
+            <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+                <a class="btn" href="/api/projects/{{ p.id }}/plan/download" style="padding: 4px 8px; font-size: 11px;">📥 Download Plan</a>
+                {% if user.role == "admin" and p.baseline_locked %}
+                <a class="btn" href="/api/execution/projects/{{ p.id }}/download-revision-template" style="padding: 4px 8px; font-size: 11px;">📥 Revision Template</a>
+                {% endif %}
+            </div>
+            
+            {% if p.baseline_locked %}
+                {% if user.role == "admin" %}
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border);">
+                    <form method="post" action="/api/execution/projects/{{ p.id }}/revise-plan" style="display: inline-block; margin-bottom: 6px;">
+                        <button type="submit" class="btn" style="background: var(--warning); color: white; padding: 4px 10px; font-size: 11px;">🛠 Revise Plan</button>
+                    </form>
+                    <form method="post" action="/api/execution/projects/{{ p.id }}/upload-revised-plan" enctype="multipart/form-data" style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <input type="file" name="file" required style="flex: 1; font-size: 11px;">
+                        <button type="submit" class="btn btn-primary" style="padding: 4px 8px; font-size: 11px;">📤 Upload</button>
+                    </form>
+                </div>
+                {% endif %}
+                <div style="margin-top: 8px; padding: 6px 10px; background: var(--surface-2); border-radius: var(--radius-sm); font-size: 11px; color: var(--muted);">
+                    🔒 <strong>Locked:</strong> Execution underway. Baseline modifications require revision control.
+                </div>
+            {% else %}
+                <form method="post" action="/api/projects/{{ p.id }}/initiation-date" style="margin-top: 8px; display: flex; gap: 6px;">
+                    <input type="date" name="project_start_date" required style="flex: 1; font-size: 11px;">
+                    <button type="submit" class="btn" style="padding: 4px 8px; font-size: 11px;">🔁 Re-baseline</button>
+                </form>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="step-card step-locked" style="margin: 0;">
+            <strong>🔒 Planning Step</strong>
+            {% if not p.baseline_locked %}
+            <form method="post" action="/api/projects/{{ p.id }}/initiation-date" style="margin-top: 8px; display: flex; gap: 6px;">
+                <input type="date" name="project_start_date" required style="flex: 1; font-size: 11px;">
+                <button type="submit" class="btn btn-primary" style="padding: 4px 8px; font-size: 11px;">📅 Generate Plan</button>
+            </form>
+            {% else %}
+            <div style="font-size: 11px; color: var(--muted); margin-top: 4px;">Baseline locked. Re-baseline disabled.</div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="step-card {% if project_status[p.id].setup_completed %}step-complete{% else %}step-locked{% endif %}" style="margin: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong>▶ Execution Workstream</strong>
+                {% if project_status[p.id].setup_completed %}
+                <a class="cta" href="/project/{{ p.id }}/execution">▶ Open Execution →</a>
+                {% else %}
+                <span style="font-size: 11.5px; color: var(--muted);">🔒 Locked</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="step-card" style="margin: 0; background: var(--surface-2); border-left: 4px solid var(--primary);">
+            <strong>📊 Monitoring & Forecast</strong>
+            <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+                <a class="btn btn-primary" href="/project/{{ p.id }}/executive-dashboard" style="padding: 4px 10px; font-size: 11.5px;">📊 Dashboard</a>
+                <a class="btn" href="/project/{{ p.id }}/forecast-dashboard" style="padding: 4px 10px; font-size: 11.5px;">🔮 Forecast</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="empty-state" style="grid-column: 1 / -1;">No projects created for this programme. Use the form above to add a project.</div>
+{% endfor %}
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const error = params.get("error");
+if (error === "admin_required") { alert("⚠️ Only Admin can perform this action"); }
+if (error === "pm_only") { alert("⚠️ Only PM or Admin can perform this action"); }
+if (error === "not_allowed") { alert("⚠️ You are not allowed to perform this action"); }
+if (error === "not_assigned") { alert("⚠️ You are not assigned to this project"); }
+if (error === "project_not_empty") { alert("⚠️ Cannot delete project with scopes/tasks/execution data"); }
+if (params.get("success") === "upload") { alert("✅ Revised Plan Uploaded"); }
+if (params.get("success") === "revise") { alert("✅ Plan revised successfully"); }
+setTimeout(() => { if (params.get("success") || error) { window.history.replaceState({}, document.title, window.location.pathname); } }, 200);
+
+function confirmProjectDelete(projectName) {
+    const warning = confirm("⚠ WARNING\n\nThis project contains execution data, scopes, tasks and reports.\n\nDeleting is irreversible.\n\nPress OK to continue.");
+    if (!warning) return false;
+    const typed = prompt("Type DELETE to permanently remove project:\n\n" + projectName);
+    if (typed !== "DELETE") { alert("❌ Delete cancelled. Confirmation text mismatch."); return false; }
+    return confirm("FINAL CONFIRMATION\n\nDelete project permanently?");
+}
+</script>
+{% endblock %}

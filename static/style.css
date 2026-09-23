@@ -1,0 +1,55 @@
+/* IPTT Common Utilities & Step Progression Styles */
+.step-card {
+    border: 1px solid var(--border, #E2E8F0);
+    border-radius: var(--radius-sm, 8px);
+    padding: 14px 16px;
+    margin: 10px 0;
+    background: var(--surface-2, #F8FAFC);
+    transition: all 0.2s ease;
+}
+
+.step-card h3 {
+    margin-top: 0;
+    color: var(--text, #0F172A);
+}
+
+.step-complete {
+    border-left: 4px solid var(--success, #10B981) !important;
+    background: var(--success-soft, rgba(16, 185, 129, 0.08)) !important;
+}
+
+.step-pending {
+    border-left: 4px solid var(--warning, #F59E0B) !important;
+    background: var(--warning-soft, rgba(245, 158, 11, 0.08)) !important;
+}
+
+.step-locked {
+    border-left: 4px solid var(--border-strong, #64748B) !important;
+    opacity: 0.75;
+}
+
+.cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 12px;
+    margin-top: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12.5px;
+    color: var(--primary, #6366F1);
+}
+
+.cta:hover {
+    text-decoration: underline;
+}
+
+.project-card {
+    border: 1px solid var(--border, #E2E8F0);
+    border-radius: var(--radius, 12px);
+    padding: 18px;
+    margin-bottom: 20px;
+    background: var(--surface-card, #FFFFFF);
+    box-shadow: var(--shadow, 0 4px 20px rgba(0,0,0,0.06));
+    transition: all 0.2s ease;
+}

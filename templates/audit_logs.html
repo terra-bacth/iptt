@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+{% block title %}Audit & Governance Ledger | IPTT{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="iptt-hero-banner">
+  <div class="iptt-hero-content">
+    <div>
+      <p class="iptt-eyebrow">System Telemetry &amp; Governance</p>
+      <h1 class="iptt-hero-title">Audit &amp; <span class="italic">Change Logs</span></h1>
+      <div class="iptt-hero-subtitle">
+        Tamper-evident activity ledger tracking scope modifications, task status transitions, and operator interventions.
+      </div>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+      <button onclick="loadLogs()" class="btn btn-primary" id="refreshBtn" title="Refresh Log Stream">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+        Refresh Stream
+      </button>
+      <a href="/home" class="btn">← Back to Workspace</a>
+    </div>
+  </div>
+</div>
+
+<div class="kpi-grid" style="margin-bottom: 22px;">
+  <div class="kpi-card">
+    <div class="kpi-label">
+      <span>Total Logged Events</span>
+      <span style="font-size: 14px;">📜</span>
+    </div>
+    <div class="kpi-value" id="kpiTotalLogs">-</div>
+    <div style="font-size: 11.5px; color: var(--muted); margin-top: 6px;">Lifetime audit events captured</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">
+      <span>Active Operators</span>
+      <span style="font-size: 14px;">👥</span>
+    </div>
+    <div class="kpi-value" id="kpiUniqueUsers">-</div>
+    <div style="font-size: 11.5px; color: var(--muted); margin-top: 6px;">Distinct users with committed actions</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">
+      <span>Latest Transaction</span>
+      <span style="font-size: 14px;">⚡</span>
+    </div>
+    <div class="kpi-value" id="kpiLastAction" style="font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">-</div>
+    <div style="font-size: 11.5px; color: var(--muted); margin-top: 6px;" id="kpiLastTime">Awaiting telemetry</div>
+  </div>
+</div>
+
+<div class="section-card">
+  <div class="section-title">
+    <h2>
+      <span>📜 Immutable Audit Ledger</span>
+      <span class="status-badge" id="logCountBadge" style="font-size: 11px; font-family: 'JetBrains Mono', monospace; font-weight: 600;">Loading...</span>
+    </h2>
+    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+      <input type="text" id="logSearchInput" placeholder="Filter by user, action, field..." style="min-width: 260px; font-size: 13px; padding: 7px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface-2); color: var(--text); outline: none;" onkeyup="filterLogs()">
+      <button onclick="clearSearch()" class="btn" style="padding: 7px 12px; font-size: 12px;">Clear</button>
+    </div>
+  </div>
+
+  <div class="iptt-table-scroll">
+    <table class="proj-table" id="auditTable">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Operator</th>
+          <th>Action</th>
+          <th>Scope Ref</th>
+          <th>Task Ref</th>
+          <th>Field</th>
+          <th>Prior Value</th>
+          <th>Committed Value</th>
+        </tr>
+      </thead>
+      <tbody id="logTable">
+        <tr>
+          <td colspan="8" style="text-align: center; padding: 36px; color: var(--muted); font-size: 13px;">
+            Connecting to audit telemetry stream...
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+let allLogs = [];
+
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function getActionBadge(action) {
+  const act = (action || '').toUpperCase();
+  if (act.includes('DELETE') || act.includes('REMOVE')) {
+    return `<span class="status-badge status-red">${escapeHtml(action)}</span>`;
+  } else if (act.includes('CREATE') || act.includes('INSERT') || act.includes('ADD')) {
+    return `<span class="status-badge status-green">${escapeHtml(action)}</span>`;
+  } else if (act.includes('UPDATE') || act.includes('STATUS') || act.includes('EDIT')) {
+    return `<span class="status-badge" style="background: rgba(99, 102, 241, 0.14); border: 1px solid rgba(99, 102, 241, 0.3); color: var(--primary);">${escapeHtml(action)}</span>`;
+  }
+  return `<span class="status-badge" style="background: var(--surface-2); border: 1px solid var(--border); color: var(--muted);">${escapeHtml(action)}</span>`;
+}
+
+function renderLogs(logs) {
+  const table = document.getElementById("logTable");
+  const countBadge = document.getElementById("logCountBadge");
+  
+  if (!table) return;
+
+  if (!logs || logs.length === 0) {
+    table.innerHTML = `
+      <tr>
+        <td colspan="8" style="text-align: center; padding: 36px; color: var(--muted); font-size: 13px;">
+          No audit records found matching current criteria.
+        </td>
+      </tr>
+    `;
+    if (countBadge) countBadge.textContent = "0 entries";
+    return;
+  }
+
+  if (countBadge) countBadge.textContent = `${logs.length} of ${allLogs.length} events`;
+
+  table.innerHTML = logs.map(log => {
+    const oldVal = log.old_value !== null && log.old_value !== undefined && log.old_value !== ''
+      ? `<span style="display: inline-block; padding: 2px 7px; border-radius: var(--radius-sm); background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.25); color: var(--danger); font-size: 11.5px; font-family: 'JetBrains Mono', monospace;" title="${escapeHtml(log.old_value)}">${escapeHtml(log.old_value)}</span>`
+      : `<span style="color: var(--muted);">-</span>`;
+
+    const newVal = log.new_value !== null && log.new_value !== undefined && log.new_value !== ''
+      ? `<span style="display: inline-block; padding: 2px 7px; border-radius: var(--radius-sm); background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); color: var(--success); font-size: 11.5px; font-family: 'JetBrains Mono', monospace;" title="${escapeHtml(log.new_value)}">${escapeHtml(log.new_value)}</span>`
+      : `<span style="color: var(--muted);">-</span>`;
+
+    return `
+      <tr>
+        <td style="white-space: nowrap; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--muted);">${escapeHtml(log.timestamp)}</td>
+        <td style="font-weight: 600; color: var(--text);">
+          <div style="display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary); flex-shrink: 0;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>${escapeHtml(log.user)}</span>
+          </div>
+        </td>
+        <td>${getActionBadge(log.action)}</td>
+        <td style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-2);">${log.scope_id ? escapeHtml(log.scope_id) : '<span style="color: var(--muted);">-</span>'}</td>
+        <td style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-2);">${log.task_id ? escapeHtml(log.task_id) : '<span style="color: var(--muted);">-</span>'}</td>
+        <td style="font-weight: 600; font-size: 12.5px; color: var(--text);">${escapeHtml(log.field || '-')}</td>
+        <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${oldVal}</td>
+        <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${newVal}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function updateKPIs(logs) {
+  const totalElem = document.getElementById("kpiTotalLogs");
+  const usersElem = document.getElementById("kpiUniqueUsers");
+  const lastActElem = document.getElementById("kpiLastAction");
+  const lastTimeElem = document.getElementById("kpiLastTime");
+
+  if (totalElem) totalElem.textContent = logs.length;
+
+  if (usersElem) {
+    const uniqueUsers = new Set(logs.map(l => l.user).filter(Boolean));
+    usersElem.textContent = uniqueUsers.size;
+  }
+
+  if (logs.length > 0) {
+    const latest = logs[0];
+    if (lastActElem) lastActElem.textContent = `${latest.action || 'Event'}: ${latest.field || latest.user || ''}`;
+    if (lastTimeElem) lastTimeElem.textContent = latest.timestamp || 'Recently';
+  } else {
+    if (lastActElem) lastActElem.textContent = 'None';
+    if (lastTimeElem) lastTimeElem.textContent = 'No records in stream';
+  }
+}
+
+function filterLogs() {
+  const query = (document.getElementById("logSearchInput")?.value || "").toLowerCase().trim();
+  if (!query) {
+    renderLogs(allLogs);
+    return;
+  }
+
+  const filtered = allLogs.filter(log => {
+    return (
+      (log.user && log.user.toLowerCase().includes(query)) ||
+      (log.action && log.action.toLowerCase().includes(query)) ||
+      (log.field && log.field.toLowerCase().includes(query)) ||
+      (String(log.scope_id || '').toLowerCase().includes(query)) ||
+      (String(log.task_id || '').toLowerCase().includes(query)) ||
+      (String(log.old_value || '').toLowerCase().includes(query)) ||
+      (String(log.new_value || '').toLowerCase().includes(query))
+    );
+  });
+
+  renderLogs(filtered);
+}
+
+function clearSearch() {
+  const input = document.getElementById("logSearchInput");
+  if (input) input.value = '';
+  renderLogs(allLogs);
+}
+
+async function loadLogs() {
+  const refreshBtn = document.getElementById("refreshBtn");
+  if (refreshBtn) refreshBtn.classList.add("loading");
+
+  try {
+    const res = await fetch("/api/execution/audit-logs");
+    if (!res.ok) throw new Error("Status " + res.status);
+    const data = await res.json();
+    allLogs = Array.isArray(data) ? data : [];
+    updateKPIs(allLogs);
+    filterLogs();
+  } catch (err) {
+    console.error("Failed to load audit logs:", err);
+    const table = document.getElementById("logTable");
+    if (table) {
+      table.innerHTML = `
+        <tr>
+          <td colspan="8" style="text-align: center; padding: 36px; color: var(--danger); font-size: 13px;">
+            ⚠ Unable to load audit logs from API. Please verify network or API gateway connectivity.
+          </td>
+        </tr>
+      `;
+    }
+  } finally {
+    if (refreshBtn) refreshBtn.classList.remove("loading");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadLogs();
+});
+</script>
+{% endblock %}

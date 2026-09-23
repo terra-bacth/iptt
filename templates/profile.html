@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Security Settings | IPTT{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <span class="status-badge role-badge">Security Settings</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Access Security Management</p>
+            <h1 class="iptt-hero-title">Security <span class="italic">Credentials</span></h1>
+            <div class="iptt-hero-subtitle">
+                Logged in as: <strong>{{ user.username }}</strong> &bull; Access Profile: <span class="status-badge role-badge">{{ user.role | upper }}</span>
+            </div>
+        </div>
+        <span class="status-badge status-green">● Encryption Active</span>
+    </div>
+</div>
+
+<div style="max-width: 540px; margin: 0 auto;">
+    <div class="section-card">
+        <div class="section-title">
+            <h2>🔒 Update Authentication Secret</h2>
+        </div>
+
+        {% if error %}
+        <div style="margin-bottom: 18px; padding: 10px 14px; background: var(--danger-soft); border: 1px solid var(--danger-border); border-radius: var(--radius-sm); color: var(--danger); font-size: 13px;">
+            ⚠ {{ error }}
+        </div>
+        {% endif %}
+
+        {% if success %}
+        <div style="margin-bottom: 18px; padding: 10px 14px; background: var(--success-soft); border: 1px solid var(--success-border); border-radius: var(--radius-sm); color: var(--success); font-size: 13px;">
+            ✅ {{ success }}
+        </div>
+        {% endif %}
+
+        <form action="/users/change-password" method="post" style="display: flex; flex-direction: column; gap: 18px;">
+            <div>
+                <label style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--muted); margin-bottom: 6px;">Current System Password</label>
+                <input type="password" name="current_password" required placeholder="••••••••" style="width: 100%;">
+            </div>
+
+            <div>
+                <label style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--muted); margin-bottom: 6px;">New Target Password</label>
+                <small style="display: block; color: var(--muted-2); margin-bottom: 6px; font-size: 11.5px;">
+                    Must be at least 6 characters, including 1 uppercase letter, 1 lowercase letter, and 1 digit.
+                </small>
+                <input type="password" name="new_password" minlength="6" required placeholder="••••••••"
+                       pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$"
+                       title="Password must contain at least 6 characters, 1 uppercase letter, 1 lowercase letter, and 1 digit."
+                       style="width: 100%;">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="padding: 12px; margin-top: 8px;">
+                🔄 Update Secret Key
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

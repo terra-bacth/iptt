@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IPTT — Cinematic Redesign Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-0:#060912;
+  --bg-1:#0B1224;
+  --bg-2:#101A33;
+  --surface:rgba(255,255,255,0.92);
+  --surface-2:rgba(255,255,255,0.96);
+  --surface-dark:rgba(17,24,42,0.72);
+  --border:rgba(255,255,255,0.08);
+  --border-light:rgba(15,23,42,0.08);
+  --text:#E6EAF2;
+  --text-dark:#0F172A;
+  --muted:rgba(230,234,242,0.56);
+  --muted-dark:#64748B;
+  --primary:#5B7FFF;
+  --primary-2:#8B5CF6;
+  --success:#12D492;
+  --warning:#FF8A2B;
+  --danger:#FF4D6D;
+  --shadow:0 24px 64px rgba(0,0,0,0.42), 0 2px 12px rgba(0,0,0,0.24);
+  --shadow-soft:0 8px 32px rgba(2,6,23,0.12);
+  --radius:18px;
+  --radius-sm:12px;
+  --radius-pill:999px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:"Inter",system-ui,-apple-system,sans-serif;
+  background: var(--bg-0);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background:
+    radial-gradient(800px 600px at 15% -10%, rgba(91,127,255,0.22), transparent 60%),
+    radial-gradient(700px 500px at 90% 10%, rgba(139,92,246,0.18), transparent 60%),
+    radial-gradient(900px 700px at 50% 120%, rgba(18,212,146,0.10), transparent 70%),
+    linear-gradient(180deg, var(--bg-1), var(--bg-0));
+  pointer-events:none;
+  z-index:-2;
+}
+body::after{
+  content:"";
+  position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity:0.035;
+  pointer-events:none;
+  z-index:-1;
+}
+/* NAV */
+.top{
+  position:sticky; top:16px; z-index:50;
+  margin:16px auto; max-width:1280px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding:10px 14px 10px 14px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06));
+  border:1px solid var(--border);
+  border-radius:var(--radius-pill);
+  backdrop-filter:blur(24px) saturate(180%);
+  box-shadow:var(--shadow);
+}
+.brand{
+  display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--text);
+}
+.mark{
+  width:38px; height:38px; display:grid; place-items:center;
+  background:linear-gradient(135deg, var(--primary), var(--primary-2));
+  border-radius:12px; font-weight:800; letter-spacing:-0.02em;
+  box-shadow:0 8px 20px rgba(91,127,255,0.35);
+}
+.brand b{font-size:15px; letter-spacing:-0.02em; line-height:1}
+.brand small{display:block; font-size:10px; letter-spacing:0.14em; opacity:0.6; font-weight:600; margin-top:2px}
+.nav-links{display:flex; gap:6px; align-items:center; flex-wrap:wrap}
+.nav-links a{
+  padding:8px 14px; border-radius:var(--radius-pill);
+  font-size:13px; font-weight:600; color:var(--muted); text-decoration:none;
+  transition:all .25s ease;
+}
+.nav-links a.active, .nav-links a:hover{
+  background:rgba(255,255,255,0.10); color:var(--text);
+}
+.nav-links a.active{box-shadow:inset 0 1px 0 rgba(255,255,255,0.12)}
+.pill{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 14px; border-radius:var(--radius-pill);
+  background:rgba(255,255,255,0.10); border:1px solid var(--border);
+  font-size:12px; font-weight:600; letter-spacing:0.02em;
+}
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:10px 18px; border-radius:var(--radius-pill);
+  border:1px solid transparent; font-weight:650; font-size:13px;
+  text-decoration:none; cursor:pointer; transition:all .2s cubic-bezier(.22,.61,.36,1);
+}
+.btn-primary{
+  background:linear-gradient(135deg, var(--primary), var(--primary-2));
+  color:white; box-shadow:0 8px 24px rgba(91,127,255,0.35);
+}
+.btn-primary:hover{transform:translateY(-1px); box-shadow:0 12px 32px rgba(91,127,255,0.45)}
+.btn-ghost{
+  background:rgba(255,255,255,0.06); color:var(--text); border-color:var(--border);
+  backdrop-filter:blur(12px);
+}
+.btn-ghost:hover{background:rgba(255,255,255,0.12)}
+/* LAYOUT */
+.wrap{max-width:1280px; margin:0 auto; padding:0 24px 80px}
+.hero{
+  margin:32px 0 24px;
+  display:grid; grid-template-columns:1.2fr 0.8fr; gap:24px; align-items:end;
+}
+.hero h1{
+  margin:0; font-size:clamp(36px, 5vw, 64px); line-height:0.95; letter-spacing:-0.04em; font-weight:800;
+}
+.hero h1 span{font-family:"Instrument Serif", serif; font-weight:400; font-style:italic; background:linear-gradient(90deg, #A5B8FF, #D8B4FE); -webkit-background-clip:text; background-clip:text; color:transparent}
+.hero p{margin:16px 0 0; color:var(--muted); font-size:16px; line-height:1.6; max-width:52ch}
+.meta{display:flex; gap:10px; flex-wrap:wrap; margin-top:18px}
+.kicker{font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:700; color:rgba(165,184,255,0.9)}
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,250,252,0.92));
+  border:1px solid rgba(15,23,42,0.06);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-soft);
+  color:var(--text-dark);
+  overflow:hidden;
+  transition:transform .35s cubic-bezier(.22,.61,.36,1), box-shadow .35s ease;
+}
+.card:hover{transform:translateY(-3px); box-shadow:0 20px 48px rgba(2,6,23,0.16)}
+.card-dark{
+  background:linear-gradient(180deg, rgba(21,30,54,0.82), rgba(14,20,38,0.78));
+  border:1px solid var(--border);
+  color:var(--text);
+  backdrop-filter:blur(24px);
+  box-shadow:var(--shadow);
+}
+.card-pad{padding:22px}
+.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:20px}
+.grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+.grid-4{display:grid; grid-template-columns:repeat(4,1fr); gap:16px}
+@media(max-width:1100px){.hero{grid-template-columns:1fr} .grid-3{grid-template-columns:1fr 1fr} .grid-4{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr} .top{top:8px; margin:8px; border-radius:18px}}
+
+/* KPI */
+.kpi{
+  position:relative; padding:18px 18px 16px; border-radius:16px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96));
+  border:1px solid rgba(15,23,42,0.06);
+  overflow:hidden;
+}
+.kpi::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:4px;
+  background:linear-gradient(180deg, var(--primary), var(--primary-2));
+}
+.kpi.green::before{background:linear-gradient(180deg, #10B981, #06B6D4)}
+.kpi.amber::before{background:linear-gradient(180deg, #F59E0B, #FF8A2B)}
+.kpi.red::before{background:linear-gradient(180deg, #FF4D6D, #FF8A2B)}
+.kpi label{display:block; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; font-weight:700; color:var(--muted-dark)}
+.kpi strong{display:block; margin-top:8px; font-size:30px; letter-spacing:-0.03em; line-height:1; font-weight:800}
+.kpi .trend{margin-top:10px; display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:4px 8px; border-radius:999px; background:#F1F5F9; color:#334155}
+.kpi .bar{margin-top:12px; height:6px; border-radius:999px; background:#E2E8F0; overflow:hidden}
+.kpi .bar i{display:block; height:100%; border-radius:999px; background:linear-gradient(90deg, var(--primary), var(--primary-2)); transform-origin:left; animation:grow 1.2s cubic-bezier(.22,.61,.36,1) both}
+@keyframes grow{from{transform:scaleX(0)} to{transform:scaleX(1)}}
+@keyframes rise{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none}}
+.rise{animation:rise .6s ease both}
+.rise2{animation:rise .6s .08s ease both}
+.rise3{animation:rise .6s .16s ease both}
+
+/* TABLE */
+.table-wrap{overflow:auto; border-radius:12px; border:1px solid rgba(15,23,42,0.06)}
+table{width:100%; border-collapse:collapse; font-size:13.5px}
+th{ text-align:left; padding:12px 14px; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; font-weight:700; color:#64748B; background:#F8FAFC; border-bottom:1px solid #E2E8F0; position:sticky; top:0}
+td{padding:14px; border-bottom:1px solid #F1F5F9; vertical-align:middle}
+tr:hover td{background:#F8FAFF}
+.badge{display:inline-flex; align-items:center; gap:6px; padding:5px 10px; border-radius:999px; font-size:12px; font-weight:650; letter-spacing:-0.01em}
+.badge-green{background:#E7F9F0; color:#0E7A4C; border:1px solid #B9E9D0}
+.badge-red{background:#FFF0F3; color:#C2183D; border:1px solid #FFB3C1}
+.badge-amber{background:#FFF7E6; color:#9A5A00; border:1px solid #FFD89A}
+.dot{width:7px; height:7px; border-radius:50%; background:currentColor; box-shadow:0 0 0 4px currentColor; opacity:0.22}
+
+/* REPORT HERO */
+.report-hero{
+  position:relative; padding:28px; border-radius:var(--radius);
+  background:
+    radial-gradient(600px 300px at 20% 0%, rgba(91,127,255,0.18), transparent),
+    linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96));
+  border:1px solid rgba(15,23,42,0.06);
+  overflow:hidden;
+}
+.report-hero::before{content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:linear-gradient(180deg, #5B7FFF, #8B5CF6)}
+.report-hero h3{margin:0; font-size:13px; letter-spacing:0.14em; text-transform:uppercase; color:#64748B; font-weight:700}
+.report-hero p{margin:12px 0 0; font-family:"Instrument Serif", serif; font-size:22px; line-height:1.5; color:#0F172A; max-width:70ch}
+.report-hero p em{font-style:italic; color:#5B7FFF}
+
+/* SECTION */
+.sec-head{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:14px 18px; background:#F8FAFC; border-bottom:1px solid #E2E8F0; cursor:pointer;
+}
+.sec-head h4{margin:0; font-size:14px; font-weight:700; letter-spacing:-0.01em; display:flex; align-items:center; gap:10px}
+.sec-head span.chevron{width:28px; height:28px; display:grid; place-items:center; border-radius:999px; background:white; border:1px solid #E2E8F0; transition:transform .25s ease}
+.sec.open .chevron{transform:rotate(180deg)}
+.sec-body{padding:0; max-height:0; overflow:hidden; transition:max-height .4s cubic-bezier(.22,.61,.36,1), opacity .3s ease; opacity:0}
+.sec.open .sec-body{max-height:2000px; opacity:1; padding:18px}
+
+/* MATRIX */
+.matrix th:first-child{position:sticky; left:0; z-index:2; background:#0F172A; color:white}
+.matrix td:first-child{position:sticky; left:0; background:white; font-weight:650; z-index:1}
+.matrix tr.total td{background:#EEF2FF; font-weight:700}
+.matrix tr.completion td{background:#F0FDF4; font-weight:700}
+
+/* CHIP */
+.chip{display:inline-flex; padding:6px 10px; border-radius:999px; background:#0F172A; color:white; font-size:12px; font-weight:600; text-decoration:none}
+.chip:hover{background:#1E293B}
+
+/* TOGGLE */
+.toggle{
+  display:inline-flex; background:rgba(255,255,255,0.08); border:1px solid var(--border); border-radius:999px; padding:4px; gap:4px;
+}
+.toggle button{
+  padding:7px 12px; border-radius:999px; border:0; background:transparent; color:var(--muted); font-size:12px; font-weight:600; cursor:pointer;
+}
+.toggle button.active{background:white; color:#0F172A; box-shadow:0 2px 8px rgba(0,0,0,0.12)}
+
+/* COMPARISON */
+.compare{
+  display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0;
+}
+.compare .box{
+  border-radius:16px; padding:16px; border:1px dashed rgba(255,255,255,0.16); background:rgba(255,255,255,0.04);
+}
+.compare b{display:block; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; opacity:0.6; margin-bottom:10px}
+.old{opacity:0.7; filter:grayscale(0.2)}
+.old .kpi{border:1px solid #E2E8F0; box-shadow:none}
+.old .kpi::before{width:3px}
+
+/* FOOTER */
+.foot{margin-top:48px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; color:var(--muted); font-size:12px}
+</style>
+</head>
+<body>
+<div class="top">
+  <a class="brand" href="#">
+    <div class="mark">I</div>
+    <div><b>IPTT</b><small>PROJECT WORKSPACE</small></div>
+  </a>
+  <div class="nav-links">
+    <a class="active" href="#home">Home</a>
+    <a href="#governance">Governance</a>
+    <a href="#executive">Executive</a>
+    <a href="#reports">Reports</a>
+    <a href="#circle">Circle</a>
+  </div>
+  <div style="display:flex; gap:10px; align-items:center">
+    <div class="toggle" id="modeToggle">
+      <button class="active" data-mode="dark">Cinematic Dark</button>
+      <button data-mode="light">Light</button>
+    </div>
+    <a class="btn btn-primary" href="#">⌘K Command</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="rise">
+      <div class="kicker">Cinematic Redesign • Preview • No Logic Changed</div>
+      <h1>Your projects,<br><span>shot like a film.</span></h1>
+      <p>Same IPTT fundamentals — programmes, projects, scopes, execution, reporting. New depth: glass navigation, layered surfaces, kinetic typography, and report layouts that guide the eye like a storyboard.</p>
+      <div class="meta">
+        <span class="pill">● Depth + Blur + Motion</span>
+        <span class="pill">● Report Hierarchy Fixed</span>
+        <span class="pill">● 60fps, No New Deps</span>
+      </div>
+      <div style="margin-top:22px; display:flex; gap:12px; flex-wrap:wrap">
+        <a class="btn btn-primary" href="#executive">View Executive Report →</a>
+        <a class="btn btn-ghost" href="#governance">See Governance Before/After</a>
+      </div>
+    </div>
+    <div class="card-dark card-pad rise2" style="position:relative; overflow:hidden">
+      <div style="position:absolute; inset:0; background:radial-gradient(400px 200px at 80% 0%, rgba(91,127,255,0.22), transparent)"></div>
+      <div style="position:relative">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px">
+          <b style="font-size:12px; letter-spacing:0.12em; text-transform:uppercase; opacity:0.6">Live Preview</b>
+          <span class="badge badge-green"><span class="dot"></span> On Track</span>
+        </div>
+        <div style="font-size:28px; font-weight:800; letter-spacing:-0.03em; line-height:1.1">Programme Health<br><span style="font-family:'Instrument Serif'; font-weight:400; font-style:italic; color:#A5B8FF">87% — Excellent</span></div>
+        <div class="grid-2" style="margin-top:18px">
+          <div style="padding:12px; border-radius:12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08)">
+            <div style="font-size:11px; opacity:0.6; letter-spacing:0.08em; text-transform:uppercase">Total Nodes</div>
+            <div style="font-size:22px; font-weight:800; margin-top:4px">1,284</div>
+            <div style="margin-top:8px; height:4px; background:rgba(255,255,255,0.12); border-radius:999px; overflow:hidden"><i style="display:block; width:78%; height:100%; background:linear-gradient(90deg,#5B7FFF,#8B5CF6)"></i></div>
+          </div>
+          <div style="padding:12px; border-radius:12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08)">
+            <div style="font-size:11px; opacity:0.6; letter-spacing:0.08em; text-transform:uppercase">Delayed</div>
+            <div style="font-size:22px; font-weight:800; margin-top:4px; color:#FF8A2B">23</div>
+            <div style="font-size:11px; opacity:0.6; margin-top:4px">↓ 12% vs last week</div>
+          </div>
+        </div>
+        <div style="margin-top:16px; display:flex; gap:8px">
+          <span class="chip">📊 Governance</span>
+          <span class="chip">🌍 Circle Intel</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BEFORE AFTER -->
+  <div id="governance" class="card card-pad rise3" style="margin-top:10px">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px">
+      <div>
+        <div class="kicker" style="color:#64748B">Governance Dashboard</div>
+        <h2 style="margin:6px 0 0; font-size:22px; letter-spacing:-0.02em">Before → Cinematic After</h2>
+      </div>
+      <span class="badge badge-green">No logic changed • Only CSS</span>
+    </div>
+
+    <div class="compare">
+      <div class="box old">
+        <b>Current (flat, inline styles)</b>
+        <div class="grid-2" style="gap:10px; margin-bottom:12px">
+          <div class="kpi" style="border-left:5px solid #0078d4"><label>Total Programmes</label><strong>6</strong></div>
+          <div class="kpi" style="border-left:5px solid #0078d4"><label>Total Projects</label><strong>24</strong></div>
+        </div>
+        <div class="table-wrap"><table><tr><th>Programme</th><th>Health</th><th>Action</th></tr><tr><td><b>Jio PSBC</b></td><td>🟠 Moderate</td><td><a href="#">Open</a></td></tr></table></div>
+        <div style="margin-top:10px; font-size:12px; color:#64748B">• Flat white cards, #f4f6f8 bg, no depth, inconsistent shadows</div>
+      </div>
+      <div class="box">
+        <b>Cinematic (depth + hierarchy)</b>
+        <div class="grid-4" style="margin-bottom:14px">
+          <div class="kpi"><label>Total Programmes</label><strong>6</strong><div class="trend">▲ 2 new</div><div class="bar"><i style="width:100%"></i></div></div>
+          <div class="kpi green"><label>Total Projects</label><strong>24</strong><div class="trend" style="background:#E7F9F0; color:#0E7A4C">● 18 active</div><div class="bar"><i style="width:78%; background:linear-gradient(90deg,#10B981,#06B6D4)"></i></div></div>
+          <div class="kpi amber"><label>Avg Planning</label><strong>84%</strong><div class="trend" style="background:#FFF7E6; color:#9A5A00">◐ Needs focus</div><div class="bar"><i style="width:84%; background:linear-gradient(90deg,#F59E0B,#FF8A2B)"></i></div></div>
+          <div class="kpi red"><label>At Risk</label><strong>3</strong><div class="trend" style="background:#FFF0F3; color:#C2183D">● Critical</div><div class="bar"><i style="width:22%; background:linear-gradient(90deg,#FF4D6D,#FF8A2B)"></i></div></div>
+        </div>
+        <div class="table-wrap"><table><tr><th>Programme</th><th>Total</th><th>Planning</th><th>Health</th><th></th></tr><tr><td><b>Jio PSBC Expansion</b></td><td>12</td><td><div style="display:flex; align-items:center; gap:8px"><div style="width:80px; height:6px; background:#E2E8F0; border-radius:999px; overflow:hidden"><i style="display:block; width:84%; height:100%; background:linear-gradient(90deg,#5B7FFF,#8B5CF6)"></i></div>84%</div></td><td><span class="badge badge-green"><span class="dot"></span> Excellent</span></td><td><a class="chip" href="#">Open Dashboard →</a></td></tr></table></div>
+        <div style="margin-top:10px; font-size:12px; color:#475569">• Layered bg, glass nav, KPI with trend + bar, pill actions, sticky head</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOME MOCK -->
+  <div id="home" class="grid-2" style="margin-top:20px">
+    <div class="card card-pad">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px">
+        <h3 style="margin:0; font-size:16px; letter-spacing:-0.02em">Start something new</h3>
+        <span class="kicker" style="color:#94A3B8">Workspace</span>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap">
+        <a class="btn btn-primary" href="#">+ Create Programme</a>
+        <div style="display:flex; gap:8px; align-items:center; flex:1; min-width:220px; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:999px; padding:6px 6px 6px 14px">
+          <span style="font-size:12px; font-weight:600; color:#64748B; white-space:nowrap">Programme</span>
+          <select style="flex:1; border:0; background:transparent; font-weight:600; font-size:13px"><option>Jio PSBC Expansion</option></select>
+          <button class="btn btn-primary" style="padding:8px 14px">Create Project</button>
+        </div>
+      </div>
+    </div>
+    <div class="card card-pad">
+      <h3 style="margin:0 0 12px; font-size:16px">Explore your reports</h3>
+      <div style="display:flex; gap:10px; flex-wrap:wrap">
+        <a class="btn" style="background:#0F172A; color:white; border-radius:999px; padding:10px 16px; text-decoration:none; font-size:13px; font-weight:650">📊 Governance</a>
+        <a class="btn" style="background:#F1F5F9; color:#0F172A; border-radius:999px; padding:10px 16px; text-decoration:none; font-size:13px; font-weight:650">📦 Programme View</a>
+        <a class="btn" style="background:linear-gradient(135deg,#5B7FFF,#8B5CF6); color:white; border-radius:999px; padding:10px 16px; text-decoration:none; font-size:13px; font-weight:650">🌍 Circle Intelligence</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXECUTIVE DASHBOARD CINEMATIC -->
+  <div id="executive" style="margin-top:28px">
+    <div style="display:flex; justify-content:space-between; align-items:end; flex-wrap:wrap; gap:16px; margin-bottom:16px">
+      <div>
+        <div class="kicker">Project Executive Dashboard • Fine-tuned Layout</div>
+        <h2 style="margin:8px 0 0; font-size:32px; letter-spacing:-0.03em; line-height:1">Jio PSBC — Mumbai Circle <span style="font-family:'Instrument Serif'; font-weight:400; font-style:italic; color:#A5B8FF">Executive</span></h2>
+      </div>
+      <div style="display:flex; gap:10px">
+        <a class="btn btn-ghost" href="#">🔄 Refresh</a>
+        <a class="btn btn-primary" href="#">🖨 Download PDF</a>
+      </div>
+    </div>
+
+    <div class="report-hero">
+      <h3>Executive Brief</h3>
+      <p>Programme tracking <em>1,284 nodes across 6 circles</em> with 87% health. Bottleneck concentrated in <em>Civil & Power</em> stage (23 delayed items). Immediate focus on Mumbai & Delhi circles recommended for stabilization.</p>
+      <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap">
+        <span class="badge badge-green">● 87% Healthy</span>
+        <span class="badge badge-amber">● 23 Delayed</span>
+        <span class="badge badge-red">● 3 Critical Nodes</span>
+        <span style="font-size:12px; color:#64748B; font-family:'JetBrains Mono'; margin-left:8px">Updated 2h ago • Auto-synced</span>
+      </div>
+    </div>
+
+    <div class="grid-4" style="margin-top:18px">
+      <div class="kpi"><label>Total Nodes</label><strong>1,284</strong><div class="bar"><i style="width:100%"></i></div></div>
+      <div class="kpi"><label>Progress</label><strong>76%</strong><div class="bar"><i style="width:76%"></i></div></div>
+      <div class="kpi green"><label>Health</label><strong>87%</strong><div class="bar"><i style="width:87%; background:linear-gradient(90deg,#10B981,#06B6D4)"></i></div></div>
+      <div class="kpi red"><label>Most Delayed Stage</label><strong style="font-size:20px">Civil & Power</strong><div class="trend" style="background:#FFF0F3; color:#C2183D">● 14 days avg</div></div>
+    </div>
+
+    <!-- Matrix -->
+    <div class="card" style="margin-top:18px">
+      <div class="sec-head" onclick="this.parentElement.classList.toggle('open')">
+        <h4>📊 Overall Deployment Matrix <span class="badge badge-green" style="margin-left:8px">Live</span></h4>
+        <span class="chevron">⌄</span>
+      </div>
+      <div class="sec-body">
+        <div class="table-wrap">
+          <table class="matrix">
+            <tr><th>Deployment Stage</th><th>Mumbai</th><th>Delhi</th><th>Bangalore</th><th>Total</th><th>% Under Stage</th></tr>
+            <tr><td>Civil & Power</td><td style="text-align:center">42</td><td style="text-align:center">38</td><td style="text-align:center">21</td><td style="text-align:center"><b>101</b></td><td><div style="display:flex; align-items:center; gap:8px"><div style="width:60px; height:6px; background:#E2E8F0; border-radius:999px; overflow:hidden"><i style="display:block; width:34%; height:100%; background:#FF8A2B"></i></div>34%</div></td></tr>
+            <tr><td>Equipment Install</td><td style="text-align:center">28</td><td style="text-align:center">31</td><td style="text-align:center">19</td><td style="text-align:center"><b>78</b></td><td>26%</td></tr>
+            <tr class="total"><td>Total</td><td style="text-align:center">70</td><td style="text-align:center">69</td><td style="text-align:center">40</td><td style="text-align:center">179</td><td>—</td></tr>
+            <tr class="completion"><td>Completion %</td><td style="text-align:center">82%</td><td style="text-align:center">76%</td><td style="text-align:center">91%</td><td style="text-align:center">84%</td><td>—</td></tr>
+          </table>
+        </div>
+        <div style="margin-top:10px; font-size:12px; color:#64748B">Total Nodes: <b style="color:#0F172A">1,284</b> • Click circle name to drill down</div>
+      </div>
+    </div>
+
+    <!-- Risk + Leadership -->
+    <div class="grid-2" style="margin-top:18px">
+      <div class="card">
+        <div class="sec open">
+          <div class="sec-head" onclick="this.parentElement.classList.toggle('open')"><h4>🚨 Top Risk Nodes</h4><span class="chevron">⌄</span></div>
+          <div class="sec-body" style="padding:0">
+            <div class="table-wrap" style="border:0; border-radius:0"><table><tr><th>Node</th><th>Facility</th><th>Task</th><th>Delay</th></tr><tr style="border-left:4px solid #FF4D6D"><td><b>MB-0921</b></td><td>Andheri Hub</td><td>Civil Foundation</td><td><span class="badge badge-red">🔴 18 days</span></td></tr><tr style="border-left:4px solid #FF8A2B"><td><b>DL-1042</b></td><td>Okhla DC</td><td>Power Uptime</td><td><span class="badge badge-amber">🟠 9 days</span></td></tr><tr style="border-left:4px solid #12D492"><td><b>BLR-011</b></td><td>Whitefield</td><td>Go Live</td><td><span class="badge badge-green">🟢 2 days</span></td></tr></table></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec open">
+          <div class="sec-head" onclick="this.parentElement.classList.toggle('open')"><h4>🎯 Leadership Actions</h4><span class="badge badge-amber" style="margin-left:8px">3 Overdue</span><span class="chevron">⌄</span></div>
+          <div class="sec-body">
+            <div style="display:flex; gap:8px; margin-bottom:12px"><span class="badge badge-red">🔴 High ×4</span><span class="badge badge-amber">🟠 Medium ×6</span><span class="badge badge-green">🟢 Low ×2</span></div>
+            <div style="display:grid; gap:10px">
+              <div style="display:flex; gap:12px; padding:12px; border-radius:12px; background:#FFF7E6; border:1px solid #FFD89A; border-left:4px solid #FF8A2B"><div style="flex:1"><b style="font-size:13px">Resolve ROW permission - Mumbai</b><div style="font-size:12px; color:#92400E; margin-top:2px">Owner: Rajesh • Due in 2d • Overdue 5d</div></div><span class="badge badge-red">Overdue</span></div>
+              <div style="display:flex; gap:12px; padding:12px; border-radius:12px; background:#F8FAFC; border:1px solid #E2E8F0"><div style="flex:1"><b style="font-size:13px">Power vendor mobilization</b><div style="font-size:12px; color:#64748B; margin-top:2px">Owner: Amit • In Progress</div></div><span class="badge badge-green">On Track</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Programme analytics mock -->
+    <div id="reports" class="card card-pad" style="margin-top:18px">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px">
+        <h3 style="margin:0; font-size:16px">📈 Programme Analytics • Before vs After</h3>
+        <span style="font-size:12px; color:#64748B">Chart.js kept, container restyled</span>
+      </div>
+      <div class="grid-2">
+        <div style="padding:14px; border-radius:12px; background:#F8FAFF; border:1px solid #E2E8F0">
+          <b style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:#64748B">Health Distribution (Donut)</b>
+          <div style="margin-top:12px; display:flex; gap:12px; align-items:center">
+            <div style="width:90px; height:90px; border-radius:50%; background:conic-gradient(#10B981 0 62%, #F59E0B 62% 82%, #FF4D6D 82% 100%); box-shadow:inset 0 0 0 14px white"></div>
+            <div style="display:grid; gap:6px; font-size:12px"><span>🟢 Healthy 62%</span><span>🟠 Attention 20%</span><span>🔴 Critical 18%</span></div>
+          </div>
+        </div>
+        <div style="padding:14px; border-radius:12px; background:#F8FAFF; border:1px solid #E2E8F0">
+          <b style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:#64748B">Progress Comparison (Bars grow)</b>
+          <div style="margin-top:12px; display:grid; gap:8px">
+            <div><div style="display:flex; justify-content:space-between; font-size:12px"><span>Mumbai</span><span>82%</span></div><div style="height:6px; background:#E2E8F0; border-radius:999px; overflow:hidden; margin-top:4px"><i style="display:block; width:82%; height:100%; background:linear-gradient(90deg,#5B7FFF,#8B5CF6)"></i></div></div>
+            <div><div style="display:flex; justify-content:space-between; font-size:12px"><span>Delhi</span><span>76%</span></div><div style="height:6px; background:#E2E8F0; border-radius:999px; overflow:hidden; margin-top:4px"><i style="display:block; width:76%; height:100%; background:linear-gradient(90deg,#5B7FFF,#8B5CF6)"></i></div></div>
+            <div><div style="display:flex; justify-content:space-between; font-size:12px"><span>Bangalore</span><span>91%</span></div><div style="height:6px; background:#E2E8F0; border-radius:999px; overflow:hidden; margin-top:4px"><i style="display:block; width:91%; height:100%; background:linear-gradient(90deg,#10B981,#06B6D4)"></i></div></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px; padding:12px; border-radius:12px; background:#0F172A; color:white; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px">
+        <div><b style="font-size:13px">Side Navigation → Floating Glass TOC</b><div style="font-size:12px; opacity:0.6; margin-top:2px">Programme dashboard side nav currently fixed box. New: floating pill, backdrop-blur, active dot.</div></div>
+        <div style="display:flex; gap:8px"><span class="chip" style="background:rgba(255,255,255,0.12)">KPI Overview</span><span class="chip">Stage Mix</span><span class="chip" style="background:rgba(255,255,255,0.12)">Analytics</span></div>
+      </div>
+    </div>
+
+    <!-- What changes -->
+    <div class="card-dark card-pad" style="margin-top:18px">
+      <div class="kicker">Implementation Plan</div>
+      <h3 style="margin:8px 0 0; font-size:20px; letter-spacing:-0.02em">What I will change (and not change)</h3>
+      <div class="grid-3" style="margin-top:16px">
+        <div style="padding:14px; border-radius:12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08)">
+          <b style="font-size:13px">✅ Will Change</b>
+          <ul style="margin:10px 0 0; padding-left:16px; font-size:13px; line-height:1.6; opacity:0.8">
+            <li>theme.css → cinematic tokens, glass nav, depth, motion</li>
+            <li>Remove inline &lt;style&gt; from templates, use classes</li>
+            <li>Report layout: hero, sticky headers, chip badges, smooth collapsible</li>
+            <li>ui.js: height animation, progress observer, localStorage theme</li>
+            <li>Buttons → pill, gradient, hover lift</li>
+          </ul>
+        </div>
+        <div style="padding:14px; border-radius:12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08)">
+          <b style="font-size:13px">🚫 Will NOT Change</b>
+          <ul style="margin:10px 0 0; padding-left:16px; font-size:13px; line-height:1.6; opacity:0.8">
+            <li>Routes, DB, models, services</li>
+            <li>Jinja variables, status logic, PDF generation</li>
+            <li>JS function names (toggleSection etc)</li>
+            <li>Auth, access control</li>
+            <li>No new npm deps</li>
+          </ul>
+        </div>
+        <div style="padding:14px; border-radius:12px; background:linear-gradient(135deg, rgba(91,127,255,0.18), rgba(139,92,246,0.18)); border:1px solid rgba(255,255,255,0.12)">
+          <b style="font-size:13px">🎬 Cinematic Touches</b>
+          <ul style="margin:10px 0 0; padding-left:16px; font-size:13px; line-height:1.6; opacity:0.9">
+            <li>App bg: radial glows + noise (0.03 opacity)</li>
+            <li>Cards: inner highlight, hover -4px + bloom</li>
+            <li>Typography: Instrument Serif for quotes, Inter for UI</li>
+            <li>Progress: scaleX grow, 60fps</li>
+            <li>Tables: sticky head, zebra, hover highlight</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:18px; display:flex; gap:12px; flex-wrap:wrap">
+        <a class="btn btn-primary" href="#" onclick="document.getElementById('approval').scrollIntoView({behavior:'smooth'}); return false;">Approve & Apply →</a>
+        <span style="font-size:12px; opacity:0.6; align-self:center">You said demo first — this is it. If you like it, I apply to real files in 3 phases with rollback kept.</span>
+      </div>
+    </div>
+
+    <div id="approval" class="foot">
+      <span>IPTT • Cinematic Demo • Built without touching fundamentals • theme.css v9 → v10</span>
+      <span>Hosted with ♥ by CloudTeam • Demo only — real app unchanged until approval</span>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.sec').forEach(s=>s.classList.add('open'));
+document.querySelectorAll('.sec-head').forEach(h=>{
+  h.addEventListener('click',()=>{
+    const sec=h.parentElement;
+    sec.classList.toggle('open');
+  });
+});
+document.getElementById('modeToggle').addEventListener('click', e=>{
+  if(e.target.tagName!=='BUTTON') return;
+  document.querySelectorAll('#modeToggle button').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  const mode=e.target.dataset.mode;
+  if(mode==='light'){
+    document.documentElement.style.setProperty('--bg-0','#F2F5F9');
+    document.documentElement.style.setProperty('--bg-1','#F2F5F9');
+    document.body.style.background='#F2F5F9';
+    document.body.style.color='#0F172A';
+    document.body.querySelectorAll('.card-dark').forEach(c=>{c.style.background='white'; c.style.color='#0F172A'});
+  } else {
+    document.documentElement.style.removeProperty('--bg-0');
+    document.documentElement.style.removeProperty('--bg-1');
+    document.body.style.background='';
+    document.body.style.color='';
+    location.reload();
+  }
+});
+</script>
+</body>
+</html>
