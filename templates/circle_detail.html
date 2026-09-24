@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Circle {{ circle_name }} | Facilities Detail{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/circle-dashboard">Circle Dashboard</a> <span>›</span>
+    <span class="status-badge role-badge">{{ circle_name }}</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Circle Operational Telemetry</p>
+            <h1 class="iptt-hero-title">Circle <span class="italic">{{ circle_name }}</span></h1>
+            <div class="iptt-hero-subtitle">Facility-wise operational velocity and node execution for Circle {{ circle_name }}.</div>
+        </div>
+        <a href="/circle-dashboard" class="btn">← All Circles</a>
+    </div>
+</div>
+
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-title">Facilities</div>
+        <div class="kpi-value">{{ facility_data|length }}</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-title">Total Nodes</div>
+        <div class="kpi-value">{{ facility_data | sum(attribute='nodes') }}</div>
+        <div class="progress-wrapper"><div class="progress-bar" style="width: {% if (facility_data | sum(attribute='nodes')) > 0 %}100%{% else %}0%{% endif %};"></div></div>
+    </div>
+    <div class="kpi-card" style="border-left: 4px solid var(--success);">
+        <div class="kpi-title">Completed Nodes</div>
+        <div class="kpi-value" style="color: var(--success);">{{ facility_data | sum(attribute='completed_nodes') }}</div>
+        <div class="progress-wrapper">
+            <div class="progress-bar" style="width: {% set t_nodes = facility_data | sum(attribute='nodes') %}{{ (((facility_data | sum(attribute='completed_nodes')) / t_nodes * 100) | round(0)) | int if t_nodes else 0 }}%; background: var(--success);"></div>
+        </div>
+    </div>
+    <div class="kpi-card" style="border-left: 4px solid var(--warning);">
+        <div class="kpi-title">WIP Nodes</div>
+        <div class="kpi-value" style="color: var(--warning);">{{ facility_data | sum(attribute='wip_nodes') }}</div>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>🏢 Facilities in Circle {{ circle_name }}</h2>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="text" id="facilitySearch" placeholder="Search facilities..." data-table-target="facilityTable" style="max-width: 220px; font-size: 12px; min-height: 30px; padding: 4px 10px;">
+            <span style="font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono';">{{ facility_data|length }} facilities</span>
+        </div>
+    </div>
+    <div class="iptt-table-scroll">
+        <table id="facilityTable">
+            <thead>
+                <tr>
+                    <th>Facility Name</th>
+                    <th>Projects</th>
+                    <th>Total Nodes</th>
+                    <th>Completed</th>
+                    <th>WIP</th>
+                    <th style="min-width: 140px;">Progress</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in facility_data %}
+                <tr>
+                    <td>
+                        <a href="/facility/{{ row.facility }}" class="btn" style="padding: 4px 10px; font-size: 12px; font-weight: 700; color: var(--primary);">
+                            {{ row.facility }} →
+                        </a>
+                    </td>
+                    <td>{{ row.projects }}</td>
+                    <td><strong>{{ row.nodes }}</strong></td>
+                    <td><span class="status-badge status-green">{{ row.completed_nodes }}</span></td>
+                    <td><span class="status-badge status-yellow">{{ row.wip_nodes }}</span></td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="progress-container" style="flex: 1; margin: 0; height: 6px;">
+                                <div class="progress-bar" style="width: {{ row.progress }}%;"></div>
+                            </div>
+                            <span style="font-size: 11px; font-family: 'JetBrains Mono';">{{ row.progress }}%</span>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

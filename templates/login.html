@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPTT Login | Enterprise Portal</title>
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('iptt-theme');
+          var theme = saved || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch(e) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="alternate icon" type="image/png" href="/static/iptt_logo.png">
+    <link rel="apple-touch-icon" href="/static/iptt_logo_1.png">
+    <link rel="stylesheet" href="/static/theme.css?v=14">
+    <script src="/static/ui.js?v=14" defer></script>
+    <style>
+        body.iptt-ui.iptt-login-page {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-base);
+            background-image: var(--bg-gradient);
+            font-family: var(--font-sans, "Inter", -apple-system, sans-serif);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        .iptt-login-page #iptt-main.login-split {
+            display: grid !important;
+            grid-template-columns: 1.15fr 1fr !important;
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            flex: 1 0 auto;
+            min-height: calc(100vh - 75px);
+            box-sizing: border-box;
+        }
+
+        /* Left Showcase Panel — Always Deep Obsidian Cinematic */
+        .login-showcase {
+            position: relative;
+            padding: 56px 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(140deg, #091322 0%, #0e1e34 50%, #152842 100%) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            color: #F8FAFC !important;
+            box-sizing: border-box;
+        }
+
+        .login-showcase::before {
+            content: "";
+            position: absolute;
+            top: -120px;
+            left: -120px;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .showcase-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #FFFFFF !important;
+            position: relative;
+            z-index: 1;
+        }
+
+        .showcase-brand .iptt-brand-text {
+            color: #FFFFFF !important;
+            font-weight: 800;
+        }
+
+        .showcase-brand small {
+            color: #94A3B8 !important;
+        }
+
+        .showcase-content {
+            position: relative;
+            z-index: 1;
+            max-width: 540px;
+            margin: 36px 0;
+        }
+
+        .showcase-eyebrow {
+            margin: 0 0 10px;
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #7dd3fc !important;
+        }
+
+        .showcase-title {
+            font-size: 34px;
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.15;
+            margin: 0 0 14px;
+            color: #FFFFFF !important;
+        }
+
+        .showcase-desc {
+            font-size: 14.5px;
+            line-height: 1.6;
+            color: #cbd5e1 !important;
+            margin: 0 0 32px;
+        }
+
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .showcase-card {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .showcase-card:hover {
+            border-color: rgba(99, 102, 241, 0.5) !important;
+            background: rgba(255, 255, 255, 0.08) !important;
+            transform: translateY(-2px);
+        }
+
+        .showcase-card span {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .showcase-card h3 {
+            font-size: 13px;
+            font-weight: 700;
+            margin: 0 0 4px;
+            color: #7dd3fc !important;
+        }
+
+        .showcase-card p {
+            font-size: 11.5px;
+            line-height: 1.45;
+            color: #b9c9db !important;
+            margin: 0;
+        }
+
+        .login-showcase::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+            background-size: 24px 24px;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .showcase-ticker {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 16px;
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            font-size: 11px;
+            font-family: var(--font-mono, monospace);
+            color: #b9c9db !important;
+            margin-top: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .showcase-ticker-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #7dd3fc !important;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .showcase-ticker-pip {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--iptt-success);
+            box-shadow: 0 0 8px var(--iptt-success);
+            animation: iptt-pip-pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes iptt-pip-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        .showcase-footer {
+            position: relative;
+            z-index: 1;
+            font-size: 11px;
+            color: #b9c9db !important;
+            font-family: var(--font-mono, monospace);
+        }
+
+        /* Right Form Panel */
+        .login-form-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 32px;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 38px 34px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .login-header {
+            margin-bottom: 28px;
+        }
+
+        .login-header h2 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin: 0 0 6px;
+            color: var(--text);
+        }
+
+        .login-header p {
+            font-size: 13px;
+            color: var(--muted);
+            margin: 0;
+        }
+
+        .login-field {
+            margin-bottom: 18px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-field label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .login-field input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--text);
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.15s ease;
+        }
+
+        .login-field input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-soft);
+        }
+
+        .login-btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary) !important;
+            color: #FFFFFF !important;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 16px var(--primary-glow);
+            transition: all 0.16s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn-submit:hover {
+            background: var(--primary-hover) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px var(--primary-glow);
+        }
+
+        .login-error {
+            margin-top: 16px;
+            padding: 12px 14px;
+            background: var(--danger-soft, rgba(244, 63, 94, 0.12));
+            border: 1px solid var(--danger-border, rgba(244, 63, 94, 0.3));
+            border-radius: var(--radius-sm);
+            color: var(--danger, #a4262c);
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.4;
+        }
+
+        .login-footer-links {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .iptt-login-page .iptt-footer {
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 18px 36px !important;
+            box-sizing: border-box;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        @media (max-width: 960px) {
+            .iptt-login-page #iptt-main.login-split {
+                grid-template-columns: 1fr !important;
+            }
+            .login-showcase {
+                padding: 36px 24px;
+            }
+            .showcase-grid {
+                grid-template-columns: 1fr;
+            }
+            .login-form-panel {
+                padding: 36px 20px;
+            }
+            .iptt-login-page .iptt-footer {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body class="iptt-ui iptt-login-page">
+
+<main id="iptt-main" class="login-split">
+    <!-- Left Showcase Panel -->
+    <div class="login-showcase">
+        <a class="showcase-brand" href="/home">
+            <span class="iptt-brand-mark">I</span>
+            <span class="iptt-brand-text">
+                IPTT
+                <small>Infrastructure Governance</small>
+            </span>
+        </a>
+
+        <div class="showcase-content">
+            <p class="showcase-eyebrow">Enterprise Telemetry Engine</p>
+            <h1 class="showcase-title">Integrated Project <span style="font-family:'Instrument Serif', serif; font-style:italic; font-weight:400; color:#818CF8;">Tracking Tool</span></h1>
+            <p class="showcase-desc">
+                Plan, baseline, track, and execute mission-critical infrastructure projects with complete visibility and governance across programmes.
+            </p>
+
+            <div class="showcase-grid">
+                <div class="showcase-card">
+                    <span>📊</span>
+                    <h3>Programme Matrix</h3>
+                    <p>Centralized portfolio management and baseline control maps.</p>
+                </div>
+                <div class="showcase-card">
+                    <span>📅</span>
+                    <h3>Day-0 Runbooks</h3>
+                    <p>Automated milestone scheduling and prerequisite sequencing.</p>
+                </div>
+                <div class="showcase-card">
+                    <span>🚀</span>
+                    <h3>Execution Velocity</h3>
+                    <p>Real-time engineering telemetry and baseline deviation tracking.</p>
+                </div>
+                <div class="showcase-card">
+                    <span>🔮</span>
+                    <h3>Predictive Forecast</h3>
+                    <p>Predictive analytics, delay drivers, and Go-Live modeling.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="showcase-ticker" aria-label="System Status Telemetry">
+            <span class="showcase-ticker-pill">
+                <span class="showcase-ticker-pip" aria-hidden="true"></span>
+                ACTIVE CLUSTER
+            </span>
+            <span>PROD TELEMETRY &bull; 99.98% UPTIME &bull; NODES SYNCHRONIZED</span>
+        </div>
+
+        <div class="showcase-footer">
+            IPTT v1
+        </div>
+    </div>
+
+    <!-- Right Form Panel -->
+    <div class="login-form-panel">
+        <div class="login-card">
+            <div class="login-header">
+                <h2>Welcome Back</h2>
+                <p>Sign in to your account</p>
+            </div>
+
+            <form method="post" action="/login">
+                <div class="login-field">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required autocomplete="username" placeholder="Enter your username" autofocus>
+                </div>
+
+                <div class="login-field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="login-btn-submit">Sign In →</button>
+
+                {% if error %}
+                <div class="login-error" role="alert">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <span>{{ error }}</span>
+                </div>
+                {% endif %}
+            </form>
+
+            <div class="login-footer-links">
+                <span>No account? <a href="/register">Sign up</a></span>
+                <button type="button" class="iptt-theme-toggle" title="Toggle Theme" style="cursor: pointer;">☀️</button>
+            </div>
+        </div>
+    </div>
+</main>
+{% include "partials/footer.html" %}
+
+</body>
+</html>

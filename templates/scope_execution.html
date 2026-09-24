@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Execution Tracking | {{ scope.node_id or scope.name }}{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/project/{{ scope.project_id }}/scopes">Project Scopes</a> <span>›</span>
+    <span class="status-badge role-badge">{{ scope.node_id or scope.name }}</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Node Execution Tracking</p>
+            <h1 class="iptt-hero-title">Node <span class="italic">{{ scope.node_id or scope.name }}</span></h1>
+            <div class="iptt-hero-subtitle">
+                Circle: <strong>{{ scope.circle }}</strong> &bull; Facility: <strong>{{ scope.facility_name }}</strong> &bull; Update actual start, finish dates, status and delay reasons.
+            </div>
+        </div>
+        <a href="/project/{{ scope.project_id }}/scopes" class="btn">⬅ Back to Scope List</a>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>📋 Task Execution Runbook</h2>
+        <span class="status-badge role-badge">{{ execution_rows|length }} Tasks Tracked</span>
+    </div>
+
+    <form method="post" action="/scope/{{ scope.id }}/execution/update">
+        <div class="iptt-table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="min-width: 180px;">Task</th>
+                        <th>Planned Start</th>
+                        <th>Planned Finish</th>
+                        <th style="min-width: 150px;">Actual Start</th>
+                        <th style="min-width: 150px;">Actual Finish</th>
+                        <th>Status</th>
+                        <th>Delay (Days)</th>
+                        <th style="min-width: 180px;">Delay Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in execution_rows %}
+                    <tr>
+                        <td><strong>{{ row.task.name }}</strong></td>
+                        <td>
+                            {% if row.revised_start %}
+                                <span style="color: var(--success); font-weight: 600;">
+                                    {{ row.revised_start.strftime('%Y-%m-%d') }}
+                                </span>
+                                <br>
+                                <small style="color: var(--muted);">Planned: {{ row.planned_start.strftime('%Y-%m-%d') }}</small>
+                            {% else %}
+                                {{ row.planned_start.strftime('%Y-%m-%d') }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.revised_finish %}
+                                <span style="color: var(--success); font-weight: 600;">
+                                    {{ row.revised_finish.strftime('%Y-%m-%d') }}
+                                </span>
+                                <br>
+                                <small style="color: var(--muted);">Planned: {{ row.planned_finish.strftime('%Y-%m-%d') }}</small>
+                            {% else %}
+                                {{ row.planned_finish.strftime('%Y-%m-%d') }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <input type="date" name="actual_start_{{ row.id }}" value="{{ row.actual_start.strftime('%Y-%m-%d') if row.actual_start else '' }}" style="font-size: 11.5px; padding: 4px 8px; min-height: 30px;">
+                        </td>
+                        <td>
+                            <input type="date" name="actual_finish_{{ row.id }}" value="{{ row.actual_finish.strftime('%Y-%m-%d') if row.actual_finish else '' }}" style="font-size: 11.5px; padding: 4px 8px; min-height: 30px;">
+                        </td>
+                        <td>
+                            <select name="status_{{ row.id }}" style="font-size: 11.5px; padding: 4px 8px; min-height: 30px;">
+                                {% for s in ["Not Started", "In Progress", "Completed"] %}
+                                <option value="{{ s }}" {% if row.status == s %}selected{% endif %}>{{ s }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            {% if row.delay_days > 0 %}
+                            <span class="status-badge status-red">{{ row.delay_days }}d</span>
+                            {% else %}
+                            <span class="status-badge status-green">0d</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <textarea name="delay_reason_{{ row.id }}" rows="2" placeholder="Delay root cause..." style="width: 100%; font-size: 11.5px; padding: 4px 8px;">{{ row.delay_reason }}</textarea>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 18px; display: flex; justify-content: flex-end;">
+            <button type="submit" class="btn btn-primary" style="padding: 10px 22px;">💾 Save Execution Updates</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Task Configuration | IPTT{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/projects/{{ programme_id }}">Projects</a> <span>›</span>
+    <span class="status-badge role-badge">Task Configuration</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">WBS Sequence & Logic</p>
+            <h1 class="iptt-hero-title">🧩 Workflow Task <span class="italic">Configuration</span></h1>
+            <div class="iptt-hero-subtitle">Define sequence logic, critical path dependencies, durations, and day-0 prerequisite gates.</div>
+        </div>
+        <a href="/projects/{{ programme_id }}" class="btn">⬅ Back to Projects</a>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>➕ Create Workflow Task (Manual)</h2>
+    </div>
+    <form method="post">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 14px;">
+            <div>
+                <label style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--muted); margin-bottom: 6px;">Task Name</label>
+                <input type="text" name="name" placeholder="e.g. Rack Mounting & Cabling" required style="width: 100%;">
+            </div>
+            <div>
+                <label style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--muted); margin-bottom: 6px;">Duration (Days)</label>
+                <input type="number" name="duration_days" min="1" placeholder="1" required style="width: 100%;">
+            </div>
+            <div>
+                <label style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--muted); margin-bottom: 6px;">Predecessor Task Number</label>
+                <input type="number" name="predecessor_task_no" placeholder="Optional (e.g. 1)" style="width: 100%;">
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+            <input type="checkbox" id="is_prerequisite" name="is_prerequisite" style="width: 16px; height: 16px; cursor: pointer;">
+            <label for="is_prerequisite" style="font-size: 13px; font-weight: 500; cursor: pointer;">Mark as Day-0 Pre-Requisite Task</label>
+        </div>
+        <button class="btn btn-primary" type="submit">➕ Create Workflow Task</button>
+    </form>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>📥 Upload Workflow Tasks in Bulk</h2>
+    </div>
+    <form method="post" action="/api/tasks/{{ project_id }}/upload" enctype="multipart/form-data" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <input type="file" name="file" accept=".xlsx" required style="flex: 1; min-width: 220px;">
+        <button class="btn btn-primary" type="submit">📥 Upload Excel</button>
+        <a class="btn" href="/static/task_template.xlsx">📄 Download Task Excel Template</a>
+    </form>
+    <div style="margin-top: 10px; font-size: 11px; color: var(--muted);">
+        Required Sheet Columns: <code>Task_Number</code>, <code>Task_Name</code>, <code>Duration_Days</code>, <code>Predecessor_Task_Number</code>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>📋 Workflow Definition Matrix</h2>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="text" placeholder="Filter tasks..." data-table-target="taskTable" style="max-width: 200px; font-size: 12px; min-height: 30px; padding: 4px 10px;">
+            <span class="status-badge role-badge">{{ tasks|length }} Tasks Defined</span>
+        </div>
+    </div>
+    <div class="iptt-table-scroll">
+        <table id="taskTable">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">#</th>
+                    <th>Task Name</th>
+                    <th>Duration</th>
+                    <th>Dependency</th>
+                    <th>Execution Flow</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in tasks %}
+                <tr>
+                    <td><strong>{{ t.seq }}</strong></td>
+                    <td>
+                        {% if t.is_critical %}
+                        <span class="status-badge status-red" style="font-size: 11px;">Critical</span>
+                        <strong style="margin-left: 6px;">{{ t.name }}</strong>
+                        {% else %}
+                        <span>{{ t.name }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ t.duration_days }} Days</td>
+                    <td>{{ t.dependency or "—" }}</td>
+                    <td><span class="status-badge role-badge">{{ t.flow or "Standard" }}</span></td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 24px; color: var(--muted);">No tasks defined yet. Add tasks using the manual form or upload an Excel sheet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const error = params.get("error");
+if (error === "admin_required") { alert("⚠️ Only Admin can perform this action"); }
+if (error === "pm_only") { alert("⚠️ Only PM or Admin can perform this action"); }
+if (error) { window.history.replaceState({}, document.title, window.location.pathname); }
+</script>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Project Delay Heatmap | IPTT{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/projects/{{ project_id }}">Project</a> <span>›</span>
+    <span class="status-badge role-badge">Delay Heatmap</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Risk Cross-Tabulation</p>
+            <h1 class="iptt-hero-title">Project Delay <span class="italic">Heatmap</span></h1>
+            <div class="iptt-hero-subtitle">Average delay days matrix by regional circle and priority tier.</div>
+        </div>
+        <a href="/projects/{{ project_id }}" class="btn">⬅ Back to Project</a>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>🗺 Regional Delay Matrix (Days)</h2>
+        <div style="display: flex; gap: 8px;">
+            <span class="status-badge status-green">On Track (Green)</span>
+            <span class="status-badge status-yellow">Minor Delay (Amber)</span>
+            <span class="status-badge status-red">Critical Delay (Red)</span>
+        </div>
+    </div>
+
+    <div class="iptt-table-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th style="min-width: 140px;">Circle</th>
+                    <th style="text-align: center; min-width: 120px;">P1 (High)</th>
+                    <th style="text-align: center; min-width: 120px;">P2 (Medium)</th>
+                    <th style="text-align: center; min-width: 120px;">P3 (Standard)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for circle, priorities in heatmap.items() %}
+                <tr>
+                    <td><strong>{{ circle }}</strong></td>
+                    {% for p in [1, 2, 3] %}
+                        {% set cell = priorities.get(p) %}
+                        <td style="text-align: center; padding: 14px;">
+                            {% if cell %}
+                                {% if cell.risk == "GREEN" %}
+                                    <span class="status-badge status-green" style="font-size: 13px; padding: 4px 14px; font-family: 'JetBrains Mono';">
+                                        {{ cell.avg_delay }}d
+                                    </span>
+                                {% elif cell.risk == "AMBER" %}
+                                    <span class="status-badge status-yellow" style="font-size: 13px; padding: 4px 14px; font-family: 'JetBrains Mono';">
+                                        {{ cell.avg_delay }}d
+                                    </span>
+                                {% else %}
+                                    <span class="status-badge status-red" style="font-size: 13px; padding: 4px 14px; font-family: 'JetBrains Mono';">
+                                        {{ cell.avg_delay }}d
+                                    </span>
+                                {% endif %}
+                            {% else %}
+                                <span style="color: var(--muted); font-family: 'JetBrains Mono';">–</span>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 24px; color: var(--muted);">No heatmap data available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Scope Delay Summary | IPTT{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/projects/{{ project_id }}">Project</a> <span>›</span>
+    <span class="status-badge role-badge">Delay Summary</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Delay Analysis & Root Causes</p>
+            <h1 class="iptt-hero-title">Scope Delay <span class="italic">Summary</span></h1>
+            <div class="iptt-hero-subtitle">Aggregated task delays, critical impact counts, and operational health status by node.</div>
+        </div>
+        <a href="/projects/{{ project_id }}" class="btn">⬅ Back to Project</a>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>🚨 Node Delay Breakdown</h2>
+        <input type="text" placeholder="Filter delays..." data-table-target="delayTable" style="max-width: 200px; font-size: 12px; min-height: 30px; padding: 4px 10px;">
+    </div>
+    <div class="iptt-table-scroll">
+        <table id="delayTable">
+            <thead>
+                <tr>
+                    <th>Node ID</th>
+                    <th>Circle</th>
+                    <th>Priority</th>
+                    <th>Delayed Tasks</th>
+                    <th>Critical Delays</th>
+                    <th>Total Delay (Days)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in delay_data %}
+                <tr>
+                    <td>
+                        <a href="/scope/{{ row.scope.id }}/tasks" style="font-weight: 700; color: var(--primary);">
+                            {{ row.scope.node_id }}
+                        </a>
+                    </td>
+                    <td>{{ row.scope.circle }}</td>
+                    <td><span class="status-badge role-badge">P{{ row.scope.priority }}</span></td>
+                    <td>{{ row.delayed_tasks }}</td>
+                    <td>
+                        {% if row.critical_delays > 0 %}
+                        <span class="status-badge status-red">{{ row.critical_delays }}</span>
+                        {% else %}
+                        <span style="color: var(--muted);">0</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if row.total_delay_days > 0 %}
+                        <span class="status-badge status-red">{{ row.total_delay_days }}d</span>
+                        {% else %}
+                        <span class="status-badge status-green">0d</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if row.status == "Delayed" %}
+                        <span class="status-badge status-red">Delayed</span>
+                        {% else %}
+                        <span class="status-badge status-green">On Track</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 24px; color: var(--muted);">No scope delay data recorded.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

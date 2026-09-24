@@ -1,0 +1,42 @@
+{# Shared Primary Navigation — Floating Glass Bar with Command Palette & Theme Switcher #}
+<nav class="top-nav" aria-label="Primary Navigation" data-user-role="{{ user.role if user is defined and user and user.role else 'viewer' }}">
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <a class="iptt-brand" href="/home" title="IPTT Home" aria-label="IPTT Home">
+      <span class="iptt-brand-mark" aria-hidden="true">I</span>
+      <span class="iptt-brand-text">
+        IPTT
+        <small>Project Governance</small>
+      </span>
+    </a>
+    <div class="iptt-system-status" title="IPTT Telemetry Stream: Live">
+      <span class="iptt-pulse-dot" aria-hidden="true"></span>
+      <span>Live</span>
+    </div>
+  </div>
+
+  <div class="iptt-nav-items nav-links">
+    <a href="/home">Home</a>
+    <a href="/programmes">Programmes</a>
+    <a href="/dashboard">Governance</a>
+    <a href="/circle-dashboard">Circle Intel</a>
+    {% if user is defined and user and user.role == "admin" %}
+    <a href="/users">Users</a>
+    <a href="/audit-logs">Audit Logs</a>
+    {% endif %}
+    <a href="/profile">Security</a>
+    <a href="/logout" style="color: var(--danger, #F43F5E);">Sign out</a>
+  </div>
+
+  <div class="iptt-nav-actions">
+    <button type="button" class="iptt-cmdk-trigger" title="Command Palette (⌘K or Ctrl+K)">
+      <span>Search</span>
+      <kbd>⌘K</kbd>
+    </button>
+    <button type="button" class="iptt-theme-toggle" title="Toggle Cinematic / Light Theme">
+      ☀️
+    </button>
+    <button type="button" class="iptt-menu-toggle" aria-label="Toggle mobile menu" style="display: none;">
+      ☰
+    </button>
+  </div>
+</nav>

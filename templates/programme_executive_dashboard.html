@@ -1,0 +1,505 @@
+{% extends "base.html" %}
+{% block title %}{{ report.programme_name }} | Programme Executive Dashboard{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<a class="iptt-skip" href="#iptt-quick-nav" style="left: 190px;">Skip to quick navigation</a>
+<a class="iptt-skip" href="#kpi-overview" style="left: 380px;">Skip to KPI overview</a>
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/programmes">Programmes</a> <span>›</span>
+    <span class="status-badge role-badge">Programme Executive</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Portfolio Governance</p>
+            <h1 class="iptt-hero-title">{{ report.programme_name }} <span class="italic">Executive Dashboard</span></h1>
+            <div class="iptt-hero-subtitle">
+                Comprehensive programme telemetry across <strong>{{ report.total_projects }}</strong> projects, stage distributions, and regional risk indicators.
+            </div>
+        </div>
+        <div class="no-print" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <a href="/programme/{{ report.programme_id }}/executive-dashboard/pdf" target="_blank" class="btn btn-primary" title="View & Print Executive PDF">🖨 Export PDF</a>
+            <a href="/programme/{{ report.programme_id }}/executive-dashboard/pdf?download=1" download="programme_dashboard_{{ report.programme_id }}.pdf" class="btn" title="Download PDF File">⬇ Download</a>
+            <button onclick="location.reload()" class="btn">🔄 Refresh</button>
+        </div>
+    </div>
+</div>
+
+<!-- Quick KPI & Section Navigation Bar -->
+<nav class="iptt-quick-nav no-print" id="iptt-quick-nav" aria-label="Quick KPI & Section Navigation">
+    <div class="iptt-quick-nav-header">
+        <span>⚡ Quick Jump:</span>
+    </div>
+    <div class="iptt-quick-nav-pills" role="navigation">
+        <a href="#executive-brief" class="iptt-quick-pill">
+            <span>📌 Brief</span>
+        </a>
+        <a href="#kpi-overview" class="iptt-quick-pill">
+            <span>📊 KPIs</span>
+            <span class="pill-badge pill-badge-health">{{ report.avg_health }}%</span>
+        </a>
+        <a href="#stage-pipeline" class="iptt-quick-pill">
+            <span>🚀 Stage Mix</span>
+        </a>
+        <a href="#tab-projects" class="iptt-quick-pill" onclick="ipttSwitchTab('tab-projects')">
+            <span>📦 Projects</span>
+            <span class="pill-badge pill-badge-primary">{{ report.projects|length }}</span>
+        </a>
+        <a href="#tab-analytics" class="iptt-quick-pill" onclick="ipttSwitchTab('tab-analytics')">
+            <span>📈 Analytics</span>
+        </a>
+        <a href="#tab-brief" class="iptt-quick-pill" onclick="ipttSwitchTab('tab-brief')">
+            <span>🎯 Focus Areas</span>
+            {% if report.worst_projects|length > 0 %}
+            <span class="pill-badge pill-badge-danger">{{ report.worst_projects|length }}</span>
+            {% endif %}
+        </a>
+    </div>
+</nav>
+
+<div class="executive-summary" id="executive-brief" style="border-left-color: {% if report.avg_health >= 80 %}var(--success){% elif report.avg_health >= 50 %}var(--warning){% else %}var(--danger){% endif %};">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+        <h3 style="margin: 0; color: {% if report.avg_health >= 80 %}var(--success){% elif report.avg_health >= 50 %}var(--warning){% else %}var(--danger){% endif %};">
+            {% if report.avg_health >= 80 %}🟢 Programme Healthy{% elif report.avg_health >= 50 %}🟠 Programme Needs Attention{% else %}🔴 Programme Critical{% endif %}
+        </h3>
+        <span class="status-badge {% if report.avg_health >= 80 %}status-green{% elif report.avg_health >= 50 %}status-yellow{% else %}status-red{% endif %}">
+            Avg Health: {{ report.avg_health }}%
+        </span>
+    </div>
+    <p class="iptt-summary-text">
+        Programme currently tracking <strong>{{ report.total_projects }}</strong> active projects with an average delivery velocity of <strong>{{ report.avg_progress }}%</strong> and a combined total of <strong>{{ report.total_delays }}</strong> delayed execution tasks.
+    </p>
+</div>
+
+<div id="kpi-overview" class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-label">Programme Health</div>
+        <div class="kpi-value">{{ report.avg_health }}%</div>
+        <div class="progress-wrapper">
+            <div class="progress-bar" style="width: {{ report.avg_health }}%; {% if report.avg_health >= 80 %}background: var(--success);{% elif report.avg_health >= 50 %}background: var(--warning);{% else %}background: var(--danger);{% endif %}"></div>
+        </div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">Overall Progress</div>
+        <div class="kpi-value">{{ report.avg_progress }}%</div>
+        <div class="progress-wrapper">
+            <div class="progress-bar" style="width: {{ report.avg_progress }}%;"></div>
+        </div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">Total Projects</div>
+        <div class="kpi-value">{{ report.total_projects }}</div>
+        <div class="progress-wrapper"><div class="progress-bar" style="width: {% if report.total_projects > 0 %}100%{% else %}0%{% endif %};"></div></div>
+    </div>
+    <div class="kpi-card" style="border-left: 4px solid var(--danger);">
+        <div class="kpi-label">Total Delayed Tasks</div>
+        <div class="kpi-value" style="color: var(--danger);">{{ report.total_delays }}</div>
+    </div>
+</div>
+
+
+<!-- Horizontal Stage Pipeline Component -->
+<div class="iptt-stage-pipeline-card" id="stage-pipeline">
+    <div class="pipeline-header">
+        <div>
+            <h3 class="pipeline-title">Programme Lifecycle Stage Distribution</h3>
+            <p class="pipeline-subtitle">Aggregate node volume and execution distribution across programme lifecycle stages</p>
+        </div>
+        <span class="status-badge status-green">Avg Health: {{ report.avg_health }}%</span>
+    </div>
+    <div class="iptt-stage-pipeline" role="list" aria-label="Programme Stage Pipeline">
+        {% set total_nodes = report.stage_mix.values() | sum %}
+        {% for stage, count in report.stage_mix.items() %}
+        {% set pct = ((count / total_nodes) * 100) | round(0) | int if total_nodes > 0 else 0 %}
+        <div class="pipeline-step {% if count > 0 %}step-active{% else %}step-pending{% endif %}" role="listitem">
+            <div class="pipeline-step-top">
+                <span class="pipeline-step-node">Stage {{ loop.index }}</span>
+                <span class="pipeline-step-pct">{{ count }} node{% if count != 1 %}s{% endif %}</span>
+            </div>
+            <div class="pipeline-step-track" aria-hidden="true">
+                <div class="pipeline-step-fill" style="width: {% if total_nodes > 0 %}{{ pct }}{% else %}0{% endif %}%;"></div>
+            </div>
+            <div class="pipeline-step-label" title="{{ stage }}">{{ stage }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Segmented Tabs Navigation -->
+<div class="iptt-segmented-tabs-wrapper" style="margin-top: 24px;">
+    <div class="iptt-segmented-tabs" role="tablist" aria-label="Programme Dashboard Views">
+        <button type="button" class="iptt-tab-btn active" role="tab" aria-selected="true" data-tab-target="tab-projects">
+            <span>📊 Project Portfolio</span>
+            <span class="iptt-tab-badge">{{ report.projects|length }}</span>
+        </button>
+        <button type="button" class="iptt-tab-btn" role="tab" aria-selected="false" data-tab-target="tab-analytics">
+            <span>📈 Analytics & Stage Mix</span>
+        </button>
+        <button type="button" class="iptt-tab-btn" role="tab" aria-selected="false" data-tab-target="tab-brief">
+            <span>📌 Executive Brief</span>
+            {% if report.worst_projects|length > 0 %}
+            <span class="iptt-tab-badge" style="background: var(--danger);">{{ report.worst_projects|length }}</span>
+            {% endif %}
+        </button>
+    </div>
+</div>
+
+<!-- TAB 1: PROJECTS & RISKS -->
+<div class="iptt-tab-pane active" id="tab-projects" role="tabpanel" aria-label="Project Portfolio">
+    <div id="project-dashboard" class="section-card" style="padding: 0; overflow: hidden;">
+        <div class="collapsible-header active" onclick="toggleSection('projDashboardContent')">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span>📊 Project Deployment Dashboard</span>
+                <span class="status-badge status-green" style="font-size: 10px;">{{ report.projects|length }} Projects</span>
+            </div>
+            <div class="collapsible-icon" id="icon-projDashboardContent">−</div>
+        </div>
+        <div class="collapsible-content active" id="projDashboardContent">
+            <div>
+                <div class="iptt-table-scroll">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Project</th>
+                                <th>Health</th>
+                                <th>Progress</th>
+                                <th>Delayed Items</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in report.projects %}
+                            <tr {% if p.health < 50 %}style="border-left: 3px solid var(--danger); background: var(--danger-soft);"{% elif p.health < 80 %}style="border-left: 3px solid var(--warning); background: var(--warning-soft);"{% endif %}>
+                                <td>
+                                    <a href="/project/{{ p.project_id }}/executive-dashboard" style="font-weight: 700; color: var(--primary);">
+                                        {{ p.project_name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {% if p.health >= 80 %}
+                                    <span class="status-badge status-green">{{ p.health }}%</span>
+                                    {% elif p.health >= 50 %}
+                                    <span class="status-badge status-yellow">{{ p.health }}%</span>
+                                    {% else %}
+                                    <span class="status-badge status-red">{{ p.health }}%</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div class="progress-container" style="flex: 1; margin: 0; height: 6px; min-width: 60px;">
+                                            <div class="progress-bar" style="width: {{ p.progress }}%;"></div>
+                                        </div>
+                                        <span style="font-size: 11px; font-family: 'JetBrains Mono';">{{ p.progress }}%</span>
+                                    </div>
+                                </td>
+                                <td>{{ p.delayed_items }}</td>
+                                <td>{{ p.status }}</td>
+                                <td style="text-align: right;">
+                                    <a href="/project/{{ p.project_id }}/executive-dashboard" class="btn btn-primary" style="padding: 4px 10px; font-size: 11.5px;">Open Dashboard →</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="risk-projects" class="section-card" style="padding: 0; overflow: hidden;">
+        <div class="collapsible-header active" onclick="toggleSection('riskProjectsContent')">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span>🚨 Top Risk Projects Requiring Focus</span>
+                <span class="status-badge status-red" style="font-size: 10px;">{{ report.worst_projects|length }} Priority Escalations</span>
+            </div>
+            <div class="collapsible-icon" id="icon-riskProjectsContent">−</div>
+        </div>
+        <div class="collapsible-content active" id="riskProjectsContent">
+            <div>
+                <div class="iptt-table-scroll">
+                    <table>
+                        <thead>
+                            <tr><th>Project</th><th>Health</th><th>Status</th><th>Delayed Tasks</th><th style="text-align: right;">Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for p in report.worst_projects %}
+                            <tr style="border-left: 3px solid var(--danger); background: var(--danger-soft);">
+                                <td><strong>{{ p.project_name }}</strong></td>
+                                <td><span class="status-badge status-red">{{ p.health }}%</span></td>
+                                <td>{{ p.status }}</td>
+                                <td><strong>{{ p.delayed_items }}</strong></td>
+                                <td style="text-align: right;">
+                                    <a href="/project/{{ p.project_id }}/executive-dashboard" class="btn btn-primary" style="padding: 4px 10px; font-size: 11.5px;">Open Dashboard →</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TAB 2: ANALYTICS & STAGE MIX -->
+<div class="iptt-tab-pane" id="tab-analytics" role="tabpanel" aria-label="Analytics & Stage Mix">
+    <div id="stage-mix" class="section-card" style="padding: 0; overflow: hidden;">
+        <div class="collapsible-header active" onclick="toggleSection('stageMixContent')">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span>🧩 Execution Stage Mix</span>
+            </div>
+            <div class="collapsible-icon" id="icon-stageMixContent">−</div>
+        </div>
+        <div class="collapsible-content active" id="stageMixContent">
+            <div>
+                <div class="iptt-table-scroll">
+                    <table>
+                        <thead>
+                            <tr><th>Execution Stage</th><th>Total Nodes</th><th>Concentration Review</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for stage, count in report.stage_mix.items() %}
+                            <tr>
+                                <td><strong>{{ stage }}</strong></td>
+                                <td>{{ count }}</td>
+                                <td>
+                                    {% if count > 100 %}
+                                    <span class="status-badge status-red">Heavy Concentration</span>
+                                    {% elif count > 50 %}
+                                    <span class="status-badge status-yellow">Moderate Concentration</span>
+                                    {% else %}
+                                    <span class="status-badge status-green">Balanced</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="analytics" class="section-card" style="padding: 0; overflow: hidden;">
+        <div class="collapsible-header active" onclick="toggleSection('analyticsContent')">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span>📈 Programme Analytics & Distributions</span>
+            </div>
+            <div class="collapsible-icon" id="icon-analyticsContent">−</div>
+        </div>
+        <div class="collapsible-content active" id="analyticsContent">
+            <div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px;">
+                    <div class="section-card" style="padding: 16px; margin: 0; background: var(--surface-2);">
+                        <h4 style="margin: 0 0 12px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);">Project Health Breakdown</h4>
+                        <div style="position: relative; height: 240px; display: flex; justify-content: center;">
+                            <canvas id="healthChart" style="max-height: 240px;"></canvas>
+                        </div>
+                    </div>
+                    <div class="section-card" style="padding: 16px; margin: 0; background: var(--surface-2);">
+                        <h4 style="margin: 0 0 12px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);">Progress Comparison</h4>
+                        <div style="position: relative; height: 240px;">
+                            <canvas id="progressChart" style="max-height: 240px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-card" style="padding: 16px; margin: 0; background: var(--surface-2);">
+                    <h4 style="margin: 0 0 12px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);">Delay Item Concentration by Project</h4>
+                    <div style="position: relative; height: 280px;">
+                        <canvas id="delayChart" style="max-height: 280px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="circle-summary" class="section-card" style="padding: 0; overflow: hidden;">
+        <div class="collapsible-header active" onclick="toggleSection('circleSummaryContent')">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span>🌐 Circle Regional Performance</span>
+            </div>
+            <div class="collapsible-icon" id="icon-circleSummaryContent">−</div>
+        </div>
+        <div class="collapsible-content active" id="circleSummaryContent">
+            <div>
+                <div class="iptt-table-scroll">
+                    <table>
+                        <thead>
+                            <tr><th>Circle</th><th>Nodes</th><th>Health</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for c in report.circle_summary %}
+                            <tr {% if c.health < 50 %}style="border-left: 3px solid var(--danger); background: var(--danger-soft);"{% elif c.health < 80 %}style="border-left: 3px solid var(--warning); background: var(--warning-soft);"{% endif %}>
+                                <td><strong>{{ c.circle }}</strong></td>
+                                <td>{{ c.nodes }}</td>
+                                <td>
+                                    {% if c.health >= 80 %}
+                                    <span class="status-badge status-green">{{ c.health }}%</span>
+                                    {% elif c.health >= 50 %}
+                                    <span class="status-badge status-yellow">{{ c.health }}%</span>
+                                    {% else %}
+                                    <span class="status-badge status-red">{{ c.health }}%</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ c.status }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TAB 3: EXECUTIVE BRIEF -->
+<div class="iptt-tab-pane" id="tab-brief" role="tabpanel" aria-label="Executive Brief">
+    <div id="executive-summary" class="section-card" style="padding: 0; overflow: hidden;">
+        <div class="collapsible-header active" onclick="toggleSection('execSummaryContent')">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span>📌 Executive Summary & Leadership Observations</span>
+            </div>
+            <div class="collapsible-icon" id="icon-execSummaryContent">−</div>
+        </div>
+        <div class="collapsible-content active" id="execSummaryContent">
+            <div>
+                <div style="line-height: 1.7; font-size: 14.5px; color: var(--text-2); background: var(--surface-2); border-left: 4px solid var(--primary); padding: 18px 22px; border-radius: var(--radius-sm);">
+                    {{ report.executive_summary | replace('\n\n', '<br><br>') | replace('\n', ' ') | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Quick Navigation Dock (Bottom-Right, does not block header) -->
+<div class="iptt-floating-quicknav no-print" id="floatingQuickNav" aria-label="Quick Navigation Dock">
+    <button type="button" class="floating-quicknav-btn" onclick="ipttToggleFloatingNav()" aria-expanded="false" aria-label="Toggle Quick Jump Navigation">
+        <span>⚡ Quick Jump</span>
+        <span class="floating-arrow">▴</span>
+    </button>
+    <div class="floating-quicknav-menu" id="floatingQuickNavMenu" role="menu">
+        <div class="floating-menu-title">Programme Sections</div>
+        <a href="#iptt-main" class="floating-menu-item" role="menuitem" onclick="ipttCloseFloatingNav()">
+            <span>⬆ Back to Top</span>
+        </a>
+        <a href="#executive-brief" class="floating-menu-item" role="menuitem" onclick="ipttCloseFloatingNav()">
+            <span>📌 Executive Brief</span>
+        </a>
+        <a href="#kpi-overview" class="floating-menu-item" role="menuitem" onclick="ipttCloseFloatingNav()">
+            <span>📊 KPI Overview</span>
+        </a>
+        <a href="#stage-pipeline" class="floating-menu-item" role="menuitem" onclick="ipttCloseFloatingNav()">
+            <span>🚀 Stage Distribution</span>
+        </a>
+        <a href="#tab-projects" class="floating-menu-item" role="menuitem" onclick="ipttSwitchTab('tab-projects'); ipttCloseFloatingNav();">
+            <span>📦 Project Portfolio</span>
+            <span class="floating-badge-primary">{{ report.projects|length }}</span>
+        </a>
+        <a href="#tab-analytics" class="floating-menu-item" role="menuitem" onclick="ipttSwitchTab('tab-analytics'); ipttCloseFloatingNav();">
+            <span>📈 Analytics & Mix</span>
+        </a>
+        <a href="#tab-brief" class="floating-menu-item" role="menuitem" onclick="ipttSwitchTab('tab-brief'); ipttCloseFloatingNav();">
+            <span>🎯 Focus Areas</span>
+            {% if report.worst_projects|length > 0 %}
+            <span class="floating-badge-danger">{{ report.worst_projects|length }}</span>
+            {% endif %}
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(function() {
+  var hChart = null, pChart = null, dChart = null;
+
+  function initProgrammeCharts() {
+    if (typeof Chart === 'undefined') return;
+
+    const projectNames = [{% for p in report.projects %}"{{ p.project_name }}",{% endfor %}];
+    const healthValues = [{% for p in report.projects %}{{ p.health }},{% endfor %}];
+    const progressValues = [{% for p in report.projects %}{{ p.progress }},{% endfor %}];
+    const delayValues = [{% for p in report.projects %}{{ p.delayed_items }},{% endfor %}];
+
+    let healthy = 0, attention = 0, critical = 0;
+    {% for p in report.projects %}
+      {% if p.health >= 80 %}healthy++;
+      {% elif p.health >= 50 %}attention++;
+      {% else %}critical++;
+      {% endif %}
+    {% endfor %}
+
+    const hCanvas = document.getElementById("healthChart");
+    if (hCanvas && !hChart && hCanvas.offsetParent !== null) {
+      hChart = new Chart(hCanvas, {
+        type: "doughnut",
+        data: {
+          labels: ["Healthy", "Attention", "Critical"],
+          datasets: [{ data: [healthy, attention, critical], backgroundColor: ["#10B981", "#F59E0B", "#F43F5E"], borderWidth: 0 }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, font: { family: 'Inter', size: 11 } } } }
+        }
+      });
+    }
+
+    const pCanvas = document.getElementById("progressChart");
+    if (pCanvas && !pChart && pCanvas.offsetParent !== null) {
+      pChart = new Chart(pCanvas, {
+        type: "bar",
+        data: {
+          labels: projectNames,
+          datasets: [{ label: "Progress %", data: progressValues, backgroundColor: "#6366F1", borderRadius: 6 }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.06)' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    const dCanvas = document.getElementById("delayChart");
+    if (dCanvas && !dChart && dCanvas.offsetParent !== null) {
+      dChart = new Chart(dCanvas, {
+        type: "bar",
+        data: {
+          labels: projectNames,
+          datasets: [{ label: "Delayed Items", data: delayValues, backgroundColor: "#F43F5E", borderRadius: 6 }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.06)' } },
+            y: { grid: { display: false } }
+          }
+        }
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', initProgrammeCharts);
+  window.addEventListener('resize', initProgrammeCharts);
+  window.addEventListener('hashchange', initProgrammeCharts);
+  document.querySelectorAll('.iptt-tab-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      setTimeout(initProgrammeCharts, 60);
+    });
+  });
+})();
+</script>
+{% endblock %}

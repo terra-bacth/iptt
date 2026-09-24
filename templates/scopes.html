@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Project Scope Management | IPTT{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/projects/{{ programme_id }}">Projects</a> <span>›</span>
+    <span class="status-badge role-badge">Scope Management</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Inventory Definition</p>
+            <h1 class="iptt-hero-title">🧭 Project Scope <span class="italic">Management</span></h1>
+            <div class="iptt-hero-subtitle">Define, configure, and bulk import nodes, regional circles, and target facilities for this project.</div>
+        </div>
+        <a href="/projects/{{ programme_id }}" class="btn">⬅ Back to Projects</a>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>➕ Add Scope (Manual Entry)</h2>
+    </div>
+    <form method="post" action="/project/{{ project_id }}/scope/add">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 16px;">
+            <div>
+                <label style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--muted); margin-bottom: 6px;">Priority (1 / 2 / 3)</label>
+                <input type="number" name="priority" min="1" max="3" required style="width: 100%;">
+            </div>
+            <div>
+                <label style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--muted); margin-bottom: 6px;">Circle</label>
+                <input type="text" name="circle" placeholder="e.g. MH, DL, KA" required style="width: 100%;">
+            </div>
+            <div>
+                <label style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--muted); margin-bottom: 6px;">Facility Name</label>
+                <input type="text" name="facility_name" placeholder="Data Center / Hub Name" required style="width: 100%;">
+            </div>
+            <div>
+                <label style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--muted); margin-bottom: 6px;">Node ID</label>
+                <input type="text" name="node_id" placeholder="Unique Node Identifier" required style="width: 100%;">
+            </div>
+            <div>
+                <label style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--muted); margin-bottom: 6px;">No. of Servers</label>
+                <input type="number" name="num_servers" min="1" required style="width: 100%;">
+            </div>
+        </div>
+        <button class="btn btn-primary" type="submit">➕ Add Scope Node</button>
+    </form>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>📥 Upload Scope in Bulk</h2>
+    </div>
+    <form action="/project/{{ project_id }}/scope/upload" method="post" enctype="multipart/form-data" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <input type="file" name="file" required style="flex: 1; min-width: 220px;">
+        <button class="btn btn-primary" type="submit">📥 Upload Excel Sheet</button>
+        <a class="btn" href="/static/scope_template.xlsx">📄 Download Excel Template</a>
+    </form>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>📋 Existing Scope Inventory</h2>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="text" placeholder="Filter scopes..." data-table-target="scopeTable" style="max-width: 200px; font-size: 12px; min-height: 30px; padding: 4px 10px;">
+            <span class="status-badge role-badge">{{ scopes|length }} Nodes</span>
+        </div>
+    </div>
+    <div class="iptt-table-scroll">
+        <table id="scopeTable">
+            <thead>
+                <tr>
+                    <th>Node ID</th>
+                    <th>Circle</th>
+                    <th>Facility Name</th>
+                    <th>Priority</th>
+                    <th>Servers</th>
+                    <th style="text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in scopes %}
+                <tr>
+                    <td><strong>{{ s.node_id }}</strong></td>
+                    <td>{{ s.circle }}</td>
+                    <td>{{ s.facility_name }}</td>
+                    <td>
+                        {% if s.priority == 1 %}
+                        <span class="status-badge status-red">P1 High</span>
+                        {% elif s.priority == 2 %}
+                        <span class="status-badge status-yellow">P2 Med</span>
+                        {% else %}
+                        <span class="status-badge status-green">P3 Low</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ s.num_servers }}</td>
+                    <td style="text-align: right;">
+                        <a class="btn btn-primary" href="/scope/{{ s.id }}/execution" style="padding: 4px 10px; font-size: 11.5px;">
+                            ▶ Execution Workstream
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 24px; color: var(--muted);">No scope items defined yet. Use the manual form or upload an Excel sheet above.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

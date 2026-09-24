@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="iptt-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="50%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+    <linearGradient id="iptt-glow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <!-- Background Badge -->
+  <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#iptt-grad)" filter="url(#shadow)"/>
+  <!-- Top Bevel Highlight -->
+  <rect x="5" y="5" width="54" height="26" rx="13" fill="url(#iptt-glow)"/>
+  <rect x="4.5" y="4.5" width="55" height="55" rx="13.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1"/>
+  <!-- Telemetry Dot (Live Signal) -->
+  <circle cx="32" cy="19" r="4" fill="#34D399"/>
+  <circle cx="32" cy="19" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.8"/>
+  <!-- Bold Stylized Letter "I" / Telemetry Pillar -->
+  <rect x="26.5" y="27" width="11" height="21" rx="3.5" fill="#FFFFFF"/>
+</svg>

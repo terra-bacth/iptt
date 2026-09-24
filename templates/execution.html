@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Node Execution | IPTT{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/execution.css?v=12">
+{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/project/{{ project_id }}/execution">Project Execution</a> <span>›</span>
+    <span class="status-badge role-badge">Node Execution</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Real-Time Engineering Workstream</p>
+            <h1 class="iptt-hero-title">⚙️ Node <span class="italic">Execution Tracking</span></h1>
+            <div class="iptt-hero-subtitle">Input actual start and finish dates, track baseline deviations, and log operational overrides.</div>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="downloadExecution()">📥 Download Runbook</button>
+            <span class="upload-group" style="display: inline-flex; align-items: center; gap: 6px;">
+                <input type="file" id="excelFile" style="font-size: 11.5px; max-width: 200px;">
+                <button class="btn" onclick="uploadExcel()">📤 Upload</button>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div id="filterBar">
+    <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--muted); letter-spacing: 0.08em; margin-right: 4px;">Task Filter:</span>
+    <button id="filterAll" class="active" onclick="filterTasks('all')">All Tasks</button>
+    <button id="filterPending" onclick="filterTasks('pending')">Pending</button>
+    <button id="filterCompleted" onclick="filterTasks('completed')">Completed</button>
+    <button id="filterDelayed" onclick="filterTasks('delayed')">Delayed</button>
+    
+    <button id="overrideBtn" onclick="toggleOverride()" title="Toggle override mode">
+      🔒 Override OFF
+    </button>
+</div>
+
+<div id="executionContainer"></div>
+
+<script>
+  const USER_ROLE = "{{ role | default('viewer') }}";
+  const PROJECT_ID = {{ project_id | default(0) }};
+  const SCOPE_ID = {{ scope_id | default(0) }};
+</script>
+
+<script src="/static/execution.js?v=1.0.4"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    loadExecution();
+  });
+</script>
+{% endblock %}

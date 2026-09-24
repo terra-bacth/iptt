@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Programmes Portfolio | IPTT{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <span class="status-badge role-badge">Programmes</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Enterprise Portfolios</p>
+            <h1 class="iptt-hero-title">Programmes <span class="italic">Workspace</span></h1>
+            <div class="iptt-hero-subtitle">High-level strategic programmes, project aggregates, and baseline health control.</div>
+        </div>
+        <div>
+            <span class="status-badge status-green">● {{ programmes|length }} Total Programmes</span>
+        </div>
+    </div>
+</div>
+
+<div class="section-card" style="margin-bottom: 24px;">
+    <div class="section-title">
+        <h2>➕ Create New Programme</h2>
+    </div>
+    <form class="create-form" method="post" action="/" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <input type="text" name="name" placeholder="Enter unique programme name (e.g. 5G Expansion 2026)" required style="flex: 1; min-width: 260px;">
+        <button type="submit" class="btn btn-primary">➕ Initialize Programme</button>
+    </form>
+</div>
+
+<div class="programme-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 18px;">
+{% for p in programmes %}
+    <div class="programme-card" style="border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--surface-card); box-shadow: var(--shadow-card); display: flex; flex-direction: column;">
+        <div style="padding: 20px; flex: 1;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                <div style="font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.02em;">{{ p.name }}</div>
+                <span class="status-badge role-badge">{{ p.status }}</span>
+            </div>
+
+            <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px;">
+                <span class="status-badge" style="background: var(--primary-soft); color: var(--primary);">{{ programme_summary[p.id].total }} Projects</span>
+                <span class="status-badge status-green">✅ {{ programme_summary[p.id].completed }} Done</span>
+                <span class="status-badge status-yellow">⚙ {{ programme_summary[p.id].in_progress }} Active</span>
+                <span class="status-badge status-red">🔴 {{ programme_summary[p.id].at_risk }} At Risk</span>
+            </div>
+
+            <div style="margin-top: 16px;">
+                <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 4px;">
+                    <span>Overall Completion</span>
+                    <span style="font-family: 'JetBrains Mono'; font-weight: 600;">
+                        {{ (programme_summary[p.id].completed / programme_summary[p.id].total * 100) | round(0) if programme_summary[p.id].total else 0 }}%
+                    </span>
+                </div>
+                <div class="progress-container" style="margin: 0; height: 6px;">
+                    <div class="progress-bar" style="width: {{ (programme_summary[p.id].completed / programme_summary[p.id].total * 100) | round(0) if programme_summary[p.id].total else 0 }}%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div style="padding: 12px 18px; background: var(--surface-2); border-top: 1px solid var(--border); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <a href="/projects/{{ p.id }}" class="btn btn-primary" style="font-size: 11.5px; padding: 4px 10px;">📂 Projects</a>
+                <a href="/programme/{{ p.id }}/executive-dashboard" class="btn" style="font-size: 11.5px; padding: 4px 10px;">📊 Executive</a>
+                <a href="/programme/edit/{{ p.id }}" class="btn" style="font-size: 11.5px; padding: 4px 10px;">✏ Edit</a>
+            </div>
+            <form method="post" action="/programme/delete/{{ p.id }}" style="margin: 0;" onsubmit="return confirm('Are you sure you want to delete this programme?');">
+                <button type="submit" class="delete">🗑 Delete</button>
+            </form>
+        </div>
+    </div>
+{% else %}
+    <div class="empty-state" style="grid-column: 1 / -1;">No programmes created yet. Use the form above to initialize your first programme.</div>
+{% endfor %}
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const error = params.get("error");
+if (error === "admin_required") { alert("⚠️ Only Admin can perform this action"); }
+if (error === "pm_only") { alert("⚠️ Only PM or Admin can perform this action"); }
+if (error) { window.history.replaceState({}, document.title, window.location.pathname); }
+</script>
+{% endblock %}

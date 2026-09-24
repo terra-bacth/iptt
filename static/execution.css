@@ -1,0 +1,177 @@
+/* ==========================================================================
+   IPTT Execution Grid & Controls (Theme Token Harmonized)
+   ========================================================================== */
+
+.scope-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 22px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.scope-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--border-strong);
+}
+
+.scope-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 14px;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Status Highlights for Table Rows */
+.status-completed {
+  background-color: var(--success-soft) !important;
+}
+
+.status-progress {
+  background-color: var(--warning-soft) !important;
+}
+
+.status-delayed {
+  background-color: var(--danger-soft) !important;
+}
+
+.progress-container {
+  margin: 8px 0 12px 0;
+}
+
+.progress-bar-bg {
+  background: var(--border-subtle);
+  border-radius: var(--radius-pill);
+  height: 6px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent-gradient);
+  transition: width 0.4s ease;
+  border-radius: var(--radius-pill);
+}
+
+.progress-text {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.rag-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #fff;
+  margin-left: 8px;
+  letter-spacing: 0.02em;
+}
+
+.rag-green { background: var(--success); }
+.rag-amber { background: var(--warning); }
+.rag-red   { background: var(--danger); }
+.rag-grey  { background: var(--muted); }
+
+.next-task {
+  border-left: 4px solid var(--primary) !important;
+  background: var(--primary-soft) !important;
+}
+
+/* Top Sticky Control Bar */
+.top-bar,
+#filterBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+#filterBar button {
+  padding: 6px 12px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface-card);
+  color: var(--text-2);
+  font-weight: 600;
+  font-size: 12px;
+  transition: all 0.15s ease;
+}
+
+#filterBar button:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+#filterBar button.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+#overrideBtn {
+  margin-left: auto;
+  background: var(--surface-2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.quick-btn {
+  margin-top: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: var(--radius-pill);
+  background: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.quick-btn:hover {
+  filter: brightness(1.1);
+}
+
+.task-group {
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.group-header {
+  background: var(--surface-2);
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

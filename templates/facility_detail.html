@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Facility {{ facility_name }} | Node Telemetry{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<div class="breadcrumb">
+    <a href="/home">Home</a> <span>›</span>
+    <a href="/circle-dashboard">Circle Dashboard</a> <span>›</span>
+    <span class="status-badge role-badge">{{ facility_name }}</span>
+</div>
+
+<div class="iptt-hero-banner">
+    <div class="iptt-hero-content">
+        <div>
+            <p class="iptt-eyebrow">Facility Engineering View</p>
+            <h1 class="iptt-hero-title">Facility <span class="italic">{{ facility_name }}</span></h1>
+            <div class="iptt-hero-subtitle">Operational status, engineering progression, and node execution triggers.</div>
+        </div>
+        <a href="/circle-dashboard" class="btn">← Back to Circles</a>
+    </div>
+</div>
+
+{% set total_nodes = node_data|length %}
+{% set completed_nodes = node_data | selectattr("status","equalto","Completed") | list | length %}
+{% set wip_nodes = total_nodes - completed_nodes %}
+{% if total_nodes > 0 %}{% set avg_progress = (node_data | sum(attribute='progress')) / total_nodes %}{% else %}{% set avg_progress = 0 %}{% endif %}
+
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-title">Total Nodes</div>
+        <div class="kpi-value">{{ total_nodes }}</div>
+    </div>
+    <div class="kpi-card" style="border-left: 4px solid var(--success);">
+        <div class="kpi-title">Completed Nodes</div>
+        <div class="kpi-value" style="color: var(--success);">{{ completed_nodes }}</div>
+        <div class="progress-wrapper">
+            <div class="progress-bar" style="width: {{ (completed_nodes / total_nodes * 100) | round(0) if total_nodes else 0 }}%; background: var(--success);"></div>
+        </div>
+    </div>
+    <div class="kpi-card" style="border-left: 4px solid var(--warning);">
+        <div class="kpi-title">WIP Nodes</div>
+        <div class="kpi-value" style="color: var(--warning);">{{ wip_nodes }}</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-title">Average Progress</div>
+        <div class="kpi-value">{{ avg_progress|round(1) }}%</div>
+        <div class="progress-wrapper">
+            <div class="progress-bar" style="width: {{ avg_progress }}%;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-title">
+        <h2>📡 Nodes in Facility {{ facility_name }}</h2>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="text" id="nodeSearch" placeholder="Search node, circle, project..." data-table-target="nodeTable" style="max-width: 240px; font-size: 12px; min-height: 30px; padding: 4px 10px;">
+            <span style="font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono';">{{ total_nodes }} nodes</span>
+        </div>
+    </div>
+    <div class="iptt-table-scroll">
+        <table id="nodeTable">
+            <thead>
+                <tr>
+                    <th>Node ID</th>
+                    <th>Project</th>
+                    <th>Circle</th>
+                    <th style="min-width: 140px;">Progress</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Execution</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in node_data %}
+                <tr>
+                    <td><strong>{{ row.node_id }}</strong></td>
+                    <td>{{ row.project_name }}</td>
+                    <td>{{ row.circle }}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="progress-container" style="flex: 1; margin: 0; height: 6px;">
+                                <div class="progress-bar" style="width: {{ row.progress }}%;"></div>
+                            </div>
+                            <span style="font-size: 11px; font-family: 'JetBrains Mono';">{{ row.progress }}%</span>
+                        </div>
+                    </td>
+                    <td>
+                        {% if row.status == "Completed" %}
+                        <span class="status-badge status-green">Completed</span>
+                        {% else %}
+                        <span class="status-badge status-yellow">WIP</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: right;">
+                        <a class="btn btn-green" href="/scope/{{ row.scope_id }}/execution" style="padding: 4px 10px; font-size: 11.5px;">
+                            ▶ Open Execution
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
